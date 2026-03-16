@@ -1,0 +1,2302 @@
+'use client'
+
+import { useRef, useState } from 'react'
+import Image from 'next/image'
+import { Icon } from '@iconify/react'
+import { motion, AnimatePresence } from 'framer-motion'
+import { Button } from '@/components/ui/button'
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
+import { Badge } from '@/components/ui/badge'
+import { Progress } from '@/components/ui/progress'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog'
+
+// Types
+interface Activity {
+  title: string
+  time: string
+  materials?: string
+  instructions?: string
+  studentTask: string
+  example?: string
+  teacherNote: string
+  icon?: string
+}
+
+interface WarmUp {
+  title: string
+  time: string
+  materials: string
+  instructions: string
+  teacherNote: string
+  audioSrc?: string
+}
+
+interface ExpandedActivity {
+  section: string
+  activity: WarmUp | Activity
+}
+
+const isRegularActivity = (activity: WarmUp | Activity): activity is Activity => 'studentTask' in activity
+
+const CLASSROOM_AUDIO_SRC = '/audio/cooked-the-grey-room-golden-palms.mp3'
+const UNIT_1_LISTENING_AUDIO_SRC = '/audio/listening-between-the-lines.mp3'
+
+const icons = {
+  chevronRight: 'mdi:chevron-right',
+  chevronLeft: 'mdi:chevron-left',
+  bookOpen: 'mdi:book-open-page-variant',
+  users: 'mdi:account-group',
+  lightbulb: 'mdi:lightbulb-on',
+  target: 'mdi:target',
+  message: 'mdi:message-text',
+  microphone: 'mdi:microphone',
+  checkCircle: 'mdi:check-circle',
+  closeCircle: 'mdi:close-circle',
+  sparkles: 'mdi:sparkles',
+  clock: 'mdi:clock-outline',
+  eye: 'mdi:eye-outline',
+  brain: 'mdi:brain',
+  rocket: 'mdi:rocket-launch',
+  heart: 'mdi:heart',
+  heartOutline: 'mdi:heart-outline',
+  zap: 'mdi:flash',
+  star: 'mdi:star',
+  play: 'mdi:play-circle',
+  pause: 'mdi:pause-circle',
+  stop: 'mdi:stop-circle',
+  rotate: 'mdi:rotate-left',
+  calendar: 'mdi:calendar-month',
+  newspaper: 'mdi:newspaper-variant',
+  pen: 'mdi:pen',
+  shuffle: 'mdi:shuffle-variant',
+  trophy: 'mdi:trophy',
+  film: 'mdi:filmstrip',
+  headphones: 'mdi:headphones',
+  coffee: 'mdi:coffee',
+  globe: 'mdi:earth',
+  teacher: 'mdi:school',
+  task: 'mdi:clipboard-check-outline',
+  home: 'mdi:home-city-outline',
+} as const
+
+const decisionPitchTemplate = [
+  {
+    title: 'What decision are you thinking about?',
+    example: "I'm thinking about studying abroad.",
+    lines: 3,
+  },
+  {
+    title: 'What options are you considering?',
+    example: "I'm considering studying in Canada or Spain.",
+    lines: 3,
+  },
+  {
+    title: 'What do you prefer to do - and why?',
+    example: 'I prefer to study in Spain because I love the culture.',
+    lines: 3,
+  },
+  {
+    title: 'What would you rather avoid?',
+    example: "I'd rather avoid studying online because I want to meet people in person.",
+    lines: 3,
+  },
+  {
+    title: 'What do you plan to or intend to do next?',
+    example: 'I plan to apply for a scholarship next month.',
+    lines: 3,
+  },
+  {
+    title: 'What are you looking forward to after making your decision?',
+    example: 'I look forward to starting a new chapter in my life!',
+    lines: 3,
+  },
+  {
+    title: 'My 1-Minute Decision Pitch (Practice Notes)',
+    example: 'Try to include at least three target expressions.',
+    lines: 6,
+  },
+] as const
+
+const decisionPitchSelfCheck = [
+  'prefer to',
+  'would rather',
+  'consider doing',
+  'plan to / intend to',
+  'look forward to',
+] as const
+
+const unit1ListeningQuestions = [
+  'Who sounds more certain about their plans?',
+  'Which expressions show hesitation or doubt?',
+  'Which expressions show excitement or emotion?',
+  "What do these expressions tell you about Marta's and David's personalities?",
+] as const
+
+const unit1ListeningDialogue = [
+  {
+    speaker: 'Marta',
+    line: 'Hey David, are you doing ________________ this weekend?',
+  },
+  {
+    speaker: 'David',
+    line: "Hmm... I'm considering visiting __________, but I'm not sure yet. What about you?",
+  },
+  {
+    speaker: 'Marta',
+    line: "I plan to go hiking with ____________. We've been talking about it ___________.",
+  },
+  {
+    speaker: 'David',
+    line: "Nice! I intend to relax a bit. I've _______________ late all week.",
+  },
+  {
+    speaker: 'Marta',
+    line: "__________________. You know, I'd rather go to the mountains than stay home, but I need some rest too.",
+  },
+  {
+    speaker: 'David',
+    line: "True! I look forward to hearing about your trip though. _________________ I'll join you.",
+  },
+  {
+    speaker: 'Marta',
+    line: "Sure! Let's plan _______________ soon.",
+  },
+] as const
+
+// Units data
+const units = [
+  {
+    id: 1,
+    title: "Planning Personal & Academic Futures",
+    subtitle: "Future Forms & Decision Making",
+    color: "from-emerald-500 to-teal-600",
+    lightColor: "bg-emerald-50",
+    borderColor: "border-emerald-200",
+    icon: icons.rocket,
+    duration: "Multiple Classes",
+    level: "B1 - Intermediate 4",
+    objectives: [
+      "Make predictions and plans about personal, academic, and professional futures",
+      "Use future forms (will, going to, present continuous) correctly",
+      "Express preferences with prefer to, would rather, plan to, intend to",
+      "Negotiate group decisions using decision-making expressions"
+    ],
+    keyLanguage: [
+      { expression: "will + verb", example: "I'll probably sleep all day!", use: "Spontaneous decisions, predictions" },
+      { expression: "going to + verb", example: "I'm going to study medicine.", use: "Intentions, plans with evidence" },
+      { expression: "present continuous", example: "I'm meeting my friend tomorrow.", use: "Fixed arrangements" },
+      { expression: "prefer to + verb", example: "I prefer to study in the morning.", use: "General preferences" },
+      { expression: "would rather + verb", example: "I'd rather stay home tonight.", use: "Specific preference (stronger)" },
+      { expression: "consider + -ing", example: "I'm considering studying abroad.", use: "Thinking about options" },
+      { expression: "look forward to + -ing", example: "I look forward to meeting you!", use: "Excitement about future" }
+    ],
+    vocabulary: {
+      core: ["decision", "plan", "goal", "intention", "option", "choice", "alternative", "idea"],
+      expressions: ["prefer to", "would rather", "plan to", "intend to", "consider doing", "look forward to"],
+      connectors: ["because", "so", "therefore", "that's why", "however", "on the other hand"]
+    }
+  },
+  {
+    id: 2,
+    title: "Problem-Solving & Hypothetical Scenarios",
+    subtitle: "Zero, First, Second & Third Conditionals",
+    color: "from-violet-500 to-purple-600",
+    lightColor: "bg-violet-50",
+    borderColor: "border-violet-200",
+    icon: icons.lightbulb,
+    duration: "Multiple Classes",
+    level: "B1 - Intermediate 4",
+    objectives: [
+      "Propose and evaluate solutions to real and hypothetical problems",
+      "Use zero conditional for facts and general truths",
+      "Use first conditional for real future possibilities",
+      "Use second conditional for imaginary situations",
+      "Use third conditional for unreal past situations (regrets)"
+    ],
+    keyLanguage: [
+      { expression: "Zero: If + present, present", example: "If you heat ice, it melts.", use: "Facts, general truths" },
+      { expression: "First: If + present, will + verb", example: "If it rains, I'll stay home.", use: "Real future possibilities" },
+      { expression: "Second: If + past, would + verb", example: "If I were rich, I'd travel.", use: "Imaginary situations" },
+      { expression: "Third: If + had + V3, would have + V3", example: "If I had studied, I would have passed.", use: "Unreal past, regrets" }
+    ],
+    vocabulary: {
+      core: ["condition", "result", "consequence", "possibility", "situation", "outcome"],
+      expressions: ["if only", "I wish", "what if", "suppose", "imagine"],
+      connectors: ["therefore", "as a result", "consequently", "otherwise"]
+    }
+  },
+  {
+    id: 3,
+    title: "Imagining & Negotiating Futures",
+    subtitle: "Mixed Conditionals & Proposals",
+    color: "from-amber-500 to-orange-600",
+    lightColor: "bg-amber-50",
+    borderColor: "border-amber-200",
+    icon: icons.message,
+    duration: "Multiple Classes",
+    level: "B1 - Intermediate 4",
+    objectives: [
+      "Discuss hypothetical outcomes of past or present decisions",
+      "Use mixed conditionals (past → present, present → past)",
+      "Make proposals using gerunds and infinitives correctly",
+      "Negotiate group decisions respecting others' perspectives"
+    ],
+    keyLanguage: [
+      { expression: "Mixed (Past → Present):", example: "If I had studied medicine, I would be a doctor now.", use: "Past condition, present result" },
+      { expression: "Mixed (Present → Past):", example: "If I were more organized, I would have finished earlier.", use: "Present condition, past result" },
+      { expression: "suggest + -ing", example: "I suggest going to the beach.", use: "Making proposals" },
+      { expression: "decide + to + verb", example: "We decided to watch a comedy.", use: "Expressing decisions" },
+      { expression: "recommend + -ing", example: "I recommend visiting the museum.", use: "Making recommendations" }
+    ],
+    vocabulary: {
+      core: ["challenge", "obstacle", "solution", "opportunity", "adaptability", "diversity"],
+      expressions: ["I suggest", "I recommend", "I'd like to", "How about", "Let's", "We decided to"],
+      connectors: ["however", "on the other hand", "in contrast", "similarly"]
+    }
+  }
+]
+
+// Complete Activities Data
+const activitiesData: Record<string, { warmUps: WarmUp[], concreteExperience: Activity[], reflection: Activity[], abstract: Activity[], practice: Activity[] }> = {
+  unit1: {
+    warmUps: [
+      {
+        title: "Pass the Ball Q&A",
+        time: "10 min",
+        materials: "Soft ball, music device, list of questions",
+        instructions: "Play soft music and pass a ball around. Stop the music; the student with the ball answers a simple personal question. Continue for a few rounds.",
+        teacherNote: "Prepare questions in advance. This creates a relaxed atmosphere for speaking practice.",
+        audioSrc: CLASSROOM_AUDIO_SRC
+      },
+      {
+        title: "Sound & Action Mimic",
+        time: "15 min",
+        materials: "No special materials required",
+        instructions: "Create a funny sound and action (e.g., clap twice, say 'Wow!'). Students copy. Then students create their own for others to mimic.",
+        teacherNote: "Great for building classroom energy and getting students out of their comfort zone."
+      },
+      {
+        title: "Emoji Feelings Check-In",
+        time: "10 min",
+        materials: "Board and markers",
+        instructions: "Draw three faces on the board: happy, neutral, and sad. Ask: 'How do you feel today?' Students respond and explain why.",
+        teacherNote: "Quick emotional check-in to build connection and practice expressing feelings."
+      }
+    ],
+    concreteExperience: [
+      {
+        title: "A Weekend from the Future",
+        time: "25 min",
+        icon: icons.calendar,
+        studentTask: "Tell your partner about your weekend plans using different future forms. What are your definite plans? What are you less certain about? Draw quick icons of activities you plan to do.",
+        example: "Tomorrow, I'm visiting my cousin. On Saturday, I'm going to clean my house. On Sunday, I'll probably sleep all day!",
+        teacherNote: "Walk around and note which future forms students use naturally. Don't correct grammar at this stage - let them experience the language authentically."
+      },
+      {
+        title: "The Future Newsroom",
+        time: "30-35 min",
+        icon: icons.newspaper,
+        studentTask: "Imagine you are journalists from the future! Create 3-4 'news headlines' about your life, city, or the world using different future forms. Then perform your news like a TV broadcast!",
+        example: "Scientists are going to discover a new planet! / We're meeting at school to prepare our project. / It will rain all weekend.",
+        teacherNote: "Use breakyourownnews.com or classtools.net for creating headlines. Encourage creativity and humor. Students experience difference between prediction, plan, and arrangement."
+      },
+      {
+        title: "Fortune-Teller Fair",
+        time: "25-30 min",
+        icon: icons.sparkles,
+        studentTask: "Predict your partner's future! Use different forms: 'You will...', 'You're going to...', 'You're meeting... tomorrow.' Use fortune cards with icons (plane, book, money, heart).",
+        example: "I see you will travel soon! You're going to meet a famous person. And you're visiting the beach next weekend.",
+        teacherNote: "Create a playful atmosphere. Use props like a scarf for fun. Students experience the difference between predictions, plans, and arrangements through humor."
+      },
+      {
+        title: "My Future Self – Time Capsule",
+        time: "30 min",
+        icon: icons.pen,
+        studentTask: "Write a letter to your future self! Imagine today is January 1st, 2040. Include: one will sentence (prediction), one going to sentence (intention), one present continuous sentence (fixed arrangement).",
+        example: "In the future, I'll travel to Japan. I'm going to start a new course next month. I'm meeting my students on Monday.",
+        teacherNote: "This transforms abstract grammar into meaningful self-expression. The letter becomes a tangible experience anchoring emotional memory and authenticity."
+      },
+      {
+        title: "The Great Weekend Dilemma",
+        time: "25 min",
+        icon: icons.shuffle,
+        studentTask: "It's Friday afternoon! You have three options: go camping, rest at home, or visit your grandparents. What do you prefer to do? Use expressions like: prefer to, would rather, plan to, intend to, consider doing, look forward to.",
+        example: "I prefer to visit my grandparents because I haven't seen them in a long time. But I would rather stay home this weekend because I'm tired. I look forward to watching a good movie.",
+        teacherNote: "Give pairs situation cards with dilemmas. Students live real-life dilemmas and feel the usefulness of decision-making expressions before grammar instruction."
+      }
+    ],
+    reflection: [
+      {
+        title: "Spot the Difference: How Sure Are You?",
+        time: "30 min",
+        studentTask: "Compare sentences like 'I'm going to visit my family' and 'I'll visit my family.' Which sounds more planned? Which is more spontaneous? Highlight plans in blue and predictions in yellow.",
+        example: "I'm meeting my cousin tomorrow → Fixed plan | I'll probably study → Not certain, just an idea",
+        teacherNote: "Guide students to notice patterns without explicit grammar rules yet. Draw two columns: Certain/Planned vs Uncertain/Decided Now."
+      },
+      {
+        title: "Future Diaries Revisited",
+        time: "30 min",
+        studentTask: "Look back at your previous 'future diary' or 'news report.' Underline every future form you used. Write 'Why I used it' next to each example.",
+        example: "I'm meeting my cousin tomorrow → It's a fixed plan. | I'll probably study → It's not certain, just an idea.",
+        teacherNote: "Learners review past output, observe patterns, and interpret their own decisions about language use. Prepare a three-column chart on the board."
+      },
+      {
+        title: "Why Did I Say That?",
+        time: "30 min",
+        studentTask: "Look back at your decision-making activity. Why did you use each expression? When do people say 'would rather' instead of 'prefer to'? What's the difference between 'plan to' and 'intend to'?",
+        example: "I'd rather stay home (stronger, more emotional) vs I prefer to stay home (general preference)",
+        teacherNote: "Students analyze their own speech and choices, discovering why certain expressions felt right in specific contexts."
+      },
+      {
+        title: "Decision Detectives: Listening Between the Lines",
+        time: "30 min",
+        studentTask: "Listen to a dialogue and underline all decision-making expressions. Sort them into: Uncertain / Planned / Emotional. Answer: Why is 'consider doing' more tentative?",
+        example: "I usually say 'plan to' because I like to be organized and sure of what I'll do.",
+        teacherNote: "Students interpret authentic language use, moving from hearing expressions to understanding nuances of meaning and emotion."
+      }
+    ],
+    abstract: [
+      {
+        title: "The Future Puzzle: Matching Form to Meaning",
+        time: "30 min",
+        studentTask: "Match sentences with their meanings! Sort sentence strips into categories: Will (spontaneous decision/prediction), Going to (plan/prediction with evidence), Present continuous (fixed arrangement).",
+        example: "I'm meeting Luis at 5pm → Fixed arrangement | It'll be great → Prediction | I'm going to study → Intention",
+        teacherNote: "Students build explicit conceptual understanding from previous stages. Move from noticing examples to formulating grammar rules."
+      },
+      {
+        title: "Grammar Detectives: Solving the Future Mystery",
+        time: "25 min",
+        studentTask: "Read a mystery email that uses will, going to, and present continuous. Find clues - why does the writer use each form? Underline all future forms and answer guiding questions.",
+        example: "'I'm meeting Luis' is an arrangement because it involves another person and a specific time.",
+        teacherNote: "Students detect patterns, classify evidence, and formulate rules. Connect grammar to meaning rather than form alone."
+      },
+      {
+        title: "The Decision Map",
+        time: "30 min",
+        studentTask: "Sort sentences into three categories: Preference, Plan/Intention, or Emotion/Expectation. Draw three circles and place sentences accordingly. Debate with your group!",
+        example: "look forward to → emotional | consider doing → just an idea (tentative) | plan to → definite intention",
+        teacherNote: "Key takeaways: to-infinitive = deliberate decisions; -ing forms = tentative/emotional; would rather and look forward to = stronger emotion."
+      },
+      {
+        title: "From Feeling to Formula",
+        time: "35-40 min",
+        studentTask: "When you said 'I'd rather stay home' or 'I plan to study,' how did you feel? Which sounded stronger? Underline verb patterns: to + verb vs -ing.",
+        example: "to + verb → concrete decisions | -ing → ongoing thoughts or emotional anticipation",
+        teacherNote: "Students analyze form, meaning, and use through pattern discovery. They articulate the grammatical 'rules' of decision-making expressions."
+      }
+    ],
+    practice: [
+      {
+        title: "Future Talk Show",
+        time: "35-40 min",
+        icon: icons.star,
+        studentTask: "You're on a talk show! One student is the host, others are guests. Ask about weekend plans, future goals, and predictions. Use will, going to, and present continuous naturally!",
+        example: "Host: What are you going to do this weekend? Guest: I'm going to visit my cousins. Host: What will you do if it rains? Guest: I'll watch a movie instead.",
+        teacherNote: "Model the activity first. Use cue cards with interview questions. Students apply knowledge in spontaneous conversation."
+      },
+      {
+        title: "Future City Project",
+        time: "40 min",
+        icon: icons.globe,
+        studentTask: "Imagine you're city planners in 2050! Design the city of the future. What will it have? What are you going to build? What's already planned? Use at least six future sentences.",
+        example: "Our city will have flying cars. We're going to build a new park. We're opening a spaceport next month.",
+        teacherNote: "Each group presents their poster as a press conference. Peers ask follow-up questions. Display posters to celebrate creative application."
+      },
+      {
+        title: "The Decision Board Meeting",
+        time: "35 min",
+        icon: icons.users,
+        studentTask: "You are the management team of a company! Make important decisions together. Use expressions to agree, disagree, and negotiate your final plan.",
+        example: "I'd rather invest in training than buy new computers. I prefer to focus on technology upgrades. We're considering working from home twice a week.",
+        teacherNote: "Give groups scenarios (budget cuts, team building, office party). Each student should use at least three target expressions."
+      }
+    ]
+  },
+  unit2: {
+    warmUps: [
+      {
+        title: "Pass the Ball Q&A",
+        time: "10 min",
+        materials: "Soft ball, music device",
+        instructions: "Play soft music and pass a ball around. Stop the music; the student with the ball answers a simple question.",
+        teacherNote: "Creates a relaxed atmosphere for speaking practice.",
+        audioSrc: CLASSROOM_AUDIO_SRC
+      },
+      {
+        title: "Sound & Action Mimic",
+        time: "15 min",
+        materials: "None required",
+        instructions: "Create a funny sound and action. Students copy. Then students create their own for others to mimic.",
+        teacherNote: "Builds classroom energy and engagement."
+      }
+    ],
+    concreteExperience: [
+      {
+        title: "What Happens If…?",
+        time: "25-30 min",
+        icon: icons.lightbulb,
+        studentTask: "Think about things that always happen when a condition is true. Complete: 'If you heat ice, it melts.' Give each group situation cards and agree on the best ending!",
+        example: "If you forget your umbrella, you get wet. If you touch a hot pan, you get burned. If it rains on your way to school, you arrive wet.",
+        teacherNote: "Students experience zero conditionals through familiar, sensory contexts before learning formal rules. Focus on immersion through authentic use."
+      },
+      {
+        title: "Decision Day",
+        time: "30-35 min",
+        icon: icons.target,
+        studentTask: "You have an exam tomorrow, but your friend invites you to a movie. What could happen if you go? What could happen if you stay home? Write two possible results using 'If I..., I will...'",
+        example: "If I go to the movie, I will be tired tomorrow. If I stay home, I will study more. If I pass the exam, I'll celebrate with my friends.",
+        teacherNote: "Students experience first conditionals through realistic decision-making. Do a Gallery Walk where groups vote for 'best decision.'"
+      },
+      {
+        title: "If I Had a Million Dollars...",
+        time: "30-35 min",
+        icon: icons.star,
+        studentTask: "Imagine you won the lottery! What would you do? In groups, discuss what you'd do with your money. Make a list of at least five ideas. Use fake money bills for fun!",
+        example: "If I had a million dollars, I'd buy a house on the beach. If I were rich, I'd travel the world. I'd help my family.",
+        teacherNote: "Focus on imagination and emotion, not grammar. Students feel the meaning of 'unreal' situations. Use scenario cards: win lottery, wake up famous, find treasure."
+      },
+      {
+        title: "A Day in Another Life",
+        time: "35 min",
+        icon: icons.users,
+        studentTask: "Imagine you could be anyone for one day! Choose a role card (actor, astronaut, president, superhero). Create a questionnaire and interview your partner in role.",
+        example: "If I were a pilot, I'd fly around the world. If I were Beyoncé, I'd give a concert for free! If I were an astronaut, I'd live on Mars.",
+        teacherNote: "Students live a hypothetical reality through role-play. They feel the meaning of 'If I were / I'd' before analyzing it cognitively."
+      },
+      {
+        title: "If Only... Moments",
+        time: "30-35 min",
+        icon: icons.heart,
+        studentTask: "Share stories of 'if only' moments when you wished you had done something differently. What happened? How did you feel?",
+        example: "Last week I missed my bus, so I arrived late. If only I had left home earlier... I wish I had checked the schedule.",
+        teacherNote: "Students discover the function of third conditional before knowing its form. Use situation cards with everyday events."
+      },
+      {
+        title: "The Time Machine",
+        time: "35-40 min",
+        icon: icons.clock,
+        studentTask: "You are time travelers! You have one chance to go back to the past and change one thing in your life. What would you change? How would your life be different?",
+        example: "If I had studied harder in high school, I'd have gone to university earlier. If I hadn't moved, I wouldn't have met my best friend.",
+        teacherNote: "Create a mysterious atmosphere with optional background music. Use 'time travel' cards with everyday emotional events. Students engage emotionally with 'what could have been.'"
+      }
+    ],
+    reflection: [
+      {
+        title: "Why Did We Say That?",
+        time: "25-30 min",
+        studentTask: "Compare: 'If you touch a hot pan, you get burned' vs 'If I study, I'll pass the test.' Which always happens? Which is a future possibility? Mark sentences as correct or incorrect.",
+        example: "Zero = If + present → present (facts) | First = If + present → will + verb (future possibilities)",
+        teacherNote: "Students analyze and think critically about previous experiences. They observe patterns and verbalize the 'why.'"
+      },
+      {
+        title: "Cause & Consequence Detective",
+        time: "30 min",
+        studentTask: "Write two sentences for each scenario: one Zero Conditional (always true) and one First Conditional (future possibility). Complete: 'I learned that Zero Conditionals talk about...'",
+        example: "If you leave milk outside, it goes bad (Zero). If I leave milk outside tonight, it will go bad (First).",
+        teacherNote: "Students actively compare, contrast, and articulate differences between conditional types. Use detective chart handout."
+      },
+      {
+        title: "Reality or Imagination?",
+        time: "25-30 min",
+        studentTask: "Sort sentences: REAL or IMAGINARY? Can this really happen? What do you notice about verbs after 'if'? What word appears in the result?",
+        example: "If it rains tomorrow, I'll stay home (REAL). If I had wings, I would fly (IMAGINARY).",
+        teacherNote: "Students look back at sentences, identifying patterns and conceptual differences between real and unreal conditions."
+      },
+      {
+        title: "Grammar Detective: The Case of the Unreal If",
+        time: "30 min",
+        studentTask: "Analyze sentences like 'If I were a boy, I could understand' and 'If I had wings, I would fly.' What tense is used after if? What verb appears in the result?",
+        example: "After if: past simple | In result: would + verb | Meaning: imaginary or impossible situations",
+        teacherNote: "Students analyze real-life language samples and discover that second conditionals describe imaginary situations. Use detective worksheet."
+      },
+      {
+        title: "What Really Happened vs. What Could Have Happened",
+        time: "30 min",
+        studentTask: "Write two sentences for each situation: what really happened, and what could have happened if things were different.",
+        example: "Reality: I didn't study for the test. Imagined Past: If I had studied, I would have passed.",
+        teacherNote: "Students observe and analyze patterns from their own experiences, noticing form and meaning naturally."
+      },
+      {
+        title: "Regret Detective: What Went Wrong?",
+        time: "30-35 min",
+        studentTask: "Read short stories about mistakes and missed opportunities. Write the 'imagined' result for each case using third conditionals.",
+        example: "If Sofia had brought her umbrella, she wouldn't have gotten wet. had + past participle = past condition | would have + past participle = result",
+        teacherNote: "Students analyze real-life examples, connecting emotional meaning (regret) with grammatical structure."
+      }
+    ],
+    abstract: [
+      {
+        title: "The Conditional Machine",
+        time: "30 min",
+        studentTask: "Sort sentences into two machines: Zero Conditional (facts/always true) and First Conditional (real possibilities/future). Build the rules!",
+        example: "Zero: If + Present Simple → Present Simple | First: If + Present Simple → will + Base Verb",
+        teacherNote: "Students organize and verbalize grammar concepts derived from earlier experiences. Use sentence strips and meaning cards."
+      },
+      {
+        title: "Rule Builders' Workshop",
+        time: "25 min",
+        studentTask: "Analyze examples and complete a grammar chart. What patterns do you see? Which examples talk about facts? Which talk about possible futures?",
+        example: "If you eat too much junk food, you gain weight (fact). If I see you later, I'll give you the book (possibility).",
+        teacherNote: "Students move from noticing examples to formulating grammatical principles. Create a visual 'Conditional Map' with sticky notes."
+      },
+      {
+        title: "The Formula Factory",
+        time: "30 min",
+        studentTask: "Build complete sentences by matching the if-part and the result-part. What tense do you see after if? What do we use in the result?",
+        example: "If + past simple → would + base verb (for imaginary/unreal situations)",
+        teacherNote: "Students transform lived experiences into formal understanding. Use sentence strips for matching."
+      },
+      {
+        title: "Design the Rulebook: How to Talk About Impossible Things",
+        time: "35 min",
+        studentTask: "Complete the 'Grammar Rulebook' template. Summarize: When do we use this structure? How is it different from the First Conditional?",
+        example: "We use the Second Conditional for unreal or hypothetical situations in the present or future. Structure: If + past simple, would + base verb.",
+        teacherNote: "Students create their own mental and visual model of the grammar concept through collaborative synthesis."
+      },
+      {
+        title: "Building the Past-Impossible Machine",
+        time: "30 min",
+        studentTask: "Sort sentence cards: Real past vs Imagined past. Highlight the if-part and result-part. What verb do we use after if? What about the result?",
+        example: "If + had + past participle → would have + past participle | For unreal past situations (regrets)",
+        teacherNote: "Guide discovery: 'What verb after if?' (had + V3). 'What in result?' (would have + V3). Use colored highlighters."
+      }
+    ],
+    practice: [
+      {
+        title: "If I Ruled the World",
+        time: "35-40 min",
+        icon: icons.globe,
+        studentTask: "You are now the ruler of a country! Make three laws using conditionals: one fact (Zero), one possibility (First), one dream (Second). Present your laws to the class!",
+        example: "If citizens work hard, they succeed (Zero). If people recycle more, our city will be cleaner (First). If I were president, I'd make university free (Second).",
+        teacherNote: "Students apply all conditional types creatively. This tests understanding through authentic production."
+      },
+      {
+        title: "Change the Ending",
+        time: "30 min",
+        icon: icons.pen,
+        studentTask: "Read short stories with endings. Rewrite each ending using third conditionals: 'If the character had..., they would have...'",
+        example: "John missed the bus and was late. If John hadn't missed the bus, he would have arrived on time.",
+        teacherNote: "Students apply third conditional in creative rewriting. Stories should have clear cause-effect relationships."
+      },
+      {
+        title: "What If History Had Changed?",
+        time: "40 min",
+        icon: icons.clock,
+        studentTask: "Choose a historical event. Imagine it had happened differently. What would have changed? Present your 'alternate history' to the class.",
+        example: "If the internet hadn't been invented, people would have communicated differently. If smartphones had existed in 1990, social media would have developed earlier.",
+        teacherNote: "Students use third conditionals to reimagine historical outcomes. Great for critical thinking and creativity."
+      }
+    ]
+  },
+  unit3: {
+    warmUps: [
+      {
+        title: "Pass the Ball Q&A",
+        time: "10 min",
+        materials: "Soft ball, music device",
+        instructions: "Pass a ball with music. When music stops, answer a question.",
+        teacherNote: "Quick energy builder for the class.",
+        audioSrc: CLASSROOM_AUDIO_SRC
+      }
+    ],
+    concreteExperience: [
+      {
+        title: "The Island Decision Game",
+        time: "35-40 min",
+        icon: icons.globe,
+        studentTask: "Your plane crashed on a deserted island! You can only keep three items from the wreck. Decide as a group - everyone must agree! Use: 'If we took..., we could...' and 'If we hadn't lost..., we might have...'",
+        example: "If we had more food, we would survive longer. If we had known about the storm, we wouldn't have taken the flight. If we took the map, we could find help faster.",
+        teacherNote: "Use Island Survival Cards (flashlight, rope, matches, guitar, map, etc.). Students experience hypothetical situations through realistic crisis scenario."
+      },
+      {
+        title: "Regret Café: If Only I Had...",
+        time: "30-35 min",
+        icon: icons.coffee,
+        studentTask: "Welcome to the Regret Café! Share stories of 'if only' moments with 2-3 partners. Use third conditional for past regrets and second conditional for imaginary present situations.",
+        example: "Yesterday I missed my friend's party. If I had checked my messages, I wouldn't have forgotten. If I were more organized, I'd remember everything.",
+        teacherNote: "Play light background music. Use 'If Only Regret Cards' with prompts. Arrange tables like a café. Students internalize hypothetical language through emotional engagement."
+      },
+      {
+        title: "Weekend Plans Meeting",
+        time: "30-35 min",
+        icon: icons.calendar,
+        studentTask: "Your group wants to plan a fun weekend together, but you have different ideas. Agree on ONE plan using: 'I suggest going...', 'I'd like to go...', 'How about...?', 'We decided to...'",
+        example: "I suggest going to the beach. How about watching a movie? I'd like to go to the mountains. We decided to have a picnic.",
+        teacherNote: "Give groups 6 Plan Cards. Provide sentence frames on the board. Students are exposed to gerunds and infinitives in authentic interaction."
+      },
+      {
+        title: "Movie Night Proposals",
+        time: "35 min",
+        icon: icons.film,
+        studentTask: "Your class wants to plan a movie night! Choose ONE movie plan from: Comedy, Action, Thriller, Drama, or Animated. Convince your partners using different proposal phrases!",
+        example: "I suggest watching a comedy. I'd love to watch an action movie. I recommend visiting the cinema. Let's order pizza! We decided to watch a thriller.",
+        teacherNote: "Show optional trailers. Students use gerunds and infinitives naturally to propose, agree, and decide. Create familiar, motivating situation."
+      },
+      {
+        title: "If Things Had Been Different...",
+        time: "30-35 min",
+        icon: icons.shuffle,
+        studentTask: "Think of one past decision that changed everything. How would your present be different if that past event had changed? Tell your partner!",
+        example: "If my family hadn't moved here, I wouldn't be studying at this school. If I hadn't started playing soccer, I wouldn't know my best friend today.",
+        teacherNote: "Students produce mixed conditionals naturally through personal reflection. No grammar analysis yet - just intuitive meaning."
+      },
+      {
+        title: "The Parallel Universe Game",
+        time: "35-40 min",
+        icon: icons.globe,
+        studentTask: "Imagine a parallel universe - your life but with one important difference! Create mini-stories showing: past change affecting today, present change affecting the past, and a surprising result.",
+        example: "If I had been born in another country, I might be speaking a different language now. If I were more patient today, I would have handled that argument better yesterday.",
+        teacherNote: "Use quick-fire prompts: your personality, a past mistake, a talent you don't have, a different school. Students produce mixed conditionals through imagination."
+      }
+    ],
+    reflection: [
+      {
+        title: "What Would We Change?",
+        time: "25-30 min",
+        studentTask: "Think about the island decisions. What would you do differently? Complete: 'If we had known... we would have...' and 'If we were in that situation again, we would...'",
+        example: "If we had known about the danger, we would have chosen differently. What did you learn about decision-making?",
+        teacherNote: "Students look back at lived experience and analyze what happened. They articulate cause-effect using conditionals."
+      },
+      {
+        title: "Regret Diaries: Voices from the Past",
+        time: "30 min",
+        studentTask: "Write in your 'Regret Diary' about your café stories. How did you feel? What patterns do you see? What helps people avoid these situations?",
+        example: "If I were more organized, I wouldn't forget important dates. Patterns: planning, responsibility, communication, listening.",
+        teacherNote: "Transform 'having an experience' into 'learning from the experience.' Use Regret Diaries Worksheet."
+      },
+      {
+        title: "What Did We Really Say?",
+        time: "25-30 min",
+        studentTask: "Compare: 'I suggest going to the beach' (correct) vs 'I suggest to go to the beach' (incorrect). What verb comes after suggest? What comes after decide?",
+        example: "suggest → going (-ing) | decide → to go (to + verb) | Different verbs = different patterns",
+        teacherNote: "Students analyze their own speech, moving from spontaneous use to conscious noticing. Create two columns on board: Verbs + -ing vs Verbs + to + verb."
+      },
+      {
+        title: "Language Detective Journals",
+        time: "25 min",
+        studentTask: "Highlight all verbs in your proposals and the forms that follow them. What patterns do you see? Which verbs take -ing? Which take to + verb?",
+        example: "suggest → watching | decide → to watch | enjoy → going | want → to go",
+        teacherNote: "Students infer rules through guided discovery. Collect discoveries and write two rules students propose themselves."
+      },
+      {
+        title: "Looking Back at Our Alternate Lives",
+        time: "30 min",
+        studentTask: "Compare your parallel universe sentences. What is the relationship between past and present? Between imaginary things and real life?",
+        example: "Past → Present: If I had studied more, I would feel better now. Present → Past: If I were taller now, I would have joined the team last year.",
+        teacherNote: "Students analyze time relationships and reasons for choosing mixed conditional forms. Guide discovery: 'Does the if-part happen in past or present?'"
+      }
+    ],
+    abstract: [
+      {
+        title: "Conditional Workshop",
+        time: "35 min",
+        studentTask: "Highlight verbs in each conditional clause (green = if part, blue = result). Decide if sentences are correct. What do you notice about verb tenses?",
+        example: "If we had known about the storm (had + V3), we wouldn't have taken the flight (would have + V3).",
+        teacherNote: "Students analyze and generalize patterns through discovery. Use Conditional Detective Sheet with mixed sentences."
+      },
+      {
+        title: "If Grammar Were a Machine",
+        time: "25 min",
+        studentTask: "Imagine conditionals are machines. Input a situation, output a hypothetical result. Fill in the Grammar Machine Diagram for second and third conditionals.",
+        example: "Input: I missed the train → Machine: If I had left earlier → Output: I wouldn't have missed it.",
+        teacherNote: "Students construct a visual model of how conditionals function. Use Grammar Machine Diagram worksheet."
+      },
+      {
+        title: "Grammar Map: The Proposal Pathways",
+        time: "30 min",
+        studentTask: "Complete the Grammar Map with two routes: Verbs followed by gerunds (-ing) vs Verbs followed by infinitives (to + verb). When do we use each?",
+        example: "Route A (-ing): suggest, recommend, enjoy → 'I suggest going' | Route B (to + verb): decide, plan, want → 'I decide to go'",
+        teacherNote: "Key: Gerunds = general actions, preferences; Infinitives = intentions, decisions. Use Grammar Map diagram."
+      },
+      {
+        title: "Grammar Architects: Designing the Rules",
+        time: "25 min",
+        studentTask: "Build the rules for English proposals! Classify verbs according to their pattern. Formulate generalizations about preferences vs decisions.",
+        example: "Verbs expressing preferences → often use -ing | Verbs showing decisions → often use to + verb",
+        teacherNote: "Students construct, test, and refine grammatical rules. Use Rule Builder worksheet."
+      },
+      {
+        title: "Building the Mixed Conditional Logic Map",
+        time: "35 min",
+        studentTask: "Create two paths: Past → Present (If + had + V3 → would + verb) and Present → Past (If + past → would have + V3). Give examples for each.",
+        example: "Past → Present: If I had studied medicine, I would be a doctor now. | Present → Past: If I were more organized, I would have finished earlier.",
+        teacherNote: "Students construct explicit frameworks linking form, function, and time reference."
+      }
+    ],
+    practice: [
+      {
+        title: "Decision Lab",
+        time: "35-40 min",
+        icon: icons.lightbulb,
+        studentTask: "Your friend is facing an obstacle (school, work, cultural adjustment). Propose solutions and explain how things would change using mixed conditionals and proposal language!",
+        example: "If your friend had started earlier, they would feel more prepared now. I suggest creating a study schedule. We decided to help them.",
+        teacherNote: "Final application task combining mixed conditionals with proposal language and problem-solving vocabulary."
+      },
+      {
+        title: "Alternate Reality Debate",
+        time: "40 min",
+        icon: icons.users,
+        studentTask: "Debate: 'What would the world be like if one major historical event had been different?' Use mixed conditionals to argue your points.",
+        example: "If the internet had never been invented, we would communicate very differently today. If social media existed in the past, people would have shared more information.",
+        teacherNote: "Students apply all grammar concepts in extended, meaningful communication. Encourage respectful debate."
+      },
+      {
+        title: "Proposal Shark Tank",
+        time: "40 min",
+        icon: icons.trophy,
+        studentTask: "Pitch a project idea to 'investors' (classmates). Use proposal language and explain potential outcomes with conditionals. Answer questions!",
+        example: "We suggest creating a community garden. If we had started last year, we would have vegetables now. We plan to involve local schools.",
+        teacherNote: "Students negotiate, justify decisions, and express consequences clearly. Combine all unit grammar authentically."
+      }
+    ]
+  }
+}
+
+// Quiz questions
+const quizQuestions = {
+  unit1: [
+    {
+      question: "Which sentence shows a definite plan?",
+      options: ["I'll probably go to the cinema.", "I'm meeting my friend at 3pm tomorrow.", "I think it will rain tomorrow.", "If I have time, I'll study."],
+      correct: 1,
+      explanation: "Present continuous ('I'm meeting') is used for fixed arrangements and definite plans!"
+    },
+    {
+      question: "Complete: 'I'm considering ___ abroad next year.'",
+      options: ["to study", "studying", "study", "to studying"],
+      correct: 1,
+      explanation: "'Consider' is followed by -ing form: consider doing something!"
+    },
+    {
+      question: "Which expresses a spontaneous decision?",
+      options: ["I'm going to visit my grandmother.", "I'm visiting my grandmother tomorrow.", "I'll visit my grandmother!", "I visit my grandmother."],
+      correct: 2,
+      explanation: "'Will' is used for spontaneous decisions made at the moment of speaking!"
+    },
+    {
+      question: "Complete: 'I look forward ___ you soon!'",
+      options: ["to see", "to seeing", "seeing", "see"],
+      correct: 1,
+      explanation: "'Look forward to' is followed by -ing: look forward to doing something!"
+    },
+    {
+      question: "Which is stronger: 'I prefer to stay home' or 'I'd rather stay home'?",
+      options: ["They mean exactly the same", "I prefer to is stronger", "I'd rather is stronger and more direct", "Neither shows preference"],
+      correct: 2,
+      explanation: "'Would rather' is more informal and direct, expressing a stronger immediate preference!"
+    }
+  ],
+  unit2: [
+    {
+      question: "Which conditional expresses a general truth?",
+      options: ["If I see him, I'll tell him.", "If I were rich, I'd travel.", "If you heat water to 100°C, it boils.", "If I had known, I would have called."],
+      correct: 2,
+      explanation: "Zero conditional (If + present, present) is used for facts and general truths!"
+    },
+    {
+      question: "Complete: 'If I ___ you, I'd accept the job.'",
+      options: ["am", "was", "were", "be"],
+      correct: 2,
+      explanation: "In second conditional, we use 'were' for all subjects in formal English: 'If I were you...'"
+    },
+    {
+      question: "Which expresses regret about the past?",
+      options: ["If I have time, I'll visit.", "If I had time, I'd visit.", "If I had had time, I would have visited.", "If I have time, I visit."],
+      correct: 2,
+      explanation: "Third conditional (If + had + past participle, would have + past participle) expresses unreal past situations and regrets!"
+    },
+    {
+      question: "Complete: 'If it ___ tomorrow, we'll cancel the picnic.'",
+      options: ["rains", "will rain", "rained", "would rain"],
+      correct: 0,
+      explanation: "First conditional uses present simple in the if-clause: 'If it rains...'"
+    },
+    {
+      question: "Which talks about an imaginary present situation?",
+      options: ["If I study, I pass the test.", "If I study, I'll pass the test.", "If I studied, I'd pass the test.", "If I had studied, I would have passed."],
+      correct: 2,
+      explanation: "Second conditional (If + past, would + verb) talks about imaginary situations in the present or future!"
+    }
+  ],
+  unit3: [
+    {
+      question: "Complete: 'If I had studied medicine, I ___ a doctor now.'",
+      options: ["am", "will be", "would be", "would have been"],
+      correct: 2,
+      explanation: "This is a mixed conditional: past condition (If I had studied) → present result (would be)."
+    },
+    {
+      question: "Which verb form follows 'suggest'?",
+      options: ["to + verb", "verb + -ing", "base verb", "past participle"],
+      correct: 1,
+      explanation: "'Suggest' is followed by gerund (-ing): 'I suggest going...'"
+    },
+    {
+      question: "Complete: 'We decided ___ the project together.'",
+      options: ["to do", "doing", "do", "to doing"],
+      correct: 0,
+      explanation: "'Decide' is followed by infinitive (to + verb): 'decide to do something.'"
+    },
+    {
+      question: "Which is a mixed conditional (Present → Past)?",
+      options: ["If I had studied, I would have passed.", "If I studied, I would pass.", "If I were more organized, I would have finished earlier.", "If I study, I will pass."],
+      correct: 2,
+      explanation: "Mixed (Present → Past): If + past simple (present imaginary) → would have + past participle (past result)."
+    },
+    {
+      question: "Complete: 'I recommend ___ the museum.'",
+      options: ["to visit", "visiting", "visit", "to visiting"],
+      correct: 1,
+      explanation: "'Recommend' is followed by gerund (-ing): 'I recommend visiting...'"
+    }
+  ]
+}
+
+// Interactive Game: Sentence Builder
+const sentenceBuilderGames = {
+  unit1: {
+    title: "Build Future Sentences",
+    prompts: [
+      { situation: "You're certain about your weekend plan", answer: "going to or present continuous" },
+      { situation: "You're making a prediction about tomorrow", answer: "will" },
+      { situation: "You're thinking about a change but not sure", answer: "consider + -ing" },
+      { situation: "You're excited about an upcoming event", answer: "look forward to + -ing" }
+    ]
+  },
+  unit2: {
+    title: "Conditional Detective",
+    prompts: [
+      { situation: "A fact that's always true", answer: "Zero Conditional" },
+      { situation: "A real possibility for next week", answer: "First Conditional" },
+      { situation: "An imaginary situation (if you had superpowers)", answer: "Second Conditional" },
+      { situation: "A regret about yesterday", answer: "Third Conditional" }
+    ]
+  },
+  unit3: {
+    title: "Proposal Builder",
+    prompts: [
+      { situation: "Making a friendly suggestion", answer: "suggest/recommend + -ing" },
+      { situation: "Expressing what you want to do", answer: "would like/decide + to + verb" },
+      { situation: "Past decision affecting your present", answer: "If I had..., I would be..." },
+      { situation: "Present characteristic affecting your past", answer: "If I were..., I would have..." }
+    ]
+  }
+}
+
+export default function EnglishCoursePresentation() {
+  const [currentUnit, setCurrentUnit] = useState(0)
+  const [showTeacherNotes, setShowTeacherNotes] = useState(true)
+  const [quizState, setQuizState] = useState<{ [key: string]: { answered: number[], score: number } }>({
+    unit1: { answered: [], score: 0 },
+    unit2: { answered: [], score: 0 },
+    unit3: { answered: [], score: 0 }
+  })
+  const [activeSection, setActiveSection] = useState<'overview' | 'activities' | 'quiz' | 'games' | 'final-assessment'>('overview')
+  const [gameState, setGameState] = useState<{ currentPrompt: number, revealed: boolean, score: number }>({
+    currentPrompt: 0,
+    revealed: false,
+    score: 0
+  })
+  const [favorites, setFavorites] = useState<string[]>([])
+  const [expandedActivity, setExpandedActivity] = useState<ExpandedActivity | null>(null)
+  const audioRef = useRef<HTMLAudioElement | null>(null)
+  const [isAudioPlaying, setIsAudioPlaying] = useState(false)
+  const [audioSpeed, setAudioSpeed] = useState(1)
+
+  const handlePlayAudio = async () => {
+    const audio = audioRef.current
+    if (!audio) return
+
+    try {
+      await audio.play()
+      setIsAudioPlaying(true)
+    } catch {
+      setIsAudioPlaying(false)
+    }
+  }
+
+  const handlePauseAudio = () => {
+    const audio = audioRef.current
+    if (!audio) return
+    audio.pause()
+    setIsAudioPlaying(false)
+  }
+
+  const handleStopAudio = () => {
+    const audio = audioRef.current
+    if (!audio) return
+    audio.pause()
+    audio.currentTime = 0
+    setIsAudioPlaying(false)
+  }
+
+  const handleSetAudioSpeed = (speed: number) => {
+    const audio = audioRef.current
+    setAudioSpeed(speed)
+    if (audio) {
+      audio.playbackRate = speed
+    }
+  }
+
+  const resetAudioPlayer = () => {
+    const audio = audioRef.current
+    if (audio) {
+      audio.pause()
+      audio.currentTime = 0
+      audio.playbackRate = 1
+    }
+    setIsAudioPlaying(false)
+    setAudioSpeed(1)
+  }
+
+  const closeExpandedActivity = () => {
+    resetAudioPlayer()
+    setExpandedActivity(null)
+  }
+
+  const handleAnswer = (unitKey: string, questionIndex: number, answerIndex: number, correct: number) => {
+    const unitState = quizState[unitKey]
+    if (unitState.answered.includes(questionIndex)) return
+
+    setQuizState(prev => ({
+      ...prev,
+      [unitKey]: {
+        answered: [...prev[unitKey].answered, questionIndex],
+        score: prev[unitKey].score + (answerIndex === correct ? 1 : 0)
+      }
+    }))
+  }
+
+  const resetQuiz = (unitKey: string) => {
+    setQuizState(prev => ({
+      ...prev,
+      [unitKey]: { answered: [], score: 0 }
+    }))
+  }
+
+  const toggleFavorite = (activityTitle: string) => {
+    setFavorites(prev => 
+      prev.includes(activityTitle) 
+        ? prev.filter(t => t !== activityTitle)
+        : [...prev, activityTitle]
+    )
+  }
+
+  const openExpandedActivity = (section: string, activity: WarmUp | Activity) => {
+    resetAudioPlayer()
+    setExpandedActivity({ section, activity })
+  }
+
+  const nextGamePrompt = () => {
+    const unitKey = `unit${currentUnit + 1}` as keyof typeof sentenceBuilderGames
+    const prompts = sentenceBuilderGames[unitKey].prompts
+    setGameState(prev => ({
+      ...prev,
+      currentPrompt: (prev.currentPrompt + 1) % prompts.length,
+      revealed: false
+    }))
+  }
+
+  const revealAnswer = () => {
+    setGameState(prev => ({ ...prev, revealed: true, score: prev.score + 1 }))
+  }
+
+  const unit = units[currentUnit]
+  const unitKey = `unit${currentUnit + 1}` as keyof typeof activitiesData
+  const activities = activitiesData[unitKey]
+  const quizzes = quizQuestions[unitKey as keyof typeof quizQuestions]
+  const quizResult = quizState[unitKey]
+  const gamePrompts = sentenceBuilderGames[unitKey as keyof typeof sentenceBuilderGames]
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-100 flex flex-col">
+      {/* Header */}
+      <header className="sticky top-0 z-50 bg-white/80 backdrop-blur-lg border-b border-slate-200 shadow-sm">
+        <div className="max-w-7xl mx-auto px-4 py-3">
+          <div className="flex items-center justify-between flex-wrap gap-3">
+            <div className="flex items-center gap-3">
+              <div className="flex items-center gap-3 rounded-lg border border-slate-200 bg-white px-3 py-2">
+                <div className="relative h-8 w-[128px] sm:h-9 sm:w-[144px]">
+                  <Image
+                    src="/logos/idiomas-eafit-black.svg"
+                    alt="Logo Idiomas EAFIT"
+                    fill
+                    className="object-contain object-left"
+                    priority
+                  />
+                </div>
+                <span className="h-6 w-px bg-slate-300" aria-hidden="true" />
+                <div className="relative h-8 w-[112px] sm:h-9 sm:w-[128px]">
+                  <Image
+                    src="/logos/universidad-eafit-black.svg"
+                    alt="Logo Universidad EAFIT"
+                    fill
+                    className="object-contain object-left"
+                    priority
+                  />
+                </div>
+              </div>
+              <p className="text-xs sm:text-sm text-slate-500">English Course • Intermediate 4 • Level B1</p>
+            </div>
+            <div className="flex items-center gap-2 flex-wrap">
+              {favorites.length > 0 && (
+                <Badge variant="secondary" className="bg-pink-100 text-pink-700">
+                  <Icon icon={icons.heart} className="w-3 h-3 mr-1 text-pink-500" /> {favorites.length} favorites
+                </Badge>
+              )}
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setShowTeacherNotes(!showTeacherNotes)}
+                className="gap-2"
+              >
+                <Icon icon={icons.eye} className="w-4 h-4" />
+                {showTeacherNotes ? 'Hide' : 'Show'} Notes
+              </Button>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      {/* Unit Navigation */}
+      <nav className="bg-white border-b border-slate-200">
+        <div className="max-w-7xl mx-auto px-4">
+          <div className="flex gap-1 overflow-x-auto py-2 scrollbar-hide">
+            {units.map((u, idx) => {
+              const unitIcon = u.icon
+              return (
+                <motion.button
+                  key={u.id}
+                  onClick={() => {
+                    setCurrentUnit(idx)
+                    setActiveSection('overview')
+                    setGameState({ currentPrompt: 0, revealed: false, score: 0 })
+                    closeExpandedActivity()
+                  }}
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  className={`flex items-center gap-2 px-4 py-3 rounded-lg font-medium transition-all whitespace-nowrap ${
+                    currentUnit === idx
+                      ? `bg-gradient-to-r ${u.color} text-white shadow-lg`
+                      : 'text-slate-600 hover:bg-slate-100'
+                  }`}
+                >
+                  <Icon icon={unitIcon} className="w-5 h-5" />
+                  <span className="hidden sm:inline">Unit {u.id}</span>
+                  <span className="sm:hidden">U{u.id}</span>
+                </motion.button>
+              )
+            })}
+          </div>
+        </div>
+      </nav>
+
+      <main className="flex-1 max-w-7xl mx-auto px-4 py-6 w-full">
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={currentUnit}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+            transition={{ duration: 0.3 }}
+          >
+            {/* Unit Hero */}
+            <div className={`relative overflow-hidden rounded-2xl bg-gradient-to-r ${unit.color} p-6 md:p-8 mb-6 text-white`}>
+              <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full -translate-y-1/2 translate-x-1/2" />
+              <div className="absolute bottom-0 left-0 w-48 h-48 bg-white/10 rounded-full translate-y-1/2 -translate-x-1/2" />
+              <div className="relative z-10">
+                <Badge className="bg-white/20 text-white border-white/30 mb-3">
+                  {unit.level}
+                </Badge>
+                <h2 className="text-2xl md:text-4xl font-bold mb-2">{unit.title}</h2>
+                <p className="text-lg text-white/90 mb-4">{unit.subtitle}</p>
+                <div className="flex flex-wrap items-center gap-4 text-sm text-white/80">
+                  <span className="flex items-center gap-1">
+                    <Icon icon={icons.clock} className="w-4 h-4" /> {unit.duration}
+                  </span>
+                  <span className="flex items-center gap-1">
+                    <Icon icon={icons.bookOpen} className="w-4 h-4" /> Kolb's Learning Cycle
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            {/* Section Tabs */}
+            <Tabs value={activeSection} onValueChange={(v) => setActiveSection(v as typeof activeSection)} className="mb-6">
+              <TabsList className={`grid w-full ${unit.id === 1 ? 'grid-cols-5' : 'grid-cols-4'} mb-4`}>
+                <TabsTrigger value="overview" className="gap-1 text-xs sm:text-sm">
+                  <Icon icon={icons.bookOpen} className="w-4 h-4" />
+                  <span className="hidden sm:inline">Overview</span>
+                </TabsTrigger>
+                <TabsTrigger value="activities" className="gap-1 text-xs sm:text-sm">
+                  <Icon icon={icons.play} className="w-4 h-4" />
+                  <span className="hidden sm:inline">Activities</span>
+                </TabsTrigger>
+                <TabsTrigger value="games" className="gap-1 text-xs sm:text-sm">
+                  <Icon icon={icons.zap} className="w-4 h-4" />
+                  <span className="hidden sm:inline">Games</span>
+                </TabsTrigger>
+                <TabsTrigger value="quiz" className="gap-1 text-xs sm:text-sm">
+                  <Icon icon={icons.target} className="w-4 h-4" />
+                  <span className="hidden sm:inline">Quiz</span>
+                </TabsTrigger>
+                {unit.id === 1 && (
+                  <TabsTrigger value="final-assessment" className="gap-1 text-xs sm:text-sm">
+                    <Icon icon={icons.microphone} className="w-4 h-4" />
+                    <span className="hidden sm:inline">Final Assessment</span>
+                  </TabsTrigger>
+                )}
+              </TabsList>
+
+              {/* Overview Tab */}
+              <TabsContent value="overview" className="space-y-6">
+                {/* Learning Objectives */}
+                <Card className="border-2 border-slate-200">
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <Icon icon={icons.target} className="w-5 h-5 text-emerald-500" />
+                      Learning Objectives
+                    </CardTitle>
+                    <CardDescription>By the end of this unit, you will be able to...</CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <ul className="space-y-3">
+                      {unit.objectives.map((obj, idx) => (
+                        <motion.li
+                          key={idx}
+                          initial={{ opacity: 0, x: -20 }}
+                          animate={{ opacity: 1, x: 0 }}
+                          transition={{ delay: idx * 0.1 }}
+                          className="flex items-start gap-3"
+                        >
+                          <Icon icon={icons.checkCircle} className="w-5 h-5 text-emerald-500 mt-0.5 flex-shrink-0" />
+                          <span className="text-slate-700">{obj}</span>
+                        </motion.li>
+                      ))}
+                    </ul>
+                  </CardContent>
+                </Card>
+
+                {/* Key Language - Interactive Flip Cards */}
+                <Card className="border-2 border-slate-200">
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <Icon icon={icons.message} className="w-5 h-5 text-violet-500" />
+                      Key Language Structures
+                    </CardTitle>
+                    <CardDescription>Tap cards to see examples and usage!</CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                      {unit.keyLanguage.map((item, idx) => (
+                        <motion.div
+                          key={idx}
+                          initial={{ opacity: 0, scale: 0.9 }}
+                          animate={{ opacity: 1, scale: 1 }}
+                          transition={{ delay: idx * 0.08 }}
+                          className="group cursor-pointer"
+                        >
+                          <div className={`relative h-40 perspective-1000`}>
+                            <div className={`absolute inset-0 transition-transform duration-500 preserve-3d ${'group-hover:rotate-y-180'}`}>
+                              {/* Front */}
+                              <div className={`absolute inset-0 backface-hidden p-4 rounded-xl ${unit.lightColor} border ${unit.borderColor} flex flex-col justify-center`}>
+                                <code className="text-sm font-bold text-slate-800 text-center">{item.expression}</code>
+                                <p className="text-xs text-slate-500 text-center mt-2">Tap to see example</p>
+                              </div>
+                              {/* Back */}
+                              <div className={`absolute inset-0 backface-hidden rotate-y-180 p-4 rounded-xl bg-gradient-to-br ${unit.color} text-white flex flex-col justify-center`}>
+                                <p className="text-sm font-medium italic text-center">"{item.example}"</p>
+                                <p className="text-xs text-white/80 text-center mt-2">{item.use}</p>
+                              </div>
+                            </div>
+                          </div>
+                        </motion.div>
+                      ))}
+                    </div>
+                  </CardContent>
+                </Card>
+
+                {/* Vocabulary Section */}
+                <Card className="border-2 border-slate-200">
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <Icon icon={icons.pen} className="w-5 h-5 text-amber-500" />
+                      Vocabulary Builder
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="grid md:grid-cols-3 gap-4">
+                      <div className="p-4 rounded-xl bg-slate-50 border border-slate-200">
+                        <h4 className="font-semibold text-slate-700 mb-2">Core Words</h4>
+                        <div className="flex flex-wrap gap-2">
+                          {unit.vocabulary.core.map((word, idx) => (
+                            <Badge key={idx} variant="secondary" className="bg-white">{word}</Badge>
+                          ))}
+                        </div>
+                      </div>
+                      <div className="p-4 rounded-xl bg-slate-50 border border-slate-200">
+                        <h4 className="font-semibold text-slate-700 mb-2">Key Expressions</h4>
+                        <div className="flex flex-wrap gap-2">
+                          {unit.vocabulary.expressions.map((expr, idx) => (
+                            <Badge key={idx} variant="secondary" className="bg-white">{expr}</Badge>
+                          ))}
+                        </div>
+                      </div>
+                      <div className="p-4 rounded-xl bg-slate-50 border border-slate-200">
+                        <h4 className="font-semibold text-slate-700 mb-2">Connectors</h4>
+                        <div className="flex flex-wrap gap-2">
+                          {unit.vocabulary.connectors.map((conn, idx) => (
+                            <Badge key={idx} variant="secondary" className="bg-white">{conn}</Badge>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                {/* Kolb's Learning Cycle */}
+                <Card className="border-2 border-blue-200 bg-gradient-to-br from-blue-50 to-indigo-50">
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2 text-blue-800">
+                      <Icon icon={icons.brain} className="w-5 h-5" />
+                      Kolb's Experiential Learning Cycle
+                    </CardTitle>
+                    <CardDescription className="text-blue-700">
+                      This course follows a research-backed learning approach
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                      {[
+                        { title: "Do", desc: "Experience it!", icon: icons.play, color: "text-rose-500 bg-rose-50 border-rose-200" },
+                        { title: "Reflect", desc: "Think about it", icon: icons.eye, color: "text-amber-500 bg-amber-50 border-amber-200" },
+                        { title: "Understand", desc: "Find patterns", icon: icons.lightbulb, color: "text-blue-500 bg-blue-50 border-blue-200" },
+                        { title: "Apply", desc: "Use it!", icon: icons.rocket, color: "text-emerald-500 bg-emerald-50 border-emerald-200" }
+                      ].map((stage, idx) => (
+                        <motion.div
+                          key={idx}
+                          initial={{ opacity: 0, y: 20 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          transition={{ delay: idx * 0.1 }}
+                          className={`flex flex-col items-center text-center p-4 bg-white rounded-xl border-2 ${stage.color}`}
+                        >
+                          <Icon icon={stage.icon} className="w-8 h-8 mb-2" />
+                          <h4 className="font-bold text-slate-800">{stage.title}</h4>
+                          <p className="text-sm text-slate-600 mt-1">{stage.desc}</p>
+                        </motion.div>
+                      ))}
+                    </div>
+                  </CardContent>
+                </Card>
+              </TabsContent>
+
+              {/* Activities Tab */}
+              <TabsContent value="activities" className="space-y-6">
+                {/* Progress Overview */}
+                <Card className="border-2 border-slate-200">
+                  <CardContent className="py-4">
+                    <div className="flex flex-wrap gap-4 justify-center">
+                      {[
+                        { label: "Warm-ups", count: activities.warmUps.length, color: "bg-rose-500" },
+                        { label: "Experience", count: activities.concreteExperience.length, color: "bg-emerald-500" },
+                        { label: "Reflect", count: activities.reflection.length, color: "bg-amber-500" },
+                        { label: "Understand", count: activities.abstract.length, color: "bg-blue-500" },
+                        { label: "Apply", count: activities.practice.length, color: "bg-violet-500" }
+                      ].map((stage, idx) => (
+                        <div key={idx} className="flex items-center gap-2">
+                          <div className={`w-3 h-3 rounded-full ${stage.color}`} />
+                          <span className="text-sm text-slate-600">{stage.label}: <strong>{stage.count}</strong></span>
+                        </div>
+                      ))}
+                    </div>
+                  </CardContent>
+                </Card>
+
+                {/* Warm-ups */}
+                <Card className="border-2 border-rose-200">
+                  <CardHeader className="bg-gradient-to-r from-rose-50 to-pink-50 rounded-t-lg">
+                    <CardTitle className="flex items-center gap-2 text-rose-700">
+                      <Icon icon={icons.sparkles} className="w-5 h-5" />
+                      Warm-Up Activities
+                    </CardTitle>
+                    <CardDescription>Get ready and energize the class!</CardDescription>
+                  </CardHeader>
+                  <CardContent className="pt-6">
+                    <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+                      {activities.warmUps.map((activity, idx) => (
+                        <motion.div
+                          key={`${unitKey}-warmup-${idx}`}
+                          role="button"
+                          tabIndex={0}
+                          initial={{ opacity: 0, y: 20 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          transition={{ delay: idx * 0.08 }}
+                          whileHover={{ y: -4, scale: 1.01 }}
+                          whileTap={{ scale: 0.99 }}
+                          onClick={() => openExpandedActivity('Warm-Up Activities', activity)}
+                          onKeyDown={(e) => {
+                            if (e.key === 'Enter' || e.key === ' ') {
+                              e.preventDefault()
+                              openExpandedActivity('Warm-Up Activities', activity)
+                            }
+                          }}
+                          className="cursor-pointer p-4 rounded-xl bg-rose-50 border border-rose-100 hover:border-rose-200 hover:shadow-lg transition-all"
+                        >
+                          <div className="flex items-center justify-between mb-2">
+                            <div className="flex items-center gap-2 min-w-0">
+                              <span className="inline-flex h-6 min-w-6 items-center justify-center rounded-full border border-rose-300 bg-rose-200 px-1 text-xs font-bold text-rose-800">
+                                {idx + 1}
+                              </span>
+                              <h4 className="font-semibold text-rose-800">{activity.title}</h4>
+                            </div>
+                            <Badge variant="secondary" className="bg-rose-100 text-rose-700 text-xs">
+                              <Icon icon={icons.clock} className="w-3 h-3 mr-1" /> {activity.time}
+                            </Badge>
+                          </div>
+                          <p className="text-sm text-slate-700 mb-2">{activity.instructions}</p>
+                          <p className="text-xs text-slate-500 mb-3"><strong>Materials:</strong> {activity.materials}</p>
+                          {showTeacherNotes && (
+                            <div className="mt-2 p-2 bg-amber-50 rounded-lg border border-amber-200">
+                              <p className="text-xs text-amber-800">
+                                <strong className="inline-flex items-center gap-1">
+                                  <Icon icon={icons.teacher} className="w-4 h-4" />
+                                  Teacher:
+                                </strong>{' '}
+                                {activity.teacherNote}
+                              </p>
+                            </div>
+                          )}
+                        </motion.div>
+                      ))}
+                    </div>
+                  </CardContent>
+                </Card>
+
+                {/* Concrete Experience */}
+                <Card className="border-2 border-emerald-200">
+                  <CardHeader className="bg-gradient-to-r from-emerald-50 to-teal-50 rounded-t-lg">
+                    <CardTitle className="flex items-center gap-2 text-emerald-700">
+                      <Icon icon={icons.play} className="w-5 h-5" />
+                      Concrete Experience
+                    </CardTitle>
+                    <CardDescription>Experience the language in authentic situations!</CardDescription>
+                  </CardHeader>
+                  <CardContent className="pt-6">
+                    <div className="grid lg:grid-cols-2 gap-4">
+                      {activities.concreteExperience.map((activity, idx) => {
+                        const activityIcon = activity.icon || icons.play
+                        const isFavorite = favorites.includes(activity.title)
+                        return (
+                          <motion.div
+                            key={`${unitKey}-concrete-${idx}`}
+                            role="button"
+                            tabIndex={0}
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ delay: idx * 0.08 }}
+                            whileHover={{ y: -4, scale: 1.01 }}
+                            whileTap={{ scale: 0.99 }}
+                            onClick={() => openExpandedActivity('Concrete Experience', activity)}
+                            onKeyDown={(e) => {
+                              if (e.key === 'Enter' || e.key === ' ') {
+                                e.preventDefault()
+                                openExpandedActivity('Concrete Experience', activity)
+                              }
+                            }}
+                            className="cursor-pointer p-4 rounded-xl bg-emerald-50 border border-emerald-100 hover:border-emerald-200 hover:shadow-lg transition-all"
+                          >
+                            <div className="flex items-start gap-3">
+                              <Icon icon={activityIcon} className="w-5 h-5 text-emerald-500 mt-1 flex-shrink-0" />
+                              <div className="flex-1">
+                                <div className="flex items-center gap-2 mb-2">
+                                  <span className="inline-flex h-6 min-w-6 items-center justify-center rounded-full border border-emerald-300 bg-emerald-200 px-1 text-xs font-bold text-emerald-800">
+                                    {idx + 1}
+                                  </span>
+                                  <h4 className="font-semibold text-emerald-800">{activity.title}</h4>
+                                  <Badge variant="secondary" className="bg-emerald-100 text-emerald-700 text-xs ml-auto">
+                                    {activity.time}
+                                  </Badge>
+                                  <div
+                                    role="button"
+                                    tabIndex={0}
+                                    onClick={(e) => {
+                                      e.stopPropagation()
+                                      toggleFavorite(activity.title)
+                                    }}
+                                    onKeyDown={(e) => {
+                                      if (e.key === 'Enter' || e.key === ' ') {
+                                        e.preventDefault()
+                                        e.stopPropagation()
+                                        toggleFavorite(activity.title)
+                                      }
+                                    }}
+                                    className="p-1 cursor-pointer"
+                                  >
+                                    <Icon icon={isFavorite ? icons.heart : icons.heartOutline} className={`w-4 h-4 ${isFavorite ? 'text-pink-500' : 'text-slate-300'}`} />
+                                  </div>
+                                </div>
+                                <p className="text-sm text-slate-700 mb-2">{activity.studentTask}</p>
+                                {activity.example && (
+                                  <p className="text-xs text-slate-600 italic bg-white p-2 rounded border border-emerald-100">
+                                    "{activity.example}"
+                                  </p>
+                                )}
+                              </div>
+                            </div>
+                          </motion.div>
+                        )
+                      })}
+                    </div>
+                  </CardContent>
+                </Card>
+
+                {/* Reflection */}
+                <Card className="border-2 border-amber-200">
+                  <CardHeader className="bg-gradient-to-r from-amber-50 to-yellow-50 rounded-t-lg">
+                    <CardTitle className="flex items-center gap-2 text-amber-700">
+                      <Icon icon={icons.eye} className="w-5 h-5" />
+                      Reflective Observation
+                    </CardTitle>
+                    <CardDescription>Think about what happened and why!</CardDescription>
+                  </CardHeader>
+                  <CardContent className="pt-6">
+                    <div className="grid gap-4">
+                      {activities.reflection.map((activity, idx) => {
+                        const isFavorite = favorites.includes(activity.title)
+                        return (
+                          <motion.div
+                            key={`${unitKey}-reflection-${idx}`}
+                            role="button"
+                            tabIndex={0}
+                            initial={{ opacity: 0, x: -20 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            transition={{ delay: idx * 0.1 }}
+                            whileHover={{ y: -3, scale: 1.01 }}
+                            whileTap={{ scale: 0.99 }}
+                            onClick={() => openExpandedActivity('Reflective Observation', activity)}
+                            onKeyDown={(e) => {
+                              if (e.key === 'Enter' || e.key === ' ') {
+                                e.preventDefault()
+                                openExpandedActivity('Reflective Observation', activity)
+                              }
+                            }}
+                            className="cursor-pointer p-4 rounded-xl bg-amber-50 border border-amber-100 hover:border-amber-200 hover:shadow-lg transition-all"
+                          >
+                            <div className="flex items-start justify-between gap-3">
+                              <div className="flex-1">
+                                <div className="flex items-center gap-2 mb-2">
+                                  <span className="inline-flex h-6 min-w-6 items-center justify-center rounded-full border border-amber-300 bg-amber-200 px-1 text-xs font-bold text-amber-800">
+                                    {idx + 1}
+                                  </span>
+                                  <h4 className="font-semibold text-amber-800">{activity.title}</h4>
+                                  <Badge variant="secondary" className="bg-amber-100 text-amber-700 text-xs">
+                                    {activity.time}
+                                  </Badge>
+                                </div>
+                                <p className="text-slate-700 mb-2">{activity.studentTask}</p>
+                                {activity.example && (
+                                  <p className="text-sm text-slate-600 italic bg-white p-2 rounded">Example: {activity.example}</p>
+                                )}
+                                {showTeacherNotes && (
+                                  <div className="mt-2 p-2 bg-orange-50 rounded-lg border border-orange-200">
+                                    <p className="text-xs text-orange-800">
+                                      <strong className="inline-flex items-center gap-1">
+                                        <Icon icon={icons.teacher} className="w-4 h-4" />
+                                        Teacher:
+                                      </strong>{' '}
+                                      {activity.teacherNote}
+                                    </p>
+                                  </div>
+                                )}
+                              </div>
+                              <div 
+                                role="button"
+                                tabIndex={0}
+                                onClick={(e) => {
+                                  e.stopPropagation()
+                                  toggleFavorite(activity.title)
+                                }}
+                                onKeyDown={(e) => {
+                                  if (e.key === 'Enter' || e.key === ' ') {
+                                    e.preventDefault()
+                                    e.stopPropagation()
+                                    toggleFavorite(activity.title)
+                                  }
+                                }}
+                                className="cursor-pointer"
+                              >
+                                <Icon icon={isFavorite ? icons.heart : icons.heartOutline} className={`w-5 h-5 ${isFavorite ? 'text-pink-500' : 'text-slate-300'}`} />
+                              </div>
+                            </div>
+                          </motion.div>
+                        )
+                      })}
+                    </div>
+                  </CardContent>
+                </Card>
+
+                {/* Abstract Conceptualization */}
+                <Card className="border-2 border-blue-200">
+                  <CardHeader className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-t-lg">
+                    <CardTitle className="flex items-center gap-2 text-blue-700">
+                      <Icon icon={icons.lightbulb} className="w-5 h-5" />
+                      Abstract Conceptualization
+                    </CardTitle>
+                    <CardDescription>Discover patterns and rules!</CardDescription>
+                  </CardHeader>
+                  <CardContent className="pt-6">
+                    <div className="grid md:grid-cols-2 gap-4">
+                      {activities.abstract.map((activity, idx) => {
+                        const isFavorite = favorites.includes(activity.title)
+                        return (
+                          <motion.div
+                            key={`${unitKey}-abstract-${idx}`}
+                            role="button"
+                            tabIndex={0}
+                            onClick={() => openExpandedActivity('Abstract Conceptualization', activity)}
+                            onKeyDown={(e) => {
+                              if (e.key === 'Enter' || e.key === ' ') {
+                                e.preventDefault()
+                                openExpandedActivity('Abstract Conceptualization', activity)
+                              }
+                            }}
+                            whileHover={{ y: -3, scale: 1.01 }}
+                            whileTap={{ scale: 0.99 }}
+                            className="cursor-pointer p-4 rounded-xl bg-blue-50 border border-blue-100 relative hover:border-blue-200 hover:shadow-lg transition-all"
+                          >
+                            <div 
+                              role="button"
+                              tabIndex={0}
+                              onClick={(e) => {
+                                e.stopPropagation()
+                                toggleFavorite(activity.title)
+                              }}
+                              onKeyDown={(e) => {
+                                if (e.key === 'Enter' || e.key === ' ') {
+                                  e.preventDefault()
+                                  e.stopPropagation()
+                                  toggleFavorite(activity.title)
+                                }
+                              }}
+                              className="absolute top-3 right-3 cursor-pointer"
+                            >
+                              <Icon icon={isFavorite ? icons.heart : icons.heartOutline} className={`w-4 h-4 ${isFavorite ? 'text-pink-500' : 'text-slate-300'}`} />
+                            </div>
+                            <Badge className="bg-blue-100 text-blue-700 mb-2">{activity.time}</Badge>
+                            <div className="mb-2 flex items-center gap-2 pr-6">
+                              <span className="inline-flex h-6 min-w-6 items-center justify-center rounded-full border border-blue-300 bg-blue-200 px-1 text-xs font-bold text-blue-800">
+                                {idx + 1}
+                              </span>
+                              <h4 className="font-semibold text-blue-800">{activity.title}</h4>
+                            </div>
+                            <p className="text-sm text-slate-700 mb-2">{activity.studentTask}</p>
+                            {activity.example && (
+                              <p className="text-xs text-slate-600 italic bg-white p-2 rounded">{activity.example}</p>
+                            )}
+                            {showTeacherNotes && (
+                              <div className="mt-2 p-2 bg-indigo-50 rounded-lg border border-indigo-200">
+                                <p className="text-xs text-indigo-800">
+                                  <strong className="inline-flex items-center gap-1">
+                                    <Icon icon={icons.teacher} className="w-4 h-4" />
+                                    Teacher:
+                                  </strong>{' '}
+                                  {activity.teacherNote}
+                                </p>
+                              </div>
+                            )}
+                          </motion.div>
+                        )
+                      })}
+                    </div>
+                  </CardContent>
+                </Card>
+
+                {/* Active Experimentation */}
+                <Card className="border-2 border-violet-200">
+                  <CardHeader className="bg-gradient-to-r from-violet-50 to-purple-50 rounded-t-lg">
+                    <CardTitle className="flex items-center gap-2 text-violet-700">
+                      <Icon icon={icons.rocket} className="w-5 h-5" />
+                      Active Experimentation
+                    </CardTitle>
+                    <CardDescription>Apply what you've learned!</CardDescription>
+                  </CardHeader>
+                  <CardContent className="pt-6">
+                    <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+                      {activities.practice.map((activity, idx) => {
+                        const activityIcon = activity.icon || icons.rocket
+                        const isFavorite = favorites.includes(activity.title)
+                        return (
+                          <motion.div
+                            key={`${unitKey}-practice-${idx}`}
+                            role="button"
+                            tabIndex={0}
+                            whileHover={{ y: -3, scale: 1.01 }}
+                            whileTap={{ scale: 0.99 }}
+                            onClick={() => openExpandedActivity('Active Experimentation', activity)}
+                            onKeyDown={(e) => {
+                              if (e.key === 'Enter' || e.key === ' ') {
+                                e.preventDefault()
+                                openExpandedActivity('Active Experimentation', activity)
+                              }
+                            }}
+                            className="cursor-pointer p-5 rounded-xl bg-gradient-to-br from-violet-50 to-purple-50 border border-violet-100 relative hover:border-violet-200 hover:shadow-lg transition-all"
+                          >
+                            <div 
+                              role="button"
+                              tabIndex={0}
+                              onClick={(e) => {
+                                e.stopPropagation()
+                                toggleFavorite(activity.title)
+                              }}
+                              onKeyDown={(e) => {
+                                if (e.key === 'Enter' || e.key === ' ') {
+                                  e.preventDefault()
+                                  e.stopPropagation()
+                                  toggleFavorite(activity.title)
+                                }
+                              }}
+                              className="absolute top-3 right-3 cursor-pointer"
+                            >
+                              <Icon icon={isFavorite ? icons.heart : icons.heartOutline} className={`w-4 h-4 ${isFavorite ? 'text-pink-500' : 'text-slate-300'}`} />
+                            </div>
+                            <Icon icon={activityIcon} className="w-8 h-8 text-violet-500 mb-3" />
+                            <Badge className="bg-violet-100 text-violet-700 mb-2">{activity.time}</Badge>
+                            <div className="mb-2 flex items-center gap-2 pr-6">
+                              <span className="inline-flex h-6 min-w-6 items-center justify-center rounded-full border border-violet-300 bg-violet-200 px-1 text-xs font-bold text-violet-800">
+                                {idx + 1}
+                              </span>
+                              <h4 className="font-semibold text-violet-800">{activity.title}</h4>
+                            </div>
+                            <p className="text-sm text-slate-700 mb-2">{activity.studentTask}</p>
+                            {activity.example && (
+                              <p className="text-xs text-violet-700 italic bg-white p-2 rounded">{activity.example}</p>
+                            )}
+                            {showTeacherNotes && (
+                              <div className="mt-2 p-2 bg-fuchsia-50 rounded-lg border border-fuchsia-200">
+                                <p className="text-xs text-fuchsia-800">
+                                  <strong className="inline-flex items-center gap-1">
+                                    <Icon icon={icons.teacher} className="w-4 h-4" />
+                                    Teacher:
+                                  </strong>{' '}
+                                  {activity.teacherNote}
+                                </p>
+                              </div>
+                            )}
+                          </motion.div>
+                        )
+                      })}
+                    </div>
+                  </CardContent>
+                </Card>
+
+                {unit.id === 1 && (
+                  <Card className="border-2 border-indigo-200">
+                    <CardHeader className="bg-gradient-to-r from-indigo-50 to-blue-50 rounded-t-lg">
+                      <CardTitle className="flex items-center gap-2 text-indigo-700">
+                        <Icon icon={icons.task} className="w-5 h-5" />
+                        Assessment Instructions - Unit 1
+                      </CardTitle>
+                      <CardDescription>
+                        Complete application assessment instructions for Unit 1.
+                      </CardDescription>
+                    </CardHeader>
+                    <CardContent className="pt-6">
+                      <div className="overflow-hidden rounded-xl border border-slate-200 bg-white">
+                        <iframe
+                          src="/assessments/assessment_instructions_unit_1.html"
+                          title="Assessment Instructions Unit 1"
+                          className="h-[78vh] w-full"
+                          loading="lazy"
+                        />
+                      </div>
+                    </CardContent>
+                  </Card>
+                )}
+              </TabsContent>
+
+              {/* Games Tab */}
+              <TabsContent value="games" className="space-y-6">
+                <Card className="border-2 border-slate-200">
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <Icon icon={icons.zap} className="w-5 h-5 text-amber-500" />
+                      {gamePrompts.title}
+                    </CardTitle>
+                    <CardDescription>Test your understanding with this interactive game!</CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="text-center py-8">
+                      <motion.div
+                        key={gameState.currentPrompt}
+                        initial={{ opacity: 0, scale: 0.9 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        className={`p-8 rounded-2xl bg-gradient-to-br ${unit.color} text-white mb-6`}
+                      >
+                        <p className="text-lg font-medium mb-2">Situation:</p>
+                        <p className="text-2xl font-bold">{gamePrompts.prompts[gameState.currentPrompt].situation}</p>
+                      </motion.div>
+                      
+                      <AnimatePresence mode="wait">
+                        {gameState.revealed ? (
+                          <motion.div
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            className="p-6 bg-emerald-50 rounded-xl border-2 border-emerald-200 mb-6"
+                          >
+                            <p className="text-lg font-semibold text-emerald-800">Answer:</p>
+                            <p className="text-2xl font-bold text-emerald-600 mt-2">
+                              {gamePrompts.prompts[gameState.currentPrompt].answer}
+                            </p>
+                          </motion.div>
+                        ) : (
+                          <motion.div
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            exit={{ opacity: 0 }}
+                          >
+                            <Button
+                              onClick={revealAnswer}
+                              size="lg"
+                              className={`bg-gradient-to-r ${unit.color} hover:opacity-90`}
+                            >
+                              <Icon icon={icons.eye} className="w-5 h-5 mr-2" /> Reveal Answer
+                            </Button>
+                          </motion.div>
+                        )}
+                      </AnimatePresence>
+
+                      <div className="flex items-center justify-center gap-4">
+                        <Button onClick={nextGamePrompt} variant="outline" className="gap-2">
+                          <Icon icon={icons.chevronRight} className="w-4 h-4" /> Next Question
+                        </Button>
+                      </div>
+
+                      <div className="mt-6 flex items-center justify-center gap-4 text-slate-600">
+                        <span>Question {gameState.currentPrompt + 1} of {gamePrompts.prompts.length}</span>
+                        <span className="w-2 h-2 rounded-full bg-slate-300" />
+                        <span className="flex items-center gap-1">
+                          <Icon icon={icons.trophy} className="w-4 h-4 text-amber-500" /> Score: {gameState.score}
+                        </span>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                {/* Quick Practice */}
+                <Card className="border-2 border-slate-200">
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <Icon icon={icons.star} className="w-5 h-5 text-amber-500" />
+                      Quick Practice Tips
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="grid md:grid-cols-2 gap-4">
+                      <div className="p-4 bg-slate-50 rounded-xl">
+                        <h4 className="font-semibold text-slate-800 mb-2 inline-flex items-center gap-2">
+                          <Icon icon={icons.task} className="w-5 h-5" />
+                          In Class
+                        </h4>
+                        <ul className="text-sm text-slate-600 space-y-1">
+                          <li>• Participate actively in all activities</li>
+                          <li>• Don't worry about making mistakes</li>
+                          <li>• Use new expressions in context</li>
+                          <li>• Help your classmates learn too</li>
+                        </ul>
+                      </div>
+                      <div className="p-4 bg-slate-50 rounded-xl">
+                        <h4 className="font-semibold text-slate-800 mb-2 inline-flex items-center gap-2">
+                          <Icon icon={icons.home} className="w-5 h-5" />
+                          At Home
+                        </h4>
+                        <ul className="text-sm text-slate-600 space-y-1">
+                          <li>• Review the key language structures</li>
+                          <li>• Practice with friends or family</li>
+                          <li>• Write example sentences</li>
+                          <li>• Watch videos in English</li>
+                        </ul>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              </TabsContent>
+
+              {/* Quiz Tab */}
+              <TabsContent value="quiz" className="space-y-6">
+                <Card className="border-2 border-slate-200">
+                  <CardHeader>
+                    <div className="flex flex-wrap items-center justify-between gap-4">
+                      <div>
+                        <CardTitle className="flex items-center gap-2">
+                          <Icon icon={icons.target} className="w-5 h-5 text-violet-500" />
+                          Test Your Knowledge!
+                        </CardTitle>
+                        <CardDescription>Check your understanding of Unit {unit.id}</CardDescription>
+                      </div>
+                      {quizResult.answered.length > 0 && (
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => resetQuiz(unitKey)}
+                          className="gap-2"
+                        >
+                          <Icon icon={icons.rotate} className="w-4 h-4" />
+                          Reset
+                        </Button>
+                      )}
+                    </div>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="mb-6">
+                      <div className="flex items-center justify-between mb-2">
+                        <span className="text-sm text-slate-600">Progress</span>
+                        <span className="text-sm font-medium">{quizResult.answered.length} / {quizzes.length}</span>
+                      </div>
+                      <Progress value={(quizResult.answered.length / quizzes.length) * 100} className="h-2" />
+                    </div>
+
+                    <div className="space-y-6">
+                      {quizzes.map((q, qIdx) => {
+                        const isAnswered = quizResult.answered.includes(qIdx)
+                        
+                        return (
+                          <motion.div
+                            key={qIdx}
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ delay: qIdx * 0.1 }}
+                            className="p-5 rounded-xl bg-slate-50 border border-slate-200"
+                          >
+                            <h4 className="font-semibold text-slate-800 mb-4 flex items-start gap-3">
+                              <span className="w-7 h-7 rounded-full bg-slate-200 flex items-center justify-center text-sm flex-shrink-0">
+                                {qIdx + 1}
+                              </span>
+                              <span>{q.question}</span>
+                            </h4>
+                            <div className="grid gap-2 pl-10">
+                              {q.options.map((option, oIdx) => {
+                                const isCorrect = oIdx === q.correct
+                                const wasAnswered = isAnswered
+                                
+                                return (
+                                  <motion.button
+                                    key={oIdx}
+                                    whileHover={!isAnswered ? { scale: 1.01 } : {}}
+                                    whileTap={!isAnswered ? { scale: 0.99 } : {}}
+                                    onClick={() => handleAnswer(unitKey, qIdx, oIdx, q.correct)}
+                                    disabled={isAnswered}
+                                    className={`w-full text-left p-3 rounded-lg border-2 transition-all ${
+                                      wasAnswered
+                                        ? isCorrect
+                                          ? 'bg-emerald-50 border-emerald-400 text-emerald-800'
+                                          : 'bg-slate-100 border-slate-200 text-slate-500'
+                                        : 'hover:bg-slate-100 border-slate-200 hover:border-slate-300 cursor-pointer'
+                                    }`}
+                                  >
+                                    <div className="flex items-center gap-2">
+                                      {wasAnswered && isCorrect && (
+                                        <Icon icon={icons.checkCircle} className="w-5 h-5 text-emerald-500" />
+                                      )}
+                                      {wasAnswered && !isCorrect && (
+                                        <Icon icon={icons.closeCircle} className="w-5 h-5 text-slate-400" />
+                                      )}
+                                      <span>{option}</span>
+                                    </div>
+                                  </motion.button>
+                                )
+                              })}
+                            </div>
+                            {isAnswered && (
+                              <motion.div
+                                initial={{ opacity: 0, height: 0 }}
+                                animate={{ opacity: 1, height: 'auto' }}
+                                className="mt-4 ml-10 p-3 bg-blue-50 rounded-lg border border-blue-200"
+                              >
+                                <p className="text-sm text-blue-800">
+                                  <strong className="inline-flex items-center gap-1">
+                                    <Icon icon={icons.teacher} className="w-4 h-4" />
+                                    Explanation:
+                                  </strong>{' '}
+                                  {q.explanation}
+                                </p>
+                              </motion.div>
+                            )}
+                          </motion.div>
+                        )
+                      })}
+                    </div>
+
+                    {quizResult.answered.length === quizzes.length && (
+                      <motion.div
+                        initial={{ opacity: 0, scale: 0.9 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        className="mt-8 p-8 rounded-2xl bg-gradient-to-r from-emerald-100 to-teal-100 border-2 border-emerald-200 text-center"
+                      >
+                        <div className="flex items-center justify-center mb-4">
+                          <Icon icon={icons.trophy} className="w-16 h-16 text-amber-500" />
+                        </div>
+                        <h3 className="text-2xl font-bold text-emerald-800 mb-2">
+                          {quizResult.score === quizzes.length
+                            ? 'Perfect Score!'
+                            : quizResult.score >= quizzes.length / 2
+                            ? 'Great Job!'
+                            : 'Keep Practicing!'}
+                        </h3>
+                        <p className="text-lg text-emerald-700 mb-4">
+                          You got <strong>{quizResult.score}</strong> out of <strong>{quizzes.length}</strong> correct!
+                        </p>
+                        <Progress value={(quizResult.score / quizzes.length) * 100} className="h-3 mb-4" />
+                        <Button onClick={() => resetQuiz(unitKey)} variant="outline" className="gap-2">
+                          <Icon icon={icons.rotate} className="w-4 h-4" /> Try Again
+                        </Button>
+                      </motion.div>
+                    )}
+                  </CardContent>
+                </Card>
+
+              </TabsContent>
+
+              <TabsContent value="final-assessment" className="space-y-6">
+                {unit.id === 1 ? (
+                  <>
+                    <Card className="border-2 border-violet-300 shadow-sm">
+                      <CardHeader className="rounded-t-lg bg-gradient-to-r from-violet-50 to-fuchsia-50">
+                        <CardTitle className="flex items-center gap-2 text-violet-800 text-2xl md:text-3xl">
+                          <Icon icon={icons.microphone} className="h-7 w-7" />
+                          Decision Pitch Assessment
+                        </CardTitle>
+                        <CardDescription className="text-base md:text-lg text-violet-700">
+                          Present your big decision in a 1-minute pitch. Use clear ideas and target expressions.
+                        </CardDescription>
+                      </CardHeader>
+                      <CardContent className="space-y-8 pt-6">
+                        <div className="rounded-xl border border-violet-200 bg-violet-50 p-5">
+                          <div className="grid gap-4 md:grid-cols-2">
+                            <div>
+                              <p className="text-sm font-semibold uppercase tracking-wide text-violet-700">Name</p>
+                              <div className="mt-2 h-10 rounded-md border-2 border-dashed border-violet-300 bg-white/70" />
+                            </div>
+                            <div>
+                              <p className="text-sm font-semibold uppercase tracking-wide text-violet-700">Title of My Big Decision</p>
+                              <div className="mt-2 h-10 rounded-md border-2 border-dashed border-violet-300 bg-white/70" />
+                            </div>
+                          </div>
+                        </div>
+
+                        <div className="space-y-6">
+                          {decisionPitchTemplate.map((item, idx) => (
+                            <div key={item.title} className="rounded-xl border border-slate-200 bg-white p-5">
+                              <div className="mb-3 flex items-start gap-3">
+                                <span className="inline-flex h-9 min-w-9 items-center justify-center rounded-full border border-violet-300 bg-violet-100 px-2 text-base font-bold text-violet-800">
+                                  {idx + 1}
+                                </span>
+                                <div>
+                                  <h4 className="text-lg font-bold text-slate-900 md:text-2xl">{item.title}</h4>
+                                  <p className="mt-1 text-sm italic text-slate-600 md:text-base">Example: {item.example}</p>
+                                </div>
+                              </div>
+                              <div className="space-y-2 pl-12">
+                                {Array.from({ length: item.lines }).map((_, lineIdx) => (
+                                  <div
+                                    key={`${item.title}-line-${lineIdx}`}
+                                    className="h-9 rounded-sm border-b-2 border-slate-300"
+                                  />
+                                ))}
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+
+                        <div className="rounded-xl border border-emerald-200 bg-emerald-50 p-5">
+                          <h4 className="text-lg font-bold text-emerald-900 md:text-2xl">Self-Check</h4>
+                          <p className="mt-1 text-sm text-emerald-800 md:text-base">
+                            Did I use these expressions in my pitch?
+                          </p>
+                          <div className="mt-4 flex flex-wrap gap-2">
+                            {decisionPitchSelfCheck.map((item) => (
+                              <span
+                                key={item}
+                                className="inline-flex items-center rounded-full border border-emerald-300 bg-white px-3 py-1.5 text-sm font-medium text-emerald-900 md:text-base"
+                              >
+                                {item}
+                              </span>
+                            ))}
+                          </div>
+                        </div>
+                      </CardContent>
+                    </Card>
+
+                    <Card className="border-2 border-sky-300 shadow-sm">
+                      <CardHeader className="rounded-t-lg bg-gradient-to-r from-sky-50 to-cyan-50">
+                        <CardTitle className="flex items-center gap-2 text-sky-900 text-2xl md:text-3xl">
+                          <Icon icon={icons.headphones} className="h-7 w-7" />
+                          Listening Assessment: Between the Lines
+                        </CardTitle>
+                        <CardDescription className="text-base md:text-lg text-sky-800">
+                          Listen, analyze expressions, and complete the dialogue.
+                        </CardDescription>
+                      </CardHeader>
+                      <CardContent className="space-y-8 pt-6">
+                        <div className="rounded-xl border border-sky-200 bg-sky-50 p-5">
+                          <div className="flex flex-wrap items-center gap-2">
+                            <Badge className="bg-sky-100 text-sky-800 border-sky-200">Part 1</Badge>
+                            <p className="text-base font-semibold text-sky-900 md:text-xl">
+                              Listen carefully and underline all expressions used to make decisions.
+                            </p>
+                          </div>
+                          <p className="mt-2 text-sm text-sky-800 md:text-base">
+                            Focus on: considering, plan to, intend to, would rather, look forward to.
+                          </p>
+                          <audio controls preload="metadata" className="mt-4 w-full">
+                            <source src={UNIT_1_LISTENING_AUDIO_SRC} type="audio/mpeg" />
+                            Your browser does not support the audio element.
+                          </audio>
+                        </div>
+
+                        <div className="rounded-xl border border-amber-200 bg-amber-50 p-5">
+                          <div className="flex flex-wrap items-center gap-2">
+                            <Badge className="bg-amber-100 text-amber-800 border-amber-200">Part 2</Badge>
+                            <p className="text-base font-semibold text-amber-900 md:text-xl">With your partner, answer:</p>
+                          </div>
+                          <div className="mt-4 space-y-3">
+                            {unit1ListeningQuestions.map((question, idx) => (
+                              <div key={question} className="flex items-start gap-3 rounded-lg border border-amber-200 bg-white/80 p-3">
+                                <span className="inline-flex h-8 min-w-8 items-center justify-center rounded-full border border-amber-300 bg-amber-100 text-sm font-bold text-amber-900">
+                                  {idx + 1}
+                                </span>
+                                <p className="text-base text-amber-950 md:text-lg">{question}</p>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+
+                        <div className="rounded-xl border border-slate-200 bg-white p-5">
+                          <div className="flex flex-wrap items-center gap-2">
+                            <Badge className="bg-slate-100 text-slate-800 border-slate-200">Part 3</Badge>
+                            <p className="text-base font-semibold text-slate-900 md:text-xl">Complete the dialogue while listening:</p>
+                          </div>
+                          <div className="mt-4 space-y-3">
+                            {unit1ListeningDialogue.map((turn, idx) => (
+                              <div key={`${turn.speaker}-${idx}`} className="rounded-lg border border-slate-200 bg-slate-50 p-4">
+                                <p className="text-base leading-relaxed text-slate-900 md:text-xl">
+                                  <strong>{turn.speaker}:</strong> {turn.line}
+                                </p>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  </>
+                ) : (
+                  <Card className="border-2 border-slate-200">
+                    <CardHeader>
+                      <CardTitle className="flex items-center gap-2 text-slate-800">
+                        <Icon icon={icons.microphone} className="w-5 h-5 text-violet-500" />
+                        Final Assessment
+                      </CardTitle>
+                      <CardDescription>
+                        This final assessment is currently available in Unit 1.
+                      </CardDescription>
+                    </CardHeader>
+                  </Card>
+                )}
+              </TabsContent>
+            </Tabs>
+
+            {/* Navigation Buttons */}
+            <div className="flex justify-between items-center pt-4">
+              <Button
+                variant="outline"
+                onClick={() => {
+                  if (currentUnit > 0) {
+                    setCurrentUnit(currentUnit - 1)
+                    setActiveSection('overview')
+                    closeExpandedActivity()
+                  }
+                }}
+                disabled={currentUnit === 0}
+                className="gap-2"
+              >
+                <Icon icon={icons.chevronLeft} className="w-4 h-4" />
+                <span className="hidden sm:inline">Previous Unit</span>
+                <span className="sm:hidden">Previous</span>
+              </Button>
+              <Button
+                onClick={() => {
+                  if (currentUnit < units.length - 1) {
+                    setCurrentUnit(currentUnit + 1)
+                    setActiveSection('overview')
+                    closeExpandedActivity()
+                  }
+                }}
+                disabled={currentUnit === units.length - 1}
+                className={`gap-2 bg-gradient-to-r ${unit.color} hover:opacity-90`}
+              >
+                <span className="hidden sm:inline">Next Unit</span>
+                <span className="sm:hidden">Next</span>
+                <Icon icon={icons.chevronRight} className="w-4 h-4" />
+              </Button>
+            </div>
+          </motion.div>
+        </AnimatePresence>
+      </main>
+
+      <Dialog
+        open={expandedActivity !== null}
+        onOpenChange={(open) => {
+          if (!open) {
+            closeExpandedActivity()
+          }
+        }}
+      >
+        {expandedActivity && (
+          <DialogContent className="w-[min(960px,95vw)] max-h-[88vh] overflow-y-auto p-0 sm:max-w-4xl">
+            <DialogHeader className="border-b border-slate-200 bg-gradient-to-r from-slate-50 to-white p-6">
+              <div className="flex flex-wrap items-center gap-2">
+                <Badge variant="secondary" className="bg-slate-200 text-slate-700">
+                  {expandedActivity.section}
+                </Badge>
+                <Badge variant="secondary" className="bg-slate-200 text-slate-700">
+                  <Icon icon={icons.clock} className="w-3 h-3 mr-1" />
+                  {expandedActivity.activity.time}
+                </Badge>
+              </div>
+              <DialogTitle className="text-2xl text-slate-900">{expandedActivity.activity.title}</DialogTitle>
+              <DialogDescription className="text-slate-600">
+                Expanded activity view.
+              </DialogDescription>
+            </DialogHeader>
+
+            <div className="space-y-4 p-6">
+              {isRegularActivity(expandedActivity.activity) ? (
+                <>
+                  <div className="rounded-lg border border-slate-200 bg-slate-50 p-4">
+                    <h5 className="mb-2 font-semibold text-slate-800">Your Task</h5>
+                    <p className="text-slate-700">{expandedActivity.activity.studentTask}</p>
+                  </div>
+
+                  {expandedActivity.activity.instructions && (
+                    <div className="rounded-lg border border-slate-200 bg-white p-4">
+                      <h5 className="mb-2 font-semibold text-slate-800">Instructions</h5>
+                      <p className="text-slate-700">{expandedActivity.activity.instructions}</p>
+                    </div>
+                  )}
+
+                  {expandedActivity.activity.materials && (
+                    <div className="rounded-lg border border-slate-200 bg-white p-4">
+                      <h5 className="mb-2 font-semibold text-slate-800">Materials</h5>
+                      <p className="text-slate-700">{expandedActivity.activity.materials}</p>
+                    </div>
+                  )}
+
+                  {expandedActivity.activity.example && (
+                    <div className="rounded-lg border border-blue-200 bg-blue-50 p-4">
+                      <h5 className="mb-2 font-semibold text-blue-800">Example</h5>
+                      <p className="italic text-slate-700">"{expandedActivity.activity.example}"</p>
+                    </div>
+                  )}
+                </>
+              ) : (
+                <>
+                  {expandedActivity.activity.audioSrc && (
+                    <div className="rounded-lg border border-slate-200 bg-white p-4">
+                      <h5 className="mb-2 font-semibold text-slate-800">Music Player</h5>
+                      <audio
+                        ref={audioRef}
+                        preload="none"
+                        src={expandedActivity.activity.audioSrc}
+                        onEnded={() => setIsAudioPlaying(false)}
+                      >
+                        Your browser does not support the audio element.
+                      </audio>
+                      <div className="mt-3 flex flex-wrap items-center gap-2">
+                        <Button type="button" size="sm" className="gap-1" onClick={handlePlayAudio}>
+                          <Icon icon={icons.play} className="h-4 w-4" />
+                          Play
+                        </Button>
+                        <Button type="button" size="sm" variant="secondary" className="gap-1" onClick={handlePauseAudio}>
+                          <Icon icon={icons.pause} className="h-4 w-4" />
+                          Pause
+                        </Button>
+                        <Button type="button" size="sm" variant="outline" className="gap-1" onClick={handleStopAudio}>
+                          <Icon icon={icons.stop} className="h-4 w-4" />
+                          Stop
+                        </Button>
+                        <div className="ml-auto flex flex-wrap items-center gap-1">
+                          <span className="text-xs font-medium text-slate-600">Speed</span>
+                          {[0.75, 1, 1.25, 1.5].map((speed) => (
+                            <Button
+                              key={speed}
+                              type="button"
+                              size="sm"
+                              variant={audioSpeed === speed ? 'default' : 'outline'}
+                              className="h-8 px-2 text-xs"
+                              onClick={() => handleSetAudioSpeed(speed)}
+                            >
+                              {speed}x
+                            </Button>
+                          ))}
+                        </div>
+                      </div>
+                      <p className="mt-2 text-xs text-slate-500">
+                        {isAudioPlaying ? 'Audio is playing.' : 'Audio paused.'} Control playback and speed here.
+                      </p>
+                    </div>
+                  )}
+                  <div className="rounded-lg border border-slate-200 bg-slate-50 p-4">
+                    <h5 className="mb-2 font-semibold text-slate-800">Instructions</h5>
+                    <p className="text-slate-700">{expandedActivity.activity.instructions}</p>
+                  </div>
+                  <div className="rounded-lg border border-slate-200 bg-white p-4">
+                    <h5 className="mb-2 font-semibold text-slate-800">Materials</h5>
+                    <p className="text-slate-700">{expandedActivity.activity.materials}</p>
+                  </div>
+                </>
+              )}
+
+              {showTeacherNotes && (
+                <div className="rounded-lg border border-amber-200 bg-amber-50 p-4">
+                  <h5 className="mb-2 font-semibold text-amber-800">Teacher Note</h5>
+                  <p className="text-amber-900">{expandedActivity.activity.teacherNote}</p>
+                </div>
+              )}
+            </div>
+          </DialogContent>
+        )}
+      </Dialog>
+
+      {/* Footer */}
+      <footer className="mt-auto bg-slate-900 text-slate-300 py-6">
+        <div className="max-w-7xl mx-auto px-4 text-center">
+          <p className="text-sm">
+            Idiomas EAFIT | Universidad EAFIT
+          </p>
+          <p className="text-xs text-slate-500 mt-1">
+            English Course • Intermediate 4 • Level B1 • Based on Kolb's Experiential Learning Cycle
+          </p>
+        </div>
+      </footer>
+
+      {/* Custom CSS for card flip effect */}
+      <style jsx global>{`
+        .perspective-1000 {
+          perspective: 1000px;
+        }
+        .preserve-3d {
+          transform-style: preserve-3d;
+        }
+        .backface-hidden {
+          backface-visibility: hidden;
+        }
+        .rotate-y-180 {
+          transform: rotateY(180deg);
+        }
+        .group:hover .rotate-y-180 {
+          transform: rotateY(180deg);
+        }
+      `}</style>
+    </div>
+  )
+}
