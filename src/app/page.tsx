@@ -247,7 +247,7 @@ const activitiesData: {
         materials: 'Festival photos, discussion prompts',
         teacherNote: 'Elicit descriptions before teaching vocabulary. Confirm/teach words like "parade" and "costume." Harvest representative ideas and emergent vocabulary from the whole class.',
         links: [
-          { label: 'Festival Photos', url: 'https://eafit.sharepoint.com/:w:/r/sites/IdiomasEAFIT/jefaturacad%C3%A9mica/profesidiomas/inglesadultos/_layouts/15/Doc.aspx?sourcedoc=%7B3E1AED30-451E-4D46-9BAB-1885FCD84A08%7D&file=festival%20photos.docx&action=default&mobileredirect=true', type: 'images' },
+          { label: 'Festival Photos', url: 'https://eafit.sharepoint.com/:w:/r/sites/IdiomasEAFIT/jefaturacad%C3%A9mica/profesidiomas/inglesadultos/_layouts/15/Doc.aspx?sourcedoc=%7B3E1AED30-451E-4D46-9BAB-1885FCD84A08%7D&file=festival%20photos.docx&action=embedview&mobileredirect=true', type: 'images' },
         ],
       },
       {
@@ -289,7 +289,7 @@ const activitiesData: {
         teacherNote: 'Include both public/community festivals and private/family celebrations (weddings, birthdays, gatherings). Post guiding criteria near each photo.',
         icon: icons.camera,
         links: [
-          { label: 'Celebration Photos', url: 'https://eafit.sharepoint.com/:w:/r/sites/IdiomasEAFIT/jefaturacad%C3%A9mica/profesidiomas/inglesadultos/_layouts/15/Doc.aspx?sourcedoc=%7BB0BA6CF8-2D73-41D2-B6B0-8FA6532080BE%7D&file=celebration%20photos.docx&action=default&mobileredirect=true', type: 'images' },
+          { label: 'Celebration Photos', url: 'https://eafit.sharepoint.com/:w:/r/sites/IdiomasEAFIT/jefaturacad%C3%A9mica/profesidiomas/inglesadultos/_layouts/15/Doc.aspx?sourcedoc=%7BB0BA6CF8-2D73-41D2-B6B0-8FA6532080BE%7D&file=celebration%20photos.docx&action=embedview&mobileredirect=true', type: 'images' },
         ],
       },
       {
@@ -340,9 +340,9 @@ const activitiesData: {
         example: 'St. Patrick\'s Day has bigger parades than Kartini Day, but Kartini Day is more meaningful for Indonesian women.',
         teacherNote: 'Audio source: english-practice.net A2 Celebrations. Pre-teach vocabulary before playing audio. Play once for gist only.',
         links: [
-          { label: 'Audio: Six Global Celebrations', url: 'https://eafit.sharepoint.com/sites/IdiomasEAFIT/jefaturacad%C3%A9mica/profesidiomas/inglesadultos/_layouts/15/stream.aspx?id=%2Fsites%2FIdiomasEAFIT%2Fjefaturacad%C3%A9mica%2Fprofesidiomas%2Finglesadultos%2FDocumentos%20compartidos%2FAdult%20English%20Program%20Curriculum%2FNew%20Curriculum%202026%2FA2%20Elementary%2FElementary%202%2FUnit%201%2FRecursos%2Fsix%20global%20celebrations%2Emp3&referrer=StreamWebApp%2EWeb&referrerScenario=AddressBarCopied%2Eview%2E11da4d6a%2Da649%2D4b21%2Da110%2Dbb1b5b7f4c7f', type: 'audio' },
-          { label: 'Images About the Celebrations', url: 'https://eafit.sharepoint.com/:w:/r/sites/IdiomasEAFIT/jefaturacad%C3%A9mica/profesidiomas/inglesadultos/_layouts/15/Doc.aspx?sourcedoc=%7B0F2A68E0-B63A-4A31-8835-C14B92F4057C%7D&file=images%20about%20the%20celebrations.docx&action=default&mobileredirect=true', type: 'images' },
-          { label: 'Transcript and Answer Key', url: 'https://eafit.sharepoint.com/:w:/r/sites/IdiomasEAFIT/jefaturacad%C3%A9mica/profesidiomas/inglesadultos/_layouts/15/Doc.aspx?sourcedoc=%7B071C7FF6-E4D9-4D4E-AA3C-205A5F040A3E%7D&file=transcript%20and%20answer%20key.docx&action=default&mobileredirect=true', type: 'worksheet' },
+          { label: 'Audio: Six Global Celebrations', url: 'https://eafit.sharepoint.com/sites/IdiomasEAFIT/jefaturacad%C3%A9mica/profesidiomas/inglesadultos/_layouts/15/stream.aspx?id=%2Fsites%2FIdiomasEAFIT%2Fjefaturacad%C3%A9mica%2Fprofesidiomas%2Finglesadultos%2FDocumentos%20compartidos%2FAdult%20English%20Program%20Curriculum%2FNew%20Curriculum%202026%2FA2%20Elementary%2FElementary%202%2FUnit%201%2FRecursos%2Fsix%20global%20celebrations%2Emp3', type: 'audio' },
+          { label: 'Images About the Celebrations', url: 'https://eafit.sharepoint.com/:w:/r/sites/IdiomasEAFIT/jefaturacad%C3%A9mica/profesidiomas/inglesadultos/_layouts/15/Doc.aspx?sourcedoc=%7B0F2A68E0-B63A-4A31-8835-C14B92F4057C%7D&file=images%20about%20the%20celebrations.docx&action=embedview&mobileredirect=true', type: 'images' },
+          { label: 'Transcript and Answer Key', url: 'https://eafit.sharepoint.com/:w:/r/sites/IdiomasEAFIT/jefaturacad%C3%A9mica/profesidiomas/inglesadultos/_layouts/15/Doc.aspx?sourcedoc=%7B071C7FF6-E4D9-4D4E-AA3C-205A5F040A3E%7D&file=transcript%20and%20answer%20key.docx&action=embedview&mobileredirect=true', type: 'worksheet' },
         ],
       },
       {
@@ -376,7 +376,7 @@ const activitiesData: {
         example: 'A treasure hunt is more exciting than a movie night, but karaoke is the most fun of all the activities.',
         teacherNote: 'Extension: students write a paragraph describing their ideal birthday party using target language.',
         links: [
-          { label: 'Passage with Birthday-Party Options', url: 'https://eafit.sharepoint.com/:w:/r/sites/IdiomasEAFIT/jefaturacad%C3%A9mica/profesidiomas/inglesadultos/_layouts/15/Doc.aspx?sourcedoc=%7B50FFB941-E264-45F0-8131-C3E5E5193730%7D&file=passage%20with%20birthday-party%20activity%20options.docx&action=default&mobileredirect=true', type: 'worksheet' },
+          { label: 'Passage with Birthday-Party Options', url: 'https://eafit.sharepoint.com/:w:/r/sites/IdiomasEAFIT/jefaturacad%C3%A9mica/profesidiomas/inglesadultos/_layouts/15/Doc.aspx?sourcedoc=%7B50FFB941-E264-45F0-8131-C3E5E5193730%7D&file=passage%20with%20birthday-party%20activity%20options.docx&action=embedview&mobileredirect=true', type: 'worksheet' },
         ],
       },
       {
@@ -387,9 +387,9 @@ const activitiesData: {
         example: 'Getting married is more common at a younger age in Colombia than in Europe. Graduation is the most celebrated milestone for students.',
         teacherNote: 'Provide cultural context about the Kosovar bride photo. Encourage cross-cultural reflection on milestone timing.',
         links: [
-          { label: 'Photo of a Bride', url: 'https://eafit.sharepoint.com/:w:/r/sites/IdiomasEAFIT/jefaturacad%C3%A9mica/profesidiomas/inglesadultos/_layouts/15/Doc.aspx?sourcedoc=%7B282BE5C8-7CD6-4DE0-88B8-E249DE7A800C%7D&file=photo%20of%20a%20bride.docx&action=default&mobileredirect=true', type: 'images' },
+          { label: 'Photo of a Bride', url: 'https://eafit.sharepoint.com/:w:/r/sites/IdiomasEAFIT/jefaturacad%C3%A9mica/profesidiomas/inglesadultos/_layouts/15/Doc.aspx?sourcedoc=%7B282BE5C8-7CD6-4DE0-88B8-E249DE7A800C%7D&file=photo%20of%20a%20bride.docx&action=embedview&mobileredirect=true', type: 'images' },
           { label: 'Major Life-Event Images', url: 'https://eafit.sharepoint.com/:p:/r/sites/IdiomasEAFIT/jefaturacad%C3%A9mica/profesidiomas/inglesadultos/_layouts/15/Doc.aspx?sourcedoc=%7B7BD3CDC8-4642-413E-B940-FD7FD0ADAB3A%7D&file=major%20life%20events.pptx&action=edit&mobileredirect=true', type: 'images' },
-          { label: 'Milestone-Related Questions', url: 'https://eafit.sharepoint.com/:w:/r/sites/IdiomasEAFIT/jefaturacad%C3%A9mica/profesidiomas/inglesadultos/_layouts/15/Doc.aspx?sourcedoc=%7BAC9F7719-5B8F-4ADF-9C21-C918F32CBC52%7D&file=milestone-related%20questions.docx&action=default&mobileredirect=true', type: 'worksheet' },
+          { label: 'Milestone-Related Questions', url: 'https://eafit.sharepoint.com/:w:/r/sites/IdiomasEAFIT/jefaturacad%C3%A9mica/profesidiomas/inglesadultos/_layouts/15/Doc.aspx?sourcedoc=%7BAC9F7719-5B8F-4ADF-9C21-C918F32CBC52%7D&file=milestone-related%20questions.docx&action=embedview&mobileredirect=true', type: 'worksheet' },
         ],
       },
       {
@@ -400,8 +400,8 @@ const activitiesData: {
         example: 'Hogmanay is the biggest New Year celebration in Scotland. It is more lively than a typical New Year\'s Eve party.',
         teacherNote: 'Vocabulary prediction helps activate prior knowledge. Guide students through the reading together.',
         links: [
-          { label: 'Hogmanay Festival', url: 'https://eafit.sharepoint.com/:w:/r/sites/IdiomasEAFIT/jefaturacad%C3%A9mica/profesidiomas/inglesadultos/_layouts/15/Doc.aspx?sourcedoc=%7BE7EC2302-FFDD-43A6-BF9B-956BE1B6C82E%7D&file=Hogmanay%20Festival.docx&action=default&mobileredirect=true', type: 'reference' },
-          { label: 'Vocabulary and Reading Worksheet', url: 'https://eafit.sharepoint.com/:w:/r/sites/IdiomasEAFIT/jefaturacad%C3%A9mica/profesidiomas/inglesadultos/_layouts/15/Doc.aspx?sourcedoc=%7BD9EFAF86-D589-4142-A14D-1C0954BEABDA%7D&file=vocabulary%20and%20reading%20worksheet.docx&action=default&mobileredirect=true', type: 'worksheet' },
+          { label: 'Hogmanay Festival', url: 'https://eafit.sharepoint.com/:w:/r/sites/IdiomasEAFIT/jefaturacad%C3%A9mica/profesidiomas/inglesadultos/_layouts/15/Doc.aspx?sourcedoc=%7BE7EC2302-FFDD-43A6-BF9B-956BE1B6C82E%7D&file=Hogmanay%20Festival.docx&action=embedview&mobileredirect=true', type: 'reference' },
+          { label: 'Vocabulary and Reading Worksheet', url: 'https://eafit.sharepoint.com/:w:/r/sites/IdiomasEAFIT/jefaturacad%C3%A9mica/profesidiomas/inglesadultos/_layouts/15/Doc.aspx?sourcedoc=%7BD9EFAF86-D589-4142-A14D-1C0954BEABDA%7D&file=vocabulary%20and%20reading%20worksheet.docx&action=embedview&mobileredirect=true', type: 'worksheet' },
         ],
       },
     ],
@@ -427,7 +427,7 @@ const activitiesData: {
           { label: 'Event Planning Guide (Cornell)', url: 'https://scheduling.cornell.edu/planning-guide-and-policies/event-planning-guide', type: 'reference' },
           { label: 'Best Event Caterers in Medellín', url: 'https://eventflare.io/expert-advice/medellin/the-7-best-event-caterers-in-medellin', type: 'reference' },
           { label: 'Party Entertainment Ideas', url: 'https://www.fielddrive.com/blog/party-entertainment-ideas-event-size', type: 'reference' },
-          { label: 'Planning Worksheet', url: 'https://eafit.sharepoint.com/:w:/r/sites/IdiomasEAFIT/jefaturacad%C3%A9mica/profesidiomas/inglesadultos/_layouts/15/Doc.aspx?sourcedoc=%7BA219BCC1-1042-40B2-ACE9-3E8C1052082C%7D&file=planning%20worksheet.docx&action=default&mobileredirect=true', type: 'worksheet' },
+          { label: 'Planning Worksheet', url: 'https://eafit.sharepoint.com/:w:/r/sites/IdiomasEAFIT/jefaturacad%C3%A9mica/profesidiomas/inglesadultos/_layouts/15/Doc.aspx?sourcedoc=%7BA219BCC1-1042-40B2-ACE9-3E8C1052082C%7D&file=planning%20worksheet.docx&action=embedview&mobileredirect=true', type: 'worksheet' },
         ],
       },
       {
@@ -512,7 +512,7 @@ const activitiesData: {
         materials: 'Questions about current living situations (printed or projected)',
         teacherNote: 'Prepare 4-5 questions about living situations. Keep rounds timed (2-3 min each). Encourage use of quantity expressions.',
         links: [
-          { label: 'Discussion Questions', url: 'https://eafit.sharepoint.com/:w:/r/sites/IdiomasEAFIT/jefaturacad%C3%A9mica/profesidiomas/inglesadultos/_layouts/15/Doc.aspx?sourcedoc=%7B0AE97C3E-FC45-4F67-9960-51ED83DA9B11%7D&file=questions%20about%20their%20current%20living%20situations.docx&action=default&mobileredirect=true', type: 'worksheet' },
+          { label: 'Discussion Questions', url: 'https://eafit.sharepoint.com/:w:/r/sites/IdiomasEAFIT/jefaturacad%C3%A9mica/profesidiomas/inglesadultos/_layouts/15/Doc.aspx?sourcedoc=%7B0AE97C3E-FC45-4F67-9960-51ED83DA9B11%7D&file=questions%20about%20their%20current%20living%20situations.docx&action=embedview&mobileredirect=true', type: 'worksheet' },
         ],
       },
       {
@@ -522,7 +522,7 @@ const activitiesData: {
         materials: 'Video, video answer key, video worksheet (from Speakout Elementary, Pearson)',
         teacherNote: 'Based on Speakout Elementary (Pearson). Pre-teach key vocabulary before viewing.',
         links: [
-          { label: 'Video Script', url: 'https://eafit.sharepoint.com/:w:/r/sites/IdiomasEAFIT/jefaturacad%C3%A9mica/profesidiomas/inglesadultos/_layouts/15/Doc.aspx?sourcedoc=%7B53C4FA09-DD96-4274-83C9-E8433B272A36%7D&file=script.doc&action=default&mobileredirect=true', type: 'worksheet' },
+          { label: 'Video Script', url: 'https://eafit.sharepoint.com/:w:/r/sites/IdiomasEAFIT/jefaturacad%C3%A9mica/profesidiomas/inglesadultos/_layouts/15/Doc.aspx?sourcedoc=%7B53C4FA09-DD96-4274-83C9-E8433B272A36%7D&file=script.doc&action=embedview&mobileredirect=true', type: 'worksheet' },
           { label: 'Video Worksheet', url: 'https://eafit.sharepoint.com/:b:/s/IdiomasEAFIT/jefaturacad%C3%A9mica/profesidiomas/inglesadultos/IQAUhQ1xK88-R6ZsYEePcK4oAfVIFZ22yFg8LQJ7YjXmszw?e=6Mo20D', type: 'worksheet' },
           { label: 'Video Answer Key', url: 'https://eafit.sharepoint.com/sites/IdiomasEAFIT/jefaturacad%C3%A9mica/profesidiomas/inglesadultos/Documentos%20compartidos/Forms/AllItems.aspx?viewid=3f7bdafa%2D8368%2D47b1%2Da8a1%2D57bd0da68bd5&FolderCTID=0x012000B3680363A70AE44ABDD184DD23BA61F5&id=%2Fsites%2FIdiomasEAFIT%2Fjefaturacad%C3%A9mica%2Fprofesidiomas%2Finglesadultos%2FDocumentos%20compartidos%2FAdult%20English%20Program%20Curriculum%2FNew%20Curriculum%202026%2FA2%20Elementary%2FElementary%202%2FUnit%202%2FResources%2Fvideo%20answer%20key%2Epng&parent=%2Fsites%2FIdiomasEAFIT%2Fjefaturacad%C3%A9mica%2Fprofesidiomas%2Finglesadultos%2FDocumentos%20compartidos%2FAdult%20English%20Program%20Curriculum%2FNew%20Curriculum%202026%2FA2%20Elementary%2FElementary%202%2FUnit%202%2FResources', type: 'worksheet' },
         ],
@@ -534,7 +534,7 @@ const activitiesData: {
         materials: 'Basket or bin, vocabulary prompts (20 items: furniture, parts of the house)',
         teacherNote: 'TPR activity. Prepare 20 vocabulary prompts about furniture and parts of the house. Keep energy high with the physical element.',
         links: [
-          { label: '20 Questions', url: 'https://eafit.sharepoint.com/:w:/r/sites/IdiomasEAFIT/jefaturacad%C3%A9mica/profesidiomas/inglesadultos/_layouts/15/Doc.aspx?sourcedoc=%7BCA372DA5-5BC7-4884-9A62-D7EE0F04D179%7D&file=20%20questions.docx&action=default&mobileredirect=true', type: 'worksheet' },
+          { label: '20 Questions', url: 'https://eafit.sharepoint.com/:w:/r/sites/IdiomasEAFIT/jefaturacad%C3%A9mica/profesidiomas/inglesadultos/_layouts/15/Doc.aspx?sourcedoc=%7BCA372DA5-5BC7-4884-9A62-D7EE0F04D179%7D&file=20%20questions.docx&action=embedview&mobileredirect=true', type: 'worksheet' },
         ],
       },
     ],
@@ -549,7 +549,7 @@ const activitiesData: {
         icon: icons.globe,
         links: [
           { label: 'Image Bank', url: 'https://eafit.sharepoint.com/:p:/r/sites/IdiomasEAFIT/jefaturacad%C3%A9mica/profesidiomas/inglesadultos/_layouts/15/Doc.aspx?sourcedoc=%7BA9BD0F88-E3A1-4B2E-ADE3-49416AC7AFAB%7D&file=image%20bank.pptx&action=edit&mobileredirect=true', type: 'images' },
-          { label: 'Sentence Frames', url: 'https://eafit.sharepoint.com/:w:/r/sites/IdiomasEAFIT/jefaturacad%C3%A9mica/profesidiomas/inglesadultos/_layouts/15/Doc.aspx?sourcedoc=%7BD0380D14-0D7D-4521-9BC3-C5E7CAB8D4E6%7D&file=Sentence%20frames.docx&action=default&mobileredirect=true', type: 'worksheet' },
+          { label: 'Sentence Frames', url: 'https://eafit.sharepoint.com/:w:/r/sites/IdiomasEAFIT/jefaturacad%C3%A9mica/profesidiomas/inglesadultos/_layouts/15/Doc.aspx?sourcedoc=%7BD0380D14-0D7D-4521-9BC3-C5E7CAB8D4E6%7D&file=Sentence%20frames.docx&action=embedview&mobileredirect=true', type: 'worksheet' },
           { label: 'Padlet', url: 'https://padlet.com/', type: 'reference' },
         ],
       },
@@ -571,10 +571,10 @@ const activitiesData: {
         teacherNote: 'Set up stations before class. Assign roles for Phase 3. Provide sentence stems for the roleplay discussion.',
         icon: icons.users,
         links: [
-          { label: 'Video: Small Rural House in Cornwall', url: 'https://eafit.sharepoint.com/sites/IdiomasEAFIT/jefaturacad%C3%A9mica/profesidiomas/inglesadultos/_layouts/15/stream.aspx?id=%2Fsites%2FIdiomasEAFIT%2Fjefaturacad%C3%A9mica%2Fprofesidiomas%2Finglesadultos%2FDocumentos%20compartidos%2FAdult%20English%20Program%20Curriculum%2FNew%20Curriculum%202026%2FA2%20Elementary%2FElementary%202%2FUnit%202%2FResources%2F09%2E%20small%20rural%20house%20in%20Cornwall%2Emp4&referrer=StreamWebApp%2EWeb&referrerScenario=AddressBarCopied%2Eview%2E6f0e0a2a%2D248f%2D42df%2Da746%2D68dd8b9c6603', type: 'video' },
+          { label: 'Video: Small Rural House in Cornwall', url: 'https://eafit.sharepoint.com/sites/IdiomasEAFIT/jefaturacad%C3%A9mica/profesidiomas/inglesadultos/_layouts/15/stream.aspx?id=%2Fsites%2FIdiomasEAFIT%2Fjefaturacad%C3%A9mica%2Fprofesidiomas%2Finglesadultos%2FDocumentos%20compartidos%2FAdult%20English%20Program%20Curriculum%2FNew%20Curriculum%202026%2FA2%20Elementary%2FElementary%202%2FUnit%202%2FResources%2F09%2E%20small%20rural%20house%20in%20Cornwall%2Emp4', type: 'video' },
           { label: 'Slideshow', url: 'https://eafit.sharepoint.com/:p:/s/RenovacinCursosAdultos/EXzzJp2PLAhJvu42IAsDFYQBOXOwfE5ObtnxAzO6fcmxVw?e=qaMTVd', type: 'images' },
-          { label: 'Sentence Stems', url: 'https://eafit.sharepoint.com/:w:/r/sites/IdiomasEAFIT/jefaturacad%C3%A9mica/profesidiomas/inglesadultos/_layouts/15/Doc.aspx?sourcedoc=%7BAD04501E-8445-4A36-805A-67E6316C2A01%7D&file=Sentence%20Stems.docx&action=default&mobileredirect=true', type: 'worksheet' },
-          { label: 'Writing Template', url: 'https://eafit.sharepoint.com/:w:/r/sites/IdiomasEAFIT/jefaturacad%C3%A9mica/profesidiomas/inglesadultos/_layouts/15/Doc.aspx?sourcedoc=%7BDD15D265-54F0-4964-8FC3-B8AE1E3F979D%7D&file=writing%20template.docx&action=default&mobileredirect=true', type: 'worksheet' },
+          { label: 'Sentence Stems', url: 'https://eafit.sharepoint.com/:w:/r/sites/IdiomasEAFIT/jefaturacad%C3%A9mica/profesidiomas/inglesadultos/_layouts/15/Doc.aspx?sourcedoc=%7BAD04501E-8445-4A36-805A-67E6316C2A01%7D&file=Sentence%20Stems.docx&action=embedview&mobileredirect=true', type: 'worksheet' },
+          { label: 'Writing Template', url: 'https://eafit.sharepoint.com/:w:/r/sites/IdiomasEAFIT/jefaturacad%C3%A9mica/profesidiomas/inglesadultos/_layouts/15/Doc.aspx?sourcedoc=%7BDD15D265-54F0-4964-8FC3-B8AE1E3F979D%7D&file=writing%20template.docx&action=embedview&mobileredirect=true', type: 'worksheet' },
         ],
       },
     ],
@@ -587,7 +587,7 @@ const activitiesData: {
         example: 'One interesting thing we found was that there isn\'t much furniture in traditional Japanese homes.',
         teacherNote: 'Start with small group discussion, then teacher-led reflection. Compare "house" vs. "home" concepts.',
         links: [
-          { label: 'Teacher-Led Reflection Questions', url: 'https://eafit.sharepoint.com/:w:/r/sites/IdiomasEAFIT/jefaturacad%C3%A9mica/profesidiomas/inglesadultos/_layouts/15/Doc.aspx?sourcedoc=%7BE1628973-2980-4432-B36D-DCFC361132FF%7D&file=teacher-led%20reflection%20questions.docx&action=default&mobileredirect=true', type: 'worksheet' },
+          { label: 'Teacher-Led Reflection Questions', url: 'https://eafit.sharepoint.com/:w:/r/sites/IdiomasEAFIT/jefaturacad%C3%A9mica/profesidiomas/inglesadultos/_layouts/15/Doc.aspx?sourcedoc=%7BE1628973-2980-4432-B36D-DCFC361132FF%7D&file=teacher-led%20reflection%20questions.docx&action=embedview&mobileredirect=true', type: 'worksheet' },
         ],
       },
       {
@@ -619,8 +619,8 @@ const activitiesData: {
         example: 'How many rooms do typical homes in Mongolia have? There isn\'t much wood in the desert, so they use felt.',
         teacherNote: 'Source: Habitat for Humanity World Homes article. Prepare 3 sections for jigsaw. Include Colombian housing images for local context.',
         links: [
-          { label: 'World Homes Article', url: 'https://eafit.sharepoint.com/sites/IdiomasEAFIT/jefaturacad%C3%A9mica/profesidiomas/inglesadultos/Documentos%20compartidos/Forms/AllItems.aspx?viewid=3f7bdafa%2D8368%2D47b1%2Da8a1%2D57bd0da68bd5&newTargetListUrl=%2Fsites%2FIdiomasEAFIT%2Fjefaturacad%C3%A9mica%2Fprofesidiomas%2Finglesadultos%2FDocumentos%20compartidos&viewpath=%2Fsites%2FIdiomasEAFIT%2Fjefaturacad%C3%A9mica%2Fprofesidiomas%2Finglesadultos%2FDocumentos%20compartidos%2FForms%2FAllItems%2Easpx&id=%2Fsites%2FIdiomasEAFIT%2Fjefaturacad%C3%A9mica%2Fprofesidiomas%2Finglesadultos%2FDocumentos%20compartidos%2FAdult%20English%20Program%20Curriculum%2FNew%20Curriculum%202026%2FA2%20Elementary%2FElementary%202%2FUnit%202%2FResources%2FWorld%20Homes%2Epdf&parent=%2Fsites%2FIdiomasEAFIT%2Fjefaturacad%C3%A9mica%2Fprofesidiomas%2Finglesadultos%2FDocumentos%20compartidos%2FAdult%20English%20Program%20Curriculum%2FNew%20Curriculum%202026%2FA2%20Elementary%2FElementary%202%2FUnit%202%2FResources', type: 'reference' },
-          { label: 'Guiding Questions', url: 'https://eafit.sharepoint.com/:w:/r/sites/IdiomasEAFIT/jefaturacad%C3%A9mica/profesidiomas/inglesadultos/_layouts/15/Doc.aspx?sourcedoc=%7BEF9B806E-D6B3-4174-842B-CD27FAE729B5%7D&file=guiding%20questions%20to%20facilitate%20discovery.docx&action=default&mobileredirect=true', type: 'worksheet' },
+          { label: 'World Homes Article', url: 'https://eafit.sharepoint.com/sites/IdiomasEAFIT/jefaturacad%C3%A9mica/profesidiomas/inglesadultos/Documentos%20compartidos/Adult%20English%20Program%20Curriculum/New%20Curriculum%202026/A2%20Elementary/Elementary%202/Unit%202/Resources/World%20Homes%2Epdf', type: 'reference' },
+          { label: 'Guiding Questions', url: 'https://eafit.sharepoint.com/:w:/r/sites/IdiomasEAFIT/jefaturacad%C3%A9mica/profesidiomas/inglesadultos/_layouts/15/Doc.aspx?sourcedoc=%7BEF9B806E-D6B3-4174-842B-CD27FAE729B5%7D&file=guiding%20questions%20to%20facilitate%20discovery.docx&action=embedview&mobileredirect=true', type: 'worksheet' },
         ],
       },
       {
@@ -645,7 +645,7 @@ const activitiesData: {
         example: '"Space" is uncountable but "room" can be both. How much space do you need? How many rooms?',
         teacherNote: 'Let students classify before confirming. Metacognitive closure: "What do countable and uncountable nouns allow us to do when talking about housing?"',
         links: [
-          { label: 'Guiding Questions', url: 'https://eafit.sharepoint.com/:w:/r/sites/IdiomasEAFIT/jefaturacad%C3%A9mica/profesidiomas/inglesadultos/_layouts/15/Doc.aspx?sourcedoc=%7BEF9B806E-D6B3-4174-842B-CD27FAE729B5%7D&file=15.%20guiding%20questions%20to%20facilitate%20discovery.docx&action=default&mobileredirect=true', type: 'worksheet' },
+          { label: 'Guiding Questions', url: 'https://eafit.sharepoint.com/:w:/r/sites/IdiomasEAFIT/jefaturacad%C3%A9mica/profesidiomas/inglesadultos/_layouts/15/Doc.aspx?sourcedoc=%7BEF9B806E-D6B3-4174-842B-CD27FAE729B5%7D&file=15.%20guiding%20questions%20to%20facilitate%20discovery.docx&action=embedview&mobileredirect=true', type: 'worksheet' },
           { label: 'Grammar Reference (Count vs. Uncount)', url: 'https://eafit.sharepoint.com/:p:/r/sites/IdiomasEAFIT/jefaturacad%C3%A9mica/profesidiomas/inglesadultos/_layouts/15/Doc.aspx?sourcedoc=%7B1BEF7A8A-AD38-4C73-841A-E26AC2108760%7D&file=grammar%20reference%20count%20vs%20uncount.pptx&action=edit&mobileredirect=true', type: 'reference' },
           { label: 'Practice Worksheet', url: 'https://eafit.sharepoint.com/:b:/s/IdiomasEAFIT/jefaturacad%C3%A9mica/profesidiomas/inglesadultos/IQAHbbnY5YiFTLnzLx0LmyBpAfNEDrbeP7LJm3kUl05rj-c?e=ErNdFO', type: 'worksheet' },
           { label: 'Controlled Practice Worksheet', url: 'https://eafit.sharepoint.com/sites/IdiomasEAFIT/jefaturacad%C3%A9mica/profesidiomas/inglesadultos/Documentos%20compartidos/Forms/AllItems.aspx?viewid=3f7bdafa%2D8368%2D47b1%2Da8a1%2D57bd0da68bd5&newTargetListUrl=%2Fsites%2FIdiomasEAFIT%2Fjefaturacad%C3%A9mica%2Fprofesidiomas%2Finglesadultos%2FDocumentos%20compartidos&viewpath=%2Fsites%2FIdiomasEAFIT%2Fjefaturacad%C3%A9mica%2Fprofesidiomas%2Finglesadultos%2FDocumentos%20compartidos%2FForms%2FAllItems%2Easpx&id=%2Fsites%2FIdiomasEAFIT%2Fjefaturacad%C3%A9mica%2Fprofesidiomas%2Finglesadultos%2FDocumentos%20compartidos%2FAdult%20English%20Program%20Curriculum%2FNew%20Curriculum%202026%2FA2%20Elementary%2FElementary%202%2FUnit%202%2FResources%2Fcountable%20and%20uncountable%20controlled%20practice%2Epdf&parent=%2Fsites%2FIdiomasEAFIT%2Fjefaturacad%C3%A9mica%2Fprofesidiomas%2Finglesadultos%2FDocumentos%20compartidos%2FAdult%20English%20Program%20Curriculum%2FNew%20Curriculum%202026%2FA2%20Elementary%2FElementary%202%2FUnit%202%2FResources', type: 'worksheet' },
@@ -659,8 +659,8 @@ const activitiesData: {
         example: 'How much rent do you pay? How many windows does your apartment have?',
         teacherNote: 'Based on face2face Elementary (Cambridge). Let students deduce rules before confirming.',
         links: [
-          { label: 'Guided Discovery Worksheet', url: 'https://eafit.sharepoint.com/:w:/r/sites/IdiomasEAFIT/jefaturacad%C3%A9mica/profesidiomas/inglesadultos/_layouts/15/Doc.aspx?sourcedoc=%7BFD556BA5-66CD-4580-A1A8-E97F2FEA8795%7D&file=guided%20discovery%20worksheet.docx&action=default&mobileredirect=true', type: 'worksheet' },
-          { label: 'Worksheet Key', url: 'https://eafit.sharepoint.com/:w:/r/sites/IdiomasEAFIT/jefaturacad%C3%A9mica/profesidiomas/inglesadultos/_layouts/15/Doc.aspx?sourcedoc=%7BB613FDD4-B362-47A8-B56B-64426B328714%7D&file=Worksheet%20key.docx&action=default&mobileredirect=true', type: 'worksheet' },
+          { label: 'Guided Discovery Worksheet', url: 'https://eafit.sharepoint.com/:w:/r/sites/IdiomasEAFIT/jefaturacad%C3%A9mica/profesidiomas/inglesadultos/_layouts/15/Doc.aspx?sourcedoc=%7BFD556BA5-66CD-4580-A1A8-E97F2FEA8795%7D&file=guided%20discovery%20worksheet.docx&action=embedview&mobileredirect=true', type: 'worksheet' },
+          { label: 'Worksheet Key', url: 'https://eafit.sharepoint.com/:w:/r/sites/IdiomasEAFIT/jefaturacad%C3%A9mica/profesidiomas/inglesadultos/_layouts/15/Doc.aspx?sourcedoc=%7BB613FDD4-B362-47A8-B56B-64426B328714%7D&file=Worksheet%20key.docx&action=embedview&mobileredirect=true', type: 'worksheet' },
           { label: 'Short Oral Activity', url: 'https://eafit.sharepoint.com/:w:/s/RenovacinCursosAdultos/EadUn2dde8VGs6JvhOIFgAsBYsz4TZEnj1vHR-6lp3UAAg?e=qlehCo', type: 'worksheet' },
         ],
       },
@@ -673,7 +673,7 @@ const activitiesData: {
         teacherNote: 'Model one sample question with a volunteer first. Encourage follow-up questions. Metacognitive closure: "What surprised you? How did using how much/how many help?"',
         icon: icons.users,
         links: [
-          { label: 'Find Someone Who Housing Worksheet', url: 'https://eafit.sharepoint.com/:w:/r/sites/IdiomasEAFIT/jefaturacad%C3%A9mica/profesidiomas/inglesadultos/_layouts/15/Doc.aspx?sourcedoc=%7BC3DEFB01-1781-4DF5-90E6-C6B9AD3402AD%7D&file=Find_Someone_Who_Housing.docx&action=default&mobileredirect=true', type: 'worksheet' },
+          { label: 'Find Someone Who Housing Worksheet', url: 'https://eafit.sharepoint.com/:w:/r/sites/IdiomasEAFIT/jefaturacad%C3%A9mica/profesidiomas/inglesadultos/_layouts/15/Doc.aspx?sourcedoc=%7BC3DEFB01-1781-4DF5-90E6-C6B9AD3402AD%7D&file=Find_Someone_Who_Housing.docx&action=embedview&mobileredirect=true', type: 'worksheet' },
         ],
       },
       {
@@ -699,7 +699,7 @@ const activitiesData: {
         teacherNote: 'Provide the structured research template. Encourage interactive components. This is a multi-session project.',
         icon: icons.map,
         links: [
-          { label: 'Structured Research Template', url: 'https://eafit.sharepoint.com/:w:/r/sites/IdiomasEAFIT/jefaturacad%C3%A9mica/profesidiomas/inglesadultos/_layouts/15/Doc.aspx?sourcedoc=%7BF85083BF-0789-4B83-8DB0-E1641067E898%7D&file=structured%20template.docx&action=default&mobileredirect=true', type: 'worksheet' },
+          { label: 'Structured Research Template', url: 'https://eafit.sharepoint.com/:w:/r/sites/IdiomasEAFIT/jefaturacad%C3%A9mica/profesidiomas/inglesadultos/_layouts/15/Doc.aspx?sourcedoc=%7BF85083BF-0789-4B83-8DB0-E1641067E898%7D&file=structured%20template.docx&action=embedview&mobileredirect=true', type: 'worksheet' },
         ],
       },
       {
@@ -794,7 +794,7 @@ const activitiesData: {
         materials: 'Bingo cards with place names (1 per student), caller\'s definition sheet, markers or paper pieces',
         teacherNote: 'Prepare bingo cards with service-related place names. Read definitions only — do not say the place name. Vocabulary activation activity.',
         links: [
-          { label: 'Bingo Cards and Caller\'s Sheet', url: 'https://eafit.sharepoint.com/:w:/r/sites/IdiomasEAFIT/jefaturacad%C3%A9mica/profesidiomas/inglesadultos/_layouts/15/Doc.aspx?sourcedoc=%7B0C283724-BCF5-40D2-B219-48ED430EBD2E%7D&file=bingo%20cards%20and%20caller%E2%80%99s%20sheet.docx&action=default&mobileredirect=true', type: 'worksheet' },
+          { label: 'Bingo Cards and Caller\'s Sheet', url: 'https://eafit.sharepoint.com/:w:/r/sites/IdiomasEAFIT/jefaturacad%C3%A9mica/profesidiomas/inglesadultos/_layouts/15/Doc.aspx?sourcedoc=%7B0C283724-BCF5-40D2-B219-48ED430EBD2E%7D&file=bingo%20cards%20and%20caller%E2%80%99s%20sheet.docx&action=embedview&mobileredirect=true', type: 'worksheet' },
         ],
       },
       {
@@ -827,7 +827,7 @@ const activitiesData: {
         links: [
           { label: 'Illustrated Campus Map', url: 'https://eafit.sharepoint.com/sites/IdiomasEAFIT/jefaturacad%C3%A9mica/profesidiomas/inglesadultos/Documentos%20compartidos/Forms/AllItems.aspx?viewid=3f7bdafa%2D8368%2D47b1%2Da8a1%2D57bd0da68bd5&newTargetListUrl=%2Fsites%2FIdiomasEAFIT%2Fjefaturacad%C3%A9mica%2Fprofesidiomas%2Finglesadultos%2FDocumentos%20compartidos&viewpath=%2Fsites%2FIdiomasEAFIT%2Fjefaturacad%C3%A9mica%2Fprofesidiomas%2Finglesadultos%2FDocumentos%20compartidos%2FForms%2FAllItems%2Easpx&id=%2Fsites%2FIdiomasEAFIT%2Fjefaturacad%C3%A9mica%2Fprofesidiomas%2Finglesadultos%2FDocumentos%20compartidos%2FAdult%20English%20Program%20Curriculum%2FNew%20Curriculum%202026%2FA2%20Elementary%2FElementary%202%2FUnit%203%2FResources%2Fillustrated%20campus%20map%2Epdf&parent=%2Fsites%2FIdiomasEAFIT%2Fjefaturacad%C3%A9mica%2Fprofesidiomas%2Finglesadultos%2FDocumentos%20compartidos%2FAdult%20English%20Program%20Curriculum%2FNew%20Curriculum%202026%2FA2%20Elementary%2FElementary%202%2FUnit%203%2FResources', type: 'images' },
           { label: 'EAFIT Campus Map (OpenStreetMap)', url: 'https://www.eafit.edu.co/campus-eafit/mapa', type: 'reference' },
-          { label: 'Missions', url: 'https://eafit.sharepoint.com/:w:/r/sites/IdiomasEAFIT/jefaturacad%C3%A9mica/profesidiomas/inglesadultos/_layouts/15/Doc.aspx?sourcedoc=%7B7C278E15-F26E-4286-8FBB-CA4196578FB0%7D&file=missions.docx&action=default&mobileredirect=true', type: 'worksheet' },
+          { label: 'Missions', url: 'https://eafit.sharepoint.com/:w:/r/sites/IdiomasEAFIT/jefaturacad%C3%A9mica/profesidiomas/inglesadultos/_layouts/15/Doc.aspx?sourcedoc=%7B7C278E15-F26E-4286-8FBB-CA4196578FB0%7D&file=missions.docx&action=embedview&mobileredirect=true', type: 'worksheet' },
           { label: 'Printed Maps', url: 'https://eafit.sharepoint.com/:b:/s/IdiomasEAFIT/jefaturacad%C3%A9mica/profesidiomas/inglesadultos/IQAuqhYXmO_UQb2hJuRNBiQvAZNN4TJ4kj1J6O0aFGYMWLc?e=tAWQI3', type: 'images' },
         ],
       },
@@ -840,9 +840,9 @@ const activitiesData: {
         teacherNote: 'Use real Medellin locations and photos. Prepare tourist task cards with specific needs (local food, museums, nightlife, etc.).',
         icon: icons.globe,
         links: [
-          { label: 'Vocabulary Activation Worksheet', url: 'https://eafit.sharepoint.com/:w:/r/sites/IdiomasEAFIT/jefaturacad%C3%A9mica/profesidiomas/inglesadultos/_layouts/15/Doc.aspx?sourcedoc=%7B9138FD02-6D3E-41CC-8F6F-6C068B85A758%7D&file=vocabulary%20activation%20worksheet.docx&action=default&mobileredirect=true', type: 'worksheet' },
-          { label: 'Tourist Task Cards', url: 'https://eafit.sharepoint.com/:w:/r/sites/IdiomasEAFIT/jefaturacad%C3%A9mica/profesidiomas/inglesadultos/_layouts/15/Doc.aspx?sourcedoc=%7BEA2106ED-9DB6-4F22-B2FD-AEE9D66E2804%7D&file=tourist%20task%20cards.docx&action=default&mobileredirect=true', type: 'worksheet' },
-          { label: 'Information Sheet', url: 'https://eafit.sharepoint.com/:w:/r/sites/IdiomasEAFIT/jefaturacad%C3%A9mica/profesidiomas/inglesadultos/_layouts/15/Doc.aspx?sourcedoc=%7B16E18D67-2769-4AC2-81EB-EE6A8DDF9DC1%7D&file=information%20sheet.docx&action=default&mobileredirect=true', type: 'worksheet' },
+          { label: 'Vocabulary Activation Worksheet', url: 'https://eafit.sharepoint.com/:w:/r/sites/IdiomasEAFIT/jefaturacad%C3%A9mica/profesidiomas/inglesadultos/_layouts/15/Doc.aspx?sourcedoc=%7B9138FD02-6D3E-41CC-8F6F-6C068B85A758%7D&file=vocabulary%20activation%20worksheet.docx&action=embedview&mobileredirect=true', type: 'worksheet' },
+          { label: 'Tourist Task Cards', url: 'https://eafit.sharepoint.com/:w:/r/sites/IdiomasEAFIT/jefaturacad%C3%A9mica/profesidiomas/inglesadultos/_layouts/15/Doc.aspx?sourcedoc=%7BEA2106ED-9DB6-4F22-B2FD-AEE9D66E2804%7D&file=tourist%20task%20cards.docx&action=embedview&mobileredirect=true', type: 'worksheet' },
+          { label: 'Information Sheet', url: 'https://eafit.sharepoint.com/:w:/r/sites/IdiomasEAFIT/jefaturacad%C3%A9mica/profesidiomas/inglesadultos/_layouts/15/Doc.aspx?sourcedoc=%7B16E18D67-2769-4AC2-81EB-EE6A8DDF9DC1%7D&file=information%20sheet.docx&action=embedview&mobileredirect=true', type: 'worksheet' },
         ],
       },
       {
@@ -856,9 +856,9 @@ const activitiesData: {
         links: [
           { label: 'Airport Documentary Video', url: 'https://eafit.sharepoint.com/:v:/s/IdiomasEAFIT/jefaturacad%C3%A9mica/profesidiomas/inglesadultos/IQCRam-m2CifTaAyMAYETEDRAdDS3UuZqh29qtWpljHpR9E?e=stAtDY', type: 'video' },
           { label: 'Street Food Documentary Video', url: 'https://eafit.sharepoint.com/:v:/s/IdiomasEAFIT/jefaturacad%C3%A9mica/profesidiomas/inglesadultos/IQDQ0jakfqh6SphlAqLWT4vYAWi9elPcfguLTx5u5DOcnoU?e=dfNIsn', type: 'video' },
-          { label: 'Station 1 Worksheet', url: 'https://eafit.sharepoint.com/:w:/r/sites/IdiomasEAFIT/jefaturacad%C3%A9mica/profesidiomas/inglesadultos/_layouts/15/Doc.aspx?sourcedoc=%7B2EF45546-3392-4A20-ABAA-B7CBE0489EEC%7D&file=station%201%20worksheet.docx&action=default&mobileredirect=true', type: 'worksheet' },
-          { label: 'Station 2 Worksheet', url: 'https://eafit.sharepoint.com/:w:/r/sites/IdiomasEAFIT/jefaturacad%C3%A9mica/profesidiomas/inglesadultos/_layouts/15/Doc.aspx?sourcedoc=%7B4FDE6713-5164-4108-B4F3-F385AF034F81%7D&file=station%202%20worksheet.docx&action=default&mobileredirect=true', type: 'worksheet' },
-          { label: 'Station 3 Worksheet', url: 'https://eafit.sharepoint.com/:w:/r/sites/IdiomasEAFIT/jefaturacad%C3%A9mica/profesidiomas/inglesadultos/_layouts/15/Doc.aspx?sourcedoc=%7B1390AB29-547A-4DF6-8CD5-43CA9148BB7D%7D&file=station%203%20worksheet.docx&action=default&mobileredirect=true', type: 'worksheet' },
+          { label: 'Station 1 Worksheet', url: 'https://eafit.sharepoint.com/:w:/r/sites/IdiomasEAFIT/jefaturacad%C3%A9mica/profesidiomas/inglesadultos/_layouts/15/Doc.aspx?sourcedoc=%7B2EF45546-3392-4A20-ABAA-B7CBE0489EEC%7D&file=station%201%20worksheet.docx&action=embedview&mobileredirect=true', type: 'worksheet' },
+          { label: 'Station 2 Worksheet', url: 'https://eafit.sharepoint.com/:w:/r/sites/IdiomasEAFIT/jefaturacad%C3%A9mica/profesidiomas/inglesadultos/_layouts/15/Doc.aspx?sourcedoc=%7B4FDE6713-5164-4108-B4F3-F385AF034F81%7D&file=station%202%20worksheet.docx&action=embedview&mobileredirect=true', type: 'worksheet' },
+          { label: 'Station 3 Worksheet', url: 'https://eafit.sharepoint.com/:w:/r/sites/IdiomasEAFIT/jefaturacad%C3%A9mica/profesidiomas/inglesadultos/_layouts/15/Doc.aspx?sourcedoc=%7B1390AB29-547A-4DF6-8CD5-43CA9148BB7D%7D&file=station%203%20worksheet.docx&action=embedview&mobileredirect=true', type: 'worksheet' },
         ],
       },
     ],
@@ -899,9 +899,9 @@ const activitiesData: {
         links: [
           { label: 'Chinese Food Stall Image', url: 'https://eafit.sharepoint.com/sites/IdiomasEAFIT/jefaturacad%C3%A9mica/profesidiomas/inglesadultos/Documentos%20compartidos/Forms/AllItems.aspx?viewid=3f7bdafa%2D8368%2D47b1%2Da8a1%2D57bd0da68bd5&newTargetListUrl=%2Fsites%2FIdiomasEAFIT%2Fjefaturacad%C3%A9mica%2Fprofesidiomas%2Finglesadultos%2FDocumentos%20compartidos&viewpath=%2Fsites%2FIdiomasEAFIT%2Fjefaturacad%C3%A9mica%2Fprofesidiomas%2Finglesadultos%2FDocumentos%20compartidos%2FForms%2FAllItems%2Easpx&id=%2Fsites%2FIdiomasEAFIT%2Fjefaturacad%C3%A9mica%2Fprofesidiomas%2Finglesadultos%2FDocumentos%20compartidos%2FAdult%20English%20Program%20Curriculum%2FNew%20Curriculum%202026%2FA2%20Elementary%2FElementary%202%2FUnit%203%2FResources%2Fchinese%20food%20stall%2Ewebp&parent=%2Fsites%2FIdiomasEAFIT%2Fjefaturacad%C3%A9mica%2Fprofesidiomas%2Finglesadultos%2FDocumentos%20compartidos%2FAdult%20English%20Program%20Curriculum%2FNew%20Curriculum%202026%2FA2%20Elementary%2FElementary%202%2FUnit%203%2FResources', type: 'images' },
           { label: 'Pizza Stall Image', url: 'https://eafit.sharepoint.com/sites/IdiomasEAFIT/jefaturacad%C3%A9mica/profesidiomas/inglesadultos/Documentos%20compartidos/Forms/AllItems.aspx?viewid=3f7bdafa%2D8368%2D47b1%2Da8a1%2D57bd0da68bd5&newTargetListUrl=%2Fsites%2FIdiomasEAFIT%2Fjefaturacad%C3%A9mica%2Fprofesidiomas%2Finglesadultos%2FDocumentos%20compartidos&viewpath=%2Fsites%2FIdiomasEAFIT%2Fjefaturacad%C3%A9mica%2Fprofesidiomas%2Finglesadultos%2FDocumentos%20compartidos%2FForms%2FAllItems%2Easpx&id=%2Fsites%2FIdiomasEAFIT%2Fjefaturacad%C3%A9mica%2Fprofesidiomas%2Finglesadultos%2FDocumentos%20compartidos%2FAdult%20English%20Program%20Curriculum%2FNew%20Curriculum%202026%2FA2%20Elementary%2FElementary%202%2FUnit%203%2FResources%2Fpizza%20stall%2Ejpg&parent=%2Fsites%2FIdiomasEAFIT%2Fjefaturacad%C3%A9mica%2Fprofesidiomas%2Finglesadultos%2FDocumentos%20compartidos%2FAdult%20English%20Program%20Curriculum%2FNew%20Curriculum%202026%2FA2%20Elementary%2FElementary%202%2FUnit%203%2FResources', type: 'images' },
-          { label: 'Audio: Two Friends', url: 'https://eafit.sharepoint.com/sites/IdiomasEAFIT/jefaturacad%C3%A9mica/profesidiomas/inglesadultos/_layouts/15/stream.aspx?id=%2Fsites%2FIdiomasEAFIT%2Fjefaturacad%C3%A9mica%2Fprofesidiomas%2Finglesadultos%2FDocumentos%20compartidos%2FAdult%20English%20Program%20Curriculum%2FNew%20Curriculum%202026%2FA2%20Elementary%2FElementary%202%2FUnit%203%2FResources%2Ftwo%20friends%2Emp3&referrer=StreamWebApp%2EWeb&referrerScenario=AddressBarCopied%2Eview%2Ea96f610f%2Db505%2D4407%2D9a97%2D3536a7d0dc02', type: 'audio' },
-          { label: 'Highlighted Transcript', url: 'https://eafit.sharepoint.com/:w:/r/sites/IdiomasEAFIT/jefaturacad%C3%A9mica/profesidiomas/inglesadultos/_layouts/15/Doc.aspx?sourcedoc=%7B73888942-9E54-4735-A483-816F1A7FA4EA%7D&file=highlighted%20transcript.docx&action=default&mobileredirect=true', type: 'worksheet' },
-          { label: 'Grammar Reference (A/AN, SOME, ANY)', url: 'https://eafit.sharepoint.com/:p:/r/sites/IdiomasEAFIT/jefaturacad%C3%A9mica/profesidiomas/inglesadultos/_layouts/15/Doc.aspx?sourcedoc=%7BF4611292-FCD8-4C1F-897B-1F77B354046A%7D&file=grammar%20reference%20%20for%20A-AN%20SOME%20ANY%20-%20Copia.pptx&action=edit&mobileredirect=true', type: 'reference' },
+          { label: 'Audio: Two Friends', url: 'https://eafit.sharepoint.com/sites/IdiomasEAFIT/jefaturacad%C3%A9mica/profesidiomas/inglesadultos/_layouts/15/stream.aspx?id=%2Fsites%2FIdiomasEAFIT%2Fjefaturacad%C3%A9mica%2Fprofesidiomas%2Finglesadultos%2FDocumentos%20compartidos%2FAdult%20English%20Program%20Curriculum%2FNew%20Curriculum%202026%2FA2%20Elementary%2FElementary%202%2FUnit%203%2FResources%2Ftwo%20friends%2Emp3', type: 'audio' },
+          { label: 'Highlighted Transcript', url: 'https://eafit.sharepoint.com/:w:/r/sites/IdiomasEAFIT/jefaturacad%C3%A9mica/profesidiomas/inglesadultos/_layouts/15/Doc.aspx?sourcedoc=%7B73888942-9E54-4735-A483-816F1A7FA4EA%7D&file=highlighted%20transcript.docx&action=embedview&mobileredirect=true', type: 'worksheet' },
+          { label: 'Grammar Reference (A/AN, SOME, ANY)', url: 'https://eafit.sharepoint.com/:p:/r/sites/IdiomasEAFIT/jefaturacad%C3%A9mica/profesidiomas/inglesadultos/_layouts/15/Doc.aspx?sourcedoc=%7BF4611292-FCD8-4C1F-897B-1F77B354046A%7D&file=grammar%20reference%20%20for%20A-AN%20SOME%20ANY%20-%20Copia.pptx&action=embedview&mobileredirect=true', type: 'reference' },
           { label: 'Practice: A/Some/Any (test-english.com)', url: 'https://test-english.com/grammar-points/a1/a-some-any-countable-uncountable/', type: 'reference' },
         ],
       },
@@ -924,8 +924,8 @@ const activitiesData: {
         example: '"I buy a lot of snacks" — "a lot of" works with both countable and uncountable. "I spend much time shopping" — "much" with uncountable.',
         teacherNote: 'Multiple online practice links available. Include the each/every/all worksheet from Business Grammar and Practice (Collins).',
         links: [
-          { label: 'Shopping Habits Quiz', url: 'https://eafit.sharepoint.com/:w:/r/sites/IdiomasEAFIT/jefaturacad%C3%A9mica/profesidiomas/inglesadultos/_layouts/15/Doc.aspx?sourcedoc=%7B7C0C9F96-AE50-4AA2-A2A1-D55CD3654F5D%7D&file=shopping%20habits%20quiz.docx&action=default&mobileredirect=true', type: 'worksheet' },
-          { label: 'Highlighted Quantifiers', url: 'https://eafit.sharepoint.com/:w:/r/sites/IdiomasEAFIT/jefaturacad%C3%A9mica/profesidiomas/inglesadultos/_layouts/15/Doc.aspx?sourcedoc=%7B33112595-1123-4B91-B163-DA283738C523%7D&file=highlighted%20quantifiers.docx&action=default&mobileredirect=true', type: 'worksheet' },
+          { label: 'Shopping Habits Quiz', url: 'https://eafit.sharepoint.com/:w:/r/sites/IdiomasEAFIT/jefaturacad%C3%A9mica/profesidiomas/inglesadultos/_layouts/15/Doc.aspx?sourcedoc=%7B7C0C9F96-AE50-4AA2-A2A1-D55CD3654F5D%7D&file=shopping%20habits%20quiz.docx&action=embedview&mobileredirect=true', type: 'worksheet' },
+          { label: 'Highlighted Quantifiers', url: 'https://eafit.sharepoint.com/:w:/r/sites/IdiomasEAFIT/jefaturacad%C3%A9mica/profesidiomas/inglesadultos/_layouts/15/Doc.aspx?sourcedoc=%7B33112595-1123-4B91-B163-DA283738C523%7D&file=highlighted%20quantifiers.docx&action=embedview&mobileredirect=true', type: 'worksheet' },
           { label: 'Sort Quantifiers and Determiners', url: 'https://eafit.sharepoint.com/:p:/r/sites/IdiomasEAFIT/jefaturacad%C3%A9mica/profesidiomas/inglesadultos/_layouts/15/Doc.aspx?sourcedoc=%7B6FD687A7-EC44-4B27-B1E7-767DCCC6E21D%7D&file=sort%20the%20following%20quantifiers%20and%20determiners.pptx&action=edit&mobileredirect=true', type: 'reference' },
           { label: 'Practice: Much/Many/Little/Few (test-english.com)', url: 'https://test-english.com/grammar-points/a2/much-many-little-few-some-any/', type: 'reference' },
           { label: 'This vs These (prowritingaid.com)', url: 'https://prowritingaid.com/grammar/1000142/-these-vs-this-', type: 'reference' },
@@ -943,7 +943,7 @@ const activitiesData: {
         teacherNote: 'Print one board per group. Encourage follow-up questions to extend speaking time.',
         icon: icons.gamepad,
         links: [
-          { label: 'Quantifiers Board Game', url: 'https://eafit.sharepoint.com/:w:/r/sites/IdiomasEAFIT/jefaturacad%C3%A9mica/profesidiomas/inglesadultos/_layouts/15/Doc.aspx?sourcedoc=%7B12749F76-3E6D-4AFE-8EAD-A5A4CF4821B0%7D&file=quantifiers%20board%20game.docx&action=default&mobileredirect=true', type: 'worksheet' },
+          { label: 'Quantifiers Board Game', url: 'https://eafit.sharepoint.com/:w:/r/sites/IdiomasEAFIT/jefaturacad%C3%A9mica/profesidiomas/inglesadultos/_layouts/15/Doc.aspx?sourcedoc=%7B12749F76-3E6D-4AFE-8EAD-A5A4CF4821B0%7D&file=quantifiers%20board%20game.docx&action=embedview&mobileredirect=true', type: 'worksheet' },
         ],
       },
     ],
@@ -984,8 +984,8 @@ const activitiesData: {
         teacherNote: 'Potential summative assessment. Multi-session project. Great for real-world application and community engagement.',
         icon: icons.globe,
         links: [
-          { label: 'Conversation Question Set', url: 'https://eafit.sharepoint.com/:w:/r/sites/IdiomasEAFIT/jefaturacad%C3%A9mica/profesidiomas/inglesadultos/_layouts/15/Doc.aspx?sourcedoc=%7BB38F3051-4C2D-4627-9D0E-423F9385BA7A%7D&file=conversation%20question%20set%20about%20local%20services.docx&action=default&mobileredirect=true', type: 'worksheet' },
-          { label: 'Open-Ended vs Closed-Ended Questions Handout', url: 'https://eafit.sharepoint.com/:w:/r/sites/IdiomasEAFIT/jefaturacad%C3%A9mica/profesidiomas/inglesadultos/_layouts/15/Doc.aspx?sourcedoc=%7B7CF68EE9-60C7-43E9-80D5-92C813EA3F78%7D&file=open%20ended%20vs%20closed%20ended%20questions%20handout.pdf.docx&action=default&mobileredirect=true', type: 'worksheet' },
+          { label: 'Conversation Question Set', url: 'https://eafit.sharepoint.com/:w:/r/sites/IdiomasEAFIT/jefaturacad%C3%A9mica/profesidiomas/inglesadultos/_layouts/15/Doc.aspx?sourcedoc=%7BB38F3051-4C2D-4627-9D0E-423F9385BA7A%7D&file=conversation%20question%20set%20about%20local%20services.docx&action=embedview&mobileredirect=true', type: 'worksheet' },
+          { label: 'Open-Ended vs Closed-Ended Questions Handout', url: 'https://eafit.sharepoint.com/:w:/r/sites/IdiomasEAFIT/jefaturacad%C3%A9mica/profesidiomas/inglesadultos/_layouts/15/Doc.aspx?sourcedoc=%7B7CF68EE9-60C7-43E9-80D5-92C813EA3F78%7D&file=open%20ended%20vs%20closed%20ended%20questions%20handout.pdf.docx&action=embedview&mobileredirect=true', type: 'worksheet' },
         ],
       },
     ],
@@ -2825,33 +2825,301 @@ export default function EnglishCoursePresentation() {
                   </CardContent>
                 </Card>
 
-                <Card className="border-2 border-indigo-200">
-                  <CardHeader className="bg-gradient-to-r from-indigo-50 to-blue-50 rounded-t-lg">
+                {/* Practice & Application (Closing) */}
+                <Card className="border-2 border-emerald-200">
+                  <CardHeader className="bg-gradient-to-r from-emerald-50 to-teal-50 rounded-t-lg">
+                    <CardTitle className="flex items-center gap-2 text-emerald-700">
+                      <Icon icon={icons.checkCircle} className="w-5 h-5" />
+                      Practice & Application
+                    </CardTitle>
+                    <CardDescription>Consolidate and apply your new knowledge!</CardDescription>
+                  </CardHeader>
+                  <CardContent className="pt-6">
+                    <div className="grid md:grid-cols-2 gap-4">
+                      {activities.closing.map((activity, idx) => {
+                        const activityIcon = activity.icon || icons.checkCircle
+                        const isFavorite = favorites.includes(activity.title)
+                        const activityId = getActivityId(unitKey, 'closing', activity.title, idx)
+                        const isCompleted = !!completedActivities[activityId]
+                        return (
+                          <motion.div
+                            key={activityId}
+                            role="button"
+                            tabIndex={0}
+                            whileHover={{ y: -3, scale: 1.01 }}
+                            whileTap={{ scale: 0.99 }}
+                            onClick={() => openExpandedActivity('closing', 'Practice & Application', unitKey, activityId, activity)}
+                            onKeyDown={(e) => {
+                              if (e.key === 'Enter' || e.key === ' ') {
+                                e.preventDefault()
+                                openExpandedActivity('closing', 'Practice & Application', unitKey, activityId, activity)
+                              }
+                            }}
+                            className={`cursor-pointer p-4 rounded-xl border relative hover:border-emerald-200 hover:shadow-lg transition-all ${isCompleted ? 'bg-emerald-50 border-emerald-300' : 'bg-emerald-50 border-emerald-100'
+                              }`}
+                          >
+                            <div className="-mt-4 -mx-4 mb-4 relative h-36 border-b group overflow-hidden bg-slate-100 rounded-t-xl">
+                              <Image 
+                                src={`https://images.unsplash.com/photo-${stageImages.closing}?auto=format&fit=crop&q=80&w=600&h=300`} 
+                                alt={activity.title} 
+                                fill 
+                                className="object-cover transition-transform duration-500 group-hover:scale-105" 
+                              />
+                            </div>
+                            <div
+                              role="button"
+                              tabIndex={0}
+                              onClick={(e) => {
+                                e.stopPropagation()
+                                toggleFavorite(activity.title)
+                              }}
+                              onKeyDown={(e) => {
+                                if (e.key === 'Enter' || e.key === ' ') {
+                                  e.preventDefault()
+                                  e.stopPropagation()
+                                  toggleFavorite(activity.title)
+                                }
+                              }}
+                              className="absolute top-3 right-3 cursor-pointer"
+                            >
+                              <Icon icon={isFavorite ? icons.heart : icons.heartOutline} className={`w-4 h-4 ${isFavorite ? 'text-pink-500' : 'text-slate-300'}`} />
+                            </div>
+                            <Icon icon={activityIcon} className="w-8 h-8 text-emerald-500 mb-3" />
+                            <Badge className="bg-emerald-100 text-emerald-700 mb-2">{activity.time}</Badge>
+                            <div className="mb-2 flex items-center gap-2 pr-6">
+                              <span className="inline-flex h-6 min-w-6 items-center justify-center rounded-full border border-emerald-300 bg-emerald-200 px-1 text-xs font-bold text-emerald-800">
+                                {idx + 1}
+                              </span>
+                              <h4 className="font-semibold text-emerald-800">{activity.title}</h4>
+                            </div>
+                            <div className="mb-2 flex flex-wrap gap-2">
+                              <Button
+                                type="button"
+                                size="sm"
+                                variant={isCompleted ? 'default' : 'outline'}
+                                className={`h-7 px-2 text-xs ${isCompleted ? 'bg-emerald-600 hover:bg-emerald-600' : ''}`}
+                                onClick={(e) => {
+                                  e.stopPropagation()
+                                  toggleActivityCompletion(activityId)
+                                }}
+                              >
+                                <Icon icon={isCompleted ? icons.checkCircle : icons.task} className="mr-1 h-3.5 w-3.5" />
+                                {isCompleted ? 'Completed' : 'Mark Done'}
+                              </Button>
+                              <Button
+                                type="button"
+                                size="sm"
+                                variant="outline"
+                                className="h-7 px-2 text-xs"
+                                onClick={(e) => {
+                                  e.stopPropagation()
+                                  toggleInlinePanel(activityId)
+                                }}
+                              >
+                                <Icon icon={icons.accordion} className="mr-1 h-3.5 w-3.5" />
+                                {expandedInlinePanels[activityId] ? 'Hide Steps' : 'Show Steps'}
+                              </Button>
+                            </div>
+                            <p className="text-sm text-slate-700 mb-2">{isChecklistMode ? 'Closing checkpoint: verify outcomes and clean up workspace.' : activity.studentTask}</p>
+                            {activity.example && (
+                              <p className="text-xs text-emerald-700 italic bg-white p-2 rounded">{activity.example}</p>
+                            )}
+                            {showTeacherNotes && (
+                              <div className="mt-2 p-2 bg-emerald-50 rounded-lg border border-emerald-200">
+                                <p className="text-xs text-emerald-800">
+                                  <strong className="inline-flex items-center gap-1">
+                                    <Icon icon={icons.teacher} className="w-4 h-4" />
+                                    Teacher:
+                                  </strong>{' '}
+                                  {activity.teacherNote}
+                                </p>
+                              </div>
+                            )}
+                            {renderInstructionPanel(unitKey, activity, activityId)}
+                          </motion.div>
+                        )
+                      })}
+                    </div>
+                  </CardContent>
+                </Card>
+
+                {/* Living the Learning */}
+                <Card className="border-2 border-orange-200">
+                  <CardHeader className="bg-gradient-to-r from-orange-50 to-amber-50 rounded-t-lg">
+                    <CardTitle className="flex items-center gap-2 text-orange-700">
+                      <Icon icon={icons.star} className="w-5 h-5" />
+                      Living the Learning
+                    </CardTitle>
+                    <CardDescription>Bring your learning to life beyond the classroom!</CardDescription>
+                  </CardHeader>
+                  <CardContent className="pt-6">
+                    <div className="grid gap-4">
+                      {activities.livingLearning.map((activity, idx) => {
+                        const activityIcon = activity.icon || icons.star
+                        const isFavorite = favorites.includes(activity.title)
+                        const activityId = getActivityId(unitKey, 'livingLearning', activity.title, idx)
+                        const isCompleted = !!completedActivities[activityId]
+                        return (
+                          <motion.div
+                            key={activityId}
+                            role="button"
+                            tabIndex={0}
+                            whileHover={{ y: -3, scale: 1.01 }}
+                            whileTap={{ scale: 0.99 }}
+                            onClick={() => openExpandedActivity('livingLearning', 'Living the Learning', unitKey, activityId, activity)}
+                            onKeyDown={(e) => {
+                              if (e.key === 'Enter' || e.key === ' ') {
+                                e.preventDefault()
+                                openExpandedActivity('livingLearning', 'Living the Learning', unitKey, activityId, activity)
+                              }
+                            }}
+                            className={`cursor-pointer p-4 rounded-xl border relative hover:border-orange-200 hover:shadow-lg transition-all ${isCompleted ? 'bg-emerald-50 border-emerald-300' : 'bg-orange-50 border-orange-100'
+                              }`}
+                          >
+                            <div className="-mt-4 -mx-4 mb-4 relative h-36 border-b group overflow-hidden bg-slate-100 rounded-t-xl">
+                              <Image 
+                                src={`https://images.unsplash.com/photo-${stageImages.livingLearning}?auto=format&fit=crop&q=80&w=600&h=300`} 
+                                alt={activity.title} 
+                                fill 
+                                className="object-cover transition-transform duration-500 group-hover:scale-105" 
+                              />
+                            </div>
+                            <div
+                              role="button"
+                              tabIndex={0}
+                              onClick={(e) => {
+                                e.stopPropagation()
+                                toggleFavorite(activity.title)
+                              }}
+                              onKeyDown={(e) => {
+                                if (e.key === 'Enter' || e.key === ' ') {
+                                  e.preventDefault()
+                                  e.stopPropagation()
+                                  toggleFavorite(activity.title)
+                                }
+                              }}
+                              className="absolute top-3 right-3 cursor-pointer"
+                            >
+                              <Icon icon={isFavorite ? icons.heart : icons.heartOutline} className={`w-4 h-4 ${isFavorite ? 'text-pink-500' : 'text-slate-300'}`} />
+                            </div>
+                            <Icon icon={activityIcon} className="w-8 h-8 text-orange-500 mb-3" />
+                            <Badge className="bg-orange-100 text-orange-700 mb-2">{activity.time}</Badge>
+                            <div className="mb-2 flex items-center gap-2 pr-6">
+                              <span className="inline-flex h-6 min-w-6 items-center justify-center rounded-full border border-orange-300 bg-orange-200 px-1 text-xs font-bold text-orange-800">
+                                {idx + 1}
+                              </span>
+                              <h4 className="font-semibold text-orange-800">{activity.title}</h4>
+                            </div>
+                            <div className="mb-2 flex flex-wrap gap-2">
+                              <Button
+                                type="button"
+                                size="sm"
+                                variant={isCompleted ? 'default' : 'outline'}
+                                className={`h-7 px-2 text-xs ${isCompleted ? 'bg-emerald-600 hover:bg-emerald-600' : ''}`}
+                                onClick={(e) => {
+                                  e.stopPropagation()
+                                  toggleActivityCompletion(activityId)
+                                }}
+                              >
+                                <Icon icon={isCompleted ? icons.checkCircle : icons.task} className="mr-1 h-3.5 w-3.5" />
+                                {isCompleted ? 'Completed' : 'Mark Done'}
+                              </Button>
+                              <Button
+                                type="button"
+                                size="sm"
+                                variant="outline"
+                                className="h-7 px-2 text-xs"
+                                onClick={(e) => {
+                                  e.stopPropagation()
+                                  toggleInlinePanel(activityId)
+                                }}
+                              >
+                                <Icon icon={icons.accordion} className="mr-1 h-3.5 w-3.5" />
+                                {expandedInlinePanels[activityId] ? 'Hide Steps' : 'Show Steps'}
+                              </Button>
+                            </div>
+                            <p className="text-sm text-slate-700 mb-2">{isChecklistMode ? 'Living the Learning checkpoint: apply target forms in real-world contexts.' : activity.studentTask}</p>
+                            {activity.example && (
+                              <p className="text-xs text-orange-700 italic bg-white p-2 rounded">{activity.example}</p>
+                            )}
+                            {showTeacherNotes && (
+                              <div className="mt-2 p-2 bg-orange-50 rounded-lg border border-orange-200">
+                                <p className="text-xs text-orange-800">
+                                  <strong className="inline-flex items-center gap-1">
+                                    <Icon icon={icons.teacher} className="w-4 h-4" />
+                                    Teacher:
+                                  </strong>{' '}
+                                  {activity.teacherNote}
+                                </p>
+                              </div>
+                            )}
+                            {renderInstructionPanel(unitKey, activity, activityId)}
+                          </motion.div>
+                        )
+                      })}
+                    </div>
+                  </CardContent>
+                </Card>
+
+                {/* Assessment Section */}
+                <Card className="border-2 border-indigo-200 overflow-hidden">
+                  <CardHeader className="bg-gradient-to-r from-indigo-50 to-blue-50">
                     <CardTitle className="flex items-center gap-2 text-indigo-700">
                       <Icon icon={icons.task} className="w-5 h-5" />
                       Assessment Instructions - Unit {unit.id}
                     </CardTitle>
                     <CardDescription>
-                      Complete application assessment instructions for Unit {unit.id}.
+                      Complete instructions and rubrics for this unit.
                     </CardDescription>
                   </CardHeader>
-                  <CardContent className="pt-6">
-                    <div className="flex flex-col items-center justify-center p-12 text-center rounded-xl border border-slate-200 bg-slate-50">
-                      <div className="w-16 h-16 rounded-full bg-indigo-100 flex items-center justify-center mb-4 shadow-inner">
-                        <Icon icon={icons.task} className="w-8 h-8 text-indigo-600" />
-                      </div>
-                      <h3 className="text-xl font-bold text-slate-800 mb-2">Ready for the assessment?</h3>
-                      <p className="text-slate-600 mb-6 max-w-md mx-auto">
-                        The complete instructions, rubrics, and materials for this unit's final assessment are available on a separate page.
-                      </p>
+                  <CardContent className="p-0 h-[600px] relative">
+                    <iframe 
+                      src={`/assessments/assessment_instructions_unit_${unit.id}.html`}
+                      className="w-full h-full border-none"
+                      title={`Assessment Unit ${unit.id}`}
+                    />
+                    <div className="absolute bottom-4 right-4 print:hidden">
                       <a href={`/assessments/assessment_instructions_unit_${unit.id}.html`} target="_blank" rel="noopener noreferrer">
-                        <Button size="lg" className="gap-2 bg-indigo-600 hover:bg-indigo-700 text-white shadow-md transition-all hover:shadow-lg">
-                          Open Assessment Page <Icon icon={icons.chevronRight} className="w-4 h-4" />
+                        <Button size="sm" variant="outline" className="bg-white/80 backdrop-blur shadow-sm hover:bg-white">
+                          <Icon icon="lucide:external-link" className="w-4 h-4 mr-2" /> Open Full Screen
                         </Button>
                       </a>
                     </div>
                   </CardContent>
                 </Card>
+
+                {/* Navigation */}
+                <div className="flex justify-between items-center pt-8 border-t border-slate-100">
+                  <Button
+                    variant="outline"
+                    onClick={() => {
+                      if (currentUnit > 0) {
+                        setCurrentUnit(currentUnit - 1)
+                        setActiveSection('overview')
+                        closeExpandedActivity()
+                      }
+                    }}
+                    disabled={currentUnit === 0}
+                    className="gap-2"
+                  >
+                    <Icon icon={icons.chevronLeft} className="w-4 h-4" />
+                    <span>Previous Unit</span>
+                  </Button>
+                  <Button
+                    onClick={() => {
+                      if (currentUnit < units.length - 1) {
+                        setCurrentUnit(currentUnit + 1)
+                        setActiveSection('overview')
+                        closeExpandedActivity()
+                      }
+                    }}
+                    disabled={currentUnit === units.length - 1}
+                    className={`gap-2 bg-gradient-to-r ${unit.color} text-white hover:opacity-90`}
+                  >
+                    <span>Next Unit</span>
+                    <Icon icon={icons.chevronRight} className="w-4 h-4" />
+                  </Button>
+                </div>
               </TabsContent>
 
               {/* Games Tab */}
@@ -3350,7 +3618,7 @@ export default function EnglishCoursePresentation() {
                     <div className="bg-slate-50 rounded-2xl p-6 border border-slate-100 shadow-sm">
                       <h5 className="text-sm font-bold uppercase tracking-wider text-slate-800 mb-4 flex items-center gap-2">
                         <div className="w-1.5 h-6 bg-indigo-500 rounded-full" />
-                        Instructions
+                        Activity Overview
                       </h5>
                       <p className="text-slate-700 leading-relaxed text-lg font-medium">
                         {expandedActivity.activity.studentTask}
@@ -3509,60 +3777,102 @@ export default function EnglishCoursePresentation() {
                     )}
                   </div>
 
-                  {/* Resource Links Section */}
+                  {/* Resource Links and Embedding Section */}
                   {(() => {
                     const act = expandedActivity.activity as any
                     if (!act.links || act.links.length === 0) return null
+                    
+                    const imageLinks = act.links.filter((l: any) => l.type === 'images')
+                    const otherLinks = act.links.filter((l: any) => l.type !== 'images')
+
                     return (
-                      <div className="pt-6 border-t border-slate-100">
-                        <h4 className="text-sm font-bold uppercase tracking-widest text-slate-400 mb-4 flex items-center gap-2">
-                          <Icon icon="lucide:link-2" className="w-4 h-4" />
-                          Resources
-                        </h4>
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                          {act.links.map((link: ResourceLink, i: number) => (
-                            <a
-                              key={i}
-                              href={link.url}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className={`group flex items-center gap-3 p-4 rounded-xl border transition-all hover:shadow-md ${
-                                link.type === 'video' ? 'bg-rose-50 border-rose-100 hover:border-rose-200' :
-                                link.type === 'audio' ? 'bg-purple-50 border-purple-100 hover:border-purple-200' :
-                                link.type === 'worksheet' ? 'bg-blue-50 border-blue-100 hover:border-blue-200' :
-                                link.type === 'images' ? 'bg-emerald-50 border-emerald-100 hover:border-emerald-200' :
-                                'bg-slate-50 border-slate-100 hover:border-slate-200'
-                              }`}
-                            >
-                              <div className={`w-10 h-10 rounded-full flex items-center justify-center shadow-sm group-hover:scale-110 transition-transform ${
-                                link.type === 'video' ? 'bg-rose-500 text-white' :
-                                link.type === 'audio' ? 'bg-purple-500 text-white' :
-                                link.type === 'worksheet' ? 'bg-blue-500 text-white' :
-                                link.type === 'images' ? 'bg-emerald-500 text-white' :
-                                'bg-slate-500 text-white'
-                              }`}>
-                                <Icon icon={
-                                  link.type === 'video' ? 'lucide:play-circle' :
-                                  link.type === 'audio' ? 'lucide:headphones' :
-                                  link.type === 'worksheet' ? 'lucide:file-text' :
-                                  link.type === 'images' ? 'lucide:image' :
-                                  'lucide:external-link'
-                                } className="w-5 h-5" />
-                              </div>
-                              <div className="flex-1 min-w-0">
-                                <p className={`text-sm font-bold truncate ${
-                                  link.type === 'video' ? 'text-rose-900' :
-                                  link.type === 'audio' ? 'text-purple-900' :
-                                  link.type === 'worksheet' ? 'text-blue-900' :
-                                  link.type === 'images' ? 'text-emerald-900' :
-                                  'text-slate-900'
-                                }`}>{link.label}</p>
-                                <p className="text-[10px] font-medium opacity-60 uppercase tracking-tighter">Click to launch resource</p>
-                              </div>
-                              <Icon icon="lucide:arrow-up-right" className="w-4 h-4 opacity-30 group-hover:opacity-100 transition-opacity" />
-                            </a>
-                          ))}
-                        </div>
+                      <div className="pt-6 border-t border-slate-100 space-y-6">
+                        {/* Image Embedding Section */}
+                        {imageLinks.length > 0 && (
+                          <div className="space-y-4">
+                            <h4 className="text-sm font-bold uppercase tracking-widest text-slate-400 flex items-center gap-2">
+                              <Icon icon="lucide:image" className="w-4 h-4" />
+                              Embedded Resources
+                            </h4>
+                            <div className="grid grid-cols-1 gap-6">
+                              {imageLinks.map((link: ResourceLink, i: number) => {
+                                // Try to convert SharePoint link to embed link if possible
+                                let embedUrl = link.url
+                                if (embedUrl.includes('Doc.aspx') && !embedUrl.includes('action=embedview')) {
+                                  embedUrl = embedUrl.replace('action=embedview', 'action=embedview')
+                                }
+                                return (
+                                  <div key={`embed-${i}`} className="space-y-3">
+                                    <div className="flex items-center justify-between">
+                                      <span className="text-xs font-semibold text-slate-500">{link.label}</span>
+                                      <a href={link.url} target="_blank" rel="noopener noreferrer" className="text-[10px] text-indigo-600 hover:underline flex items-center gap-1">
+                                        Open in New Tab <Icon icon="lucide:external-link" className="w-2.5 h-2.5" />
+                                      </a>
+                                    </div>
+                                    <div className="rounded-2xl overflow-hidden border border-slate-200 bg-slate-50 h-[500px] shadow-inner relative group">
+                                      <iframe 
+                                        src={embedUrl}
+                                        className="w-full h-full border-none"
+                                        title={link.label}
+                                      />
+                                      <div className="absolute inset-0 pointer-events-none border-2 border-transparent group-hover:border-indigo-500/20 transition-colors rounded-2xl" />
+                                    </div>
+                                  </div>
+                                )
+                              })}
+                            </div>
+                          </div>
+                        )}
+
+                        {/* Other Resources Grid */}
+                        {otherLinks.length > 0 && (
+                          <div className="space-y-4">
+                            <h4 className="text-sm font-bold uppercase tracking-widest text-slate-400 flex items-center gap-2">
+                              <Icon icon="lucide:link-2" className="w-4 h-4" />
+                              Resources & Materials
+                            </h4>
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                              {otherLinks.map((link: ResourceLink, i: number) => (
+                                <a
+                                  key={i}
+                                  href={link.url}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  className={`group flex items-center gap-3 p-4 rounded-xl border transition-all hover:shadow-md ${
+                                    link.type === 'video' ? 'bg-rose-50 border-rose-100 hover:border-rose-200' :
+                                    link.type === 'audio' ? 'bg-purple-50 border-purple-100 hover:border-purple-200' :
+                                    link.type === 'worksheet' ? 'bg-blue-50 border-blue-100 hover:border-blue-200' :
+                                    'bg-slate-50 border-slate-100 hover:border-slate-200'
+                                  }`}
+                                >
+                                  <div className={`w-10 h-10 rounded-full flex items-center justify-center shadow-sm group-hover:scale-110 transition-transform ${
+                                    link.type === 'video' ? 'bg-rose-500 text-white' :
+                                    link.type === 'audio' ? 'bg-purple-500 text-white' :
+                                    link.type === 'worksheet' ? 'bg-blue-500 text-white' :
+                                    'bg-slate-500 text-white'
+                                  }`}>
+                                    <Icon icon={
+                                      link.type === 'video' ? 'lucide:play-circle' :
+                                      link.type === 'audio' ? 'lucide:headphones' :
+                                      link.type === 'worksheet' ? 'lucide:file-text' :
+                                      'lucide:external-link'
+                                    } className="w-5 h-5" />
+                                  </div>
+                                  <div className="flex-1 min-w-0">
+                                    <p className={`text-sm font-bold truncate ${
+                                      link.type === 'video' ? 'text-rose-900' :
+                                      link.type === 'audio' ? 'text-purple-900' :
+                                      link.type === 'worksheet' ? 'text-blue-900' :
+                                      'text-slate-900'
+                                    }`}>{link.label}</p>
+                                    <p className="text-[10px] font-medium opacity-60 uppercase tracking-tighter">Click to launch resource</p>
+                                  </div>
+                                  <Icon icon="lucide:arrow-up-right" className="w-4 h-4 opacity-30 group-hover:opacity-100 transition-opacity" />
+                                </a>
+                              ))}
+                            </div>
+                          </div>
+                        )}
                       </div>
                     )
                   })()}
