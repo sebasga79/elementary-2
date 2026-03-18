@@ -59,6 +59,12 @@ const icons = {
   palette: 'lucide:palette',
 }
 
+type ResourceLink = {
+  label: string
+  url: string
+  type: 'video' | 'worksheet' | 'reference' | 'audio' | 'images'
+}
+
 type WarmUp = {
   title: string
   instructions: string
@@ -66,6 +72,7 @@ type WarmUp = {
   materials: string
   teacherNote: string
   audioSrc?: string
+  links?: ResourceLink[]
 }
 
 type Activity = {
@@ -76,6 +83,7 @@ type Activity = {
   example?: string
   teacherNote: string
   icon?: string
+  links?: ResourceLink[]
 }
 
 type ExpandedActivity = {
@@ -103,6 +111,8 @@ const activityStageMeta = [
   { key: 'reflection' as const, label: 'Reflective Observation', shortLabel: 'Reflect', icon: icons.eye, color: 'bg-amber-500' },
   { key: 'abstract' as const, label: 'Abstract Conceptualization', shortLabel: 'Understand', icon: icons.lightbulb, color: 'bg-blue-500' },
   { key: 'practice' as const, label: 'Active Experimentation', shortLabel: 'Apply', icon: icons.rocket, color: 'bg-violet-500' },
+  { key: 'closing' as const, label: 'Closing Activities', shortLabel: 'Closing', icon: icons.star, color: 'bg-pink-500' },
+  { key: 'livingLearning' as const, label: 'Living Learning Environment', shortLabel: 'LLE', icon: icons.globe, color: 'bg-teal-500' },
 ]
 
 const units = [
@@ -206,435 +216,826 @@ const activitiesData: {
     reflection: Activity[]
     abstract: Activity[]
     practice: Activity[]
+    closing: Activity[]
+    livingLearning: Activity[]
   }
 } = {
   unit1: {
     warmUps: [
       {
-        title: 'Small Wins Bingo',
-        instructions: 'Walk around the class with your bingo card. Each square has a "small win" like "cooked a meal," "learned a new word," or "helped someone." Find classmates who have done these things, write their names, and try to complete a line. Use comparative forms when you talk: "That\'s easier than my small win!"',
+        title: 'Celebrations Kickoff',
+        instructions: 'Your teacher introduces the unit on celebrations through two lenses: big public celebrations (festivals, religious, national) and intimate family celebrations. On the board you will see "Celebrations" with a mini word bank (celebration, festival, tradition, custom) under two headers: "Everyday (family/intimate)" and "Big (festivals/religious/national)." Work in pairs, choose one question from each section of the question bank your teacher displays, discuss, and then share your answers with the class.',
         time: '10 min',
-        materials: 'Bingo cards with small wins',
-        teacherNote: 'Pre-teach comparison phrases before starting. Encourage movement and real conversations.',
+        materials: 'Question bank (printed or projected)',
+        teacherNote: 'Introduce the two lenses clearly. Provide a printed or projected question bank for pairs to select from.',
       },
       {
-        title: 'Guess the Celebration',
-        instructions: 'Look at the photos your teacher shows on the screen. Each photo shows a different celebration or milestone around the world. With your partner, guess what the celebration is, describe what you see using adjectives, and compare: "This looks more exciting than a birthday party!" Share your guesses with the class.',
-        time: '10 min',
-        materials: 'Photos of celebrations from different cultures',
-        teacherNote: 'Use diverse images: weddings, quinceañeras, Diwali, harvest festivals, etc. Build cultural awareness.',
+        title: 'Image Spark: Festival Photos',
+        instructions: 'Your teacher shows photos of a street parade (e.g., Chinese New Year). Describe what you see: "What can you see? What\'s happening? Where? Who\'s involved?" Learn vocabulary like "parade" and "costume." In pairs, discuss: (1) What do you celebrate each year? (2) What parties or festivals do you go to? (3) Tell about one you enjoyed — why? The class shares representative ideas and emergent vocabulary.',
+        time: '15 min',
+        materials: 'Festival photos, discussion prompts',
+        teacherNote: 'Elicit descriptions before teaching vocabulary. Confirm/teach words like "parade" and "costume." Harvest representative ideas and emergent vocabulary from the whole class.',
+        links: [
+          { label: 'Festival Photos', url: 'https://eafit.sharepoint.com/:w:/r/sites/IdiomasEAFIT/jefaturacad%C3%A9mica/profesidiomas/inglesadultos/_layouts/15/Doc.aspx?sourcedoc=%7B3E1AED30-451E-4D46-9BAB-1885FCD84A08%7D&file=festival%20photos.docx&action=default&mobileredirect=true', type: 'images' },
+        ],
       },
       {
-        title: 'Music & Milestones',
-        instructions: 'Listen to the background music. While the music plays, walk around the classroom. When the music stops, pair up with the person nearest to you and share one personal milestone. Then compare using: "My milestone is bigger/smaller/more important than yours." After 3 rounds, share the most interesting milestone you heard.',
-        time: '10 min',
-        materials: 'Background music, timer',
-        teacherNote: 'Keep rounds short for energy. Model the comparative sentence structure first.',
-        audioSrc: BACKGROUND_MUSIC_SRC,
+        title: 'Think-Pair-Share: What is a Celebration?',
+        instructions: 'Write a short personal definition of "celebration." In pairs, compare your definitions and share a personal experience of a family/intimate celebration and one public celebration. Then the class builds a mind map on the board distinguishing celebration, festival, tradition, and custom, clarifying overlaps and differences.',
+        time: '15 min',
+        materials: 'Board or whiteboard for mind map',
+        teacherNote: 'Guide the mind map construction to clarify overlaps between celebration, festival, tradition, and custom. Encourage personal examples.',
       },
     ],
     concreteExperience: [
       {
-        title: 'My Achievement Timeline',
-        studentTask: 'Create a visual timeline of 6-8 personal achievements, from small everyday wins (like learning to ride a bike) to major life events (like winning a competition). Draw or write each one on a card, place them in order from smallest to biggest, and then present your timeline to a partner. Compare your achievements: "Getting my first job was more challenging than passing my driving test." Your partner asks at least 2 follow-up questions.',
-        time: '30 min',
-        materials: 'Cards/sticky notes, markers, timeline template',
-        example: 'Getting my driver\'s license was more difficult than I expected, but graduating was the proudest moment.',
-        teacherNote: 'Provide sentence frames for weaker students. Encourage genuine personal stories.',
-        icon: icons.award,
+        title: 'Celebration Snapshots',
+        studentTask: 'Watch 3-5 short video clips of celebrations from around the world. Individually, take notes on: (a) Key elements of each celebration (music, dance, food, clothing, symbols, colors); (b) How each celebration reflects its culture and traditions; (c) Similarities/differences from your own culture. In pairs, discuss your notes, capture your partner\'s ideas, and record new insights. Each pair shares key takeaways plus one unique aspect with the whole class.',
+        time: '40 min',
+        materials: '3-5 celebration videos (e.g., Carnival of Barranquilla, Day of the Dead, Frevo/Carnival of Recife, Dancing Devils of Corpus Christi, Carnival of Binche, Notting Hill Carnival, Holi, Ethiopian Epiphany, Chinese New Year, Kwanzaa)',
+        example: 'The Carnival of Barranquilla has more colorful costumes than Notting Hill Carnival, but both are very lively.',
+        teacherNote: 'Curate 3-5 clips from the suggested list. Links are reference only — substitute with other global/multicultural resources as needed.',
+        icon: icons.play,
+        links: [
+          { label: 'Carnival of Barranquilla (UNESCO)', url: 'https://ich.unesco.org/en/video/41501?utm', type: 'video' },
+          { label: 'Frevo / Carnival of Recife (UNESCO)', url: 'https://ich.unesco.org/en/video/41645?utm', type: 'video' },
+          { label: 'Dancing Devils of Corpus Christi (UNESCO)', url: 'https://ich.unesco.org/en/video/17448?utm_source=chatgpt.com', type: 'video' },
+          { label: 'Carnival of Binche (UNESCO)', url: 'https://ich.unesco.org/en/video/11136?utm', type: 'video' },
+          { label: 'Day of the Dead (UNESCO)', url: 'https://ich.unesco.org/en/video/41412?utm', type: 'video' },
+          { label: 'Notting Hill Carnival', url: 'https://www.youtube.com/watch?v=2HVMT4j6_mo', type: 'video' },
+          { label: 'Holi Festival', url: 'https://www.youtube.com/watch?v=wTfYhG2mOSA&list=PLgJlvqHX-3eIjI7to3n6KCWRopj8tAZ4j&index=2', type: 'video' },
+          { label: 'Ethiopian Epiphany (UNESCO)', url: 'https://ich.unesco.org/en/video/48612?id=48612&utm', type: 'video' },
+          { label: 'Chinese New Year (PBS)', url: 'https://www.pbslearningmedia.org/resource/68938b4e-1e68-4727-8f2d-cc341ed93b11/chinese-new-year-all-about-the-holidays/?student=true', type: 'video' },
+          { label: 'Kwanzaa (PBS)', url: 'https://www.pbslearningmedia.org/resource/f4984514-f9c9-4b4b-81bb-e04a39d45899/kwanzaa-all-about-the-holidays/?student=true', type: 'video' },
+        ],
       },
       {
-        title: 'Celebration Photo Gallery Walk',
-        studentTask: 'Walk around the classroom and look at the gallery of celebration photos posted on the walls. For each photo, write in your observation sheet: What celebration is it? What adjectives describe it? Then compare at least 3 celebrations with a classmate: "A graduation ceremony is more formal than a birthday party." Finally, choose the celebration you find most interesting and explain why to your group.',
-        time: '25 min',
-        materials: 'Printed celebration photos, observation worksheets',
-        example: "A wedding is the most emotional celebration I've seen here.",
-        teacherNote: 'Include celebrations from Colombia and other cultures. Post photos around the room gallery-style.',
+        title: 'Celebration Gallery Walk: Exploring Global Festivities',
+        studentTask: 'Walk around the room and look at 8-10 celebration photos (Colombia, LATAM, and global) posted on the walls. With markers, write short notes at each photo guided by these criteria: Place (where?), People (who?), Activities (what happens?), Meaning (symbols/values?), Energy (quiet/lively?), Access (private/public?). Rotate clockwise in pairs, adding notes at each photo. At the end, each pair presents one similarity, one difference, and one unique aspect they observed.',
+        time: '35 min',
+        materials: '8-10 celebration photos (printed or projected, including both public/community festivals and private/family celebrations); markers; guiding criteria visible near each photo. Alternative: Padlet, Jamboard, or Google Slides.',
+        example: 'A wedding is more private than a street carnival, but both have the most joyful energy.',
+        teacherNote: 'Include both public/community festivals and private/family celebrations (weddings, birthdays, gatherings). Post guiding criteria near each photo.',
         icon: icons.camera,
+        links: [
+          { label: 'Celebration Photos', url: 'https://eafit.sharepoint.com/:w:/r/sites/IdiomasEAFIT/jefaturacad%C3%A9mica/profesidiomas/inglesadultos/_layouts/15/Doc.aspx?sourcedoc=%7BB0BA6CF8-2D73-41D2-B6B0-8FA6532080BE%7D&file=celebration%20photos.docx&action=default&mobileredirect=true', type: 'images' },
+        ],
       },
       {
-        title: 'Achievement Speed Dating',
-        studentTask: 'Sit in two rows facing each other. You have 2 minutes with each partner. Share one achievement you are proud of and listen to theirs. After each round, compare achievements: "Your achievement sounds harder than mine" or "My achievement is as exciting as yours." When the teacher says "switch," one row moves to the next person. After 4-5 rounds, tell the class about the most impressive achievement you heard.',
-        time: '20 min',
-        materials: 'Timer, conversation prompt cards',
-        example: "Learning to cook for my family was harder than I thought, but it's the best thing I've done.",
-        teacherNote: 'Model the activity with a volunteer first. Keep strict time for energy.',
-        icon: icons.users,
+        title: 'Family Celebration Portraits',
+        studentTask: 'Pre-class homework: Bring a printed photo of a family celebration and answer the worksheet questions: Who is in this photo? What is the family celebrating? Why? When? What do they do to celebrate? What special traditions are involved? How do you feel looking at this photo? Why? In class, do a pair interview where you share your celebration details with a partner. Then do a mini gallery walk: display worksheets on walls/desks or scroll Padlet. Leave one brief comment or question per portrait.',
+        time: '45 min',
+        materials: 'Printed photo (or drawing) of a family celebration; Family Celebration Portrait Worksheet; sticky notes or Padlet for comments. Digital option: Padlet with one column per question.',
+        example: 'My family\'s Christmas dinner is bigger than my birthday party, but my birthday feels more personal.',
+        teacherNote: 'Assign the pre-class homework in advance. Provide a digital option (Padlet) for students who prefer it. Encourage genuine sharing.',
+        icon: icons.heart,
+        links: [
+          { label: 'Family Celebration Worksheet', url: 'https://eafit.sharepoint.com/sites/IdiomasEAFIT/jefaturacad%C3%A9mica/profesidiomas/inglesadultos/Documentos%20compartidos/Forms/AllItems.aspx?viewid=3f7bdafa%2D8368%2D47b1%2Da8a1%2D57bd0da68bd5&newTargetListUrl=%2Fsites%2FIdiomasEAFIT%2Fjefaturacad%C3%A9mica%2Fprofesidiomas%2Finglesadultos%2FDocumentos%20compartidos&viewpath=%2Fsites%2FIdiomasEAFIT%2Fjefaturacad%C3%A9mica%2Fprofesidiomas%2Finglesadultos%2FDocumentos%20compartidos%2FForms%2FAllItems%2Easpx&id=%2Fsites%2FIdiomasEAFIT%2Fjefaturacad%C3%A9mica%2Fprofesidiomas%2Finglesadultos%2FDocumentos%20compartidos%2FAdult%20English%20Program%20Curriculum%2FNew%20Curriculum%202026%2FA2%20Elementary%2FElementary%202%2FUnit%201%2FRecursos%2Ffamily%20celebration%20worksheet%2Epdf&parent=%2Fsites%2FIdiomasEAFIT%2Fjefaturacad%C3%A9mica%2Fprofesidiomas%2Finglesadultos%2FDocumentos%20compartidos%2FAdult%20English%20Program%20Curriculum%2FNew%20Curriculum%202026%2FA2%20Elementary%2FElementary%202%2FUnit%201%2FRecursos', type: 'worksheet' },
+        ],
       },
     ],
     reflection: [
       {
-        title: 'Comparison Journal Entry',
-        studentTask: 'In your journal, write a short paragraph (60-80 words) comparing two achievements: one everyday win and one major life event. Use at least 4 comparatives or superlatives. Then read your partner\'s entry and underline all the comparison forms you find. Discuss: Did you use similar structures? Which forms were the hardest to use correctly?',
-        time: '20 min',
-        materials: 'Journals/notebooks, highlighters',
-        example: 'I wrote about passing my exam vs. moving to a new city. Moving was more stressful but more rewarding.',
-        teacherNote: 'Encourage peer correction discussions, not just identification of forms.',
+        title: 'Reflect on Celebration Snapshots (Video Activity)',
+        studentTask: 'Your teacher replays 20-30 seconds from two contrasting video clips or displays two still images. In pairs, share observations using this frame: "I noticed ___ (music/dance/food/clothing/symbols/colors). This shows ___ (value/tradition) because ___." Then discuss as a class: (1) How does this celebration reflect values or community? (2) Identify one similarity and one difference compared to another celebration.',
+        time: '15 min',
+        materials: 'Short video clips or still images (2 contrasting celebrations); sentence frame (projected or on board); optional note-taking slip or mini whiteboards',
+        example: 'I noticed the music at Carnival of Barranquilla is livelier than at the Ethiopian Epiphany. This shows a more festive tradition because...',
+        teacherNote: 'Replay only 20-30 seconds from two contrasting clips. Project the sentence frame for support.',
       },
       {
-        title: 'What Made It Special? Discussion',
-        studentTask: 'In groups of 3-4, discuss the celebrations and achievements from the gallery walk. Each person shares which celebration impacted them most and explains why using comparatives: "The quinceañera was more colorful than the graduation." As a group, rank the top 3 most interesting celebrations and present your ranking to the class with reasons.',
+        title: 'Reflect on Celebration Gallery Walk',
+        studentTask: 'Silently revisit the gallery walls and place two dots on comments you find interesting or confusing. Then in pairs, discuss these guided questions: (1) Which celebration looks more public? Why? (2) Which seems more traditional or more modern? Give one visual clue. (3) Which celebration looks safer? Compare and say why. (4) Which is the most crowded celebration? (5) Who participates more visibly (children/elders/performers)? Compare two photos. (6) Which festival looks more meaningful? Give one evidence-based reason.',
         time: '15 min',
-        materials: 'Notes from gallery walk activity',
-        example: 'We think Diwali is the most colorful celebration because...',
-        teacherNote: 'Push for justification: the ranking should include comparative reasoning.',
+        materials: 'Gallery photos with comments (from CE activity); colored dots or stickers (2 per student); guiding question handout or projected slide; optional summary writing sheet',
+        example: 'The Notting Hill Carnival looks more public than the wedding photo. The Day of the Dead seems the most traditional.',
+        teacherNote: 'Questions move students from observation to inference across cultural dimensions (access, tradition/modernity, safety, scale, roles, meaning). Optional: class discussion or written synthesis.',
       },
       {
-        title: 'Reflection Circle',
-        studentTask: 'Sit in a circle. The teacher will pass around a "talking object." When you hold it, complete one of these sentences: "The biggest challenge I faced was..." / "My proudest moment was..." / "...is more important to me than..." After everyone shares, discuss as a class: What patterns did you notice? What do your classmates value most?',
+        title: 'Reflect on Family Celebration Portraits',
+        studentTask: 'In pairs or small groups, discuss these reflection prompts about the photos and celebrations you observed: (1) What did you notice about the celebrations in other families\' photos? (2) How are the celebrations similar or different from your own family\'s celebration? (3) How did looking at others\' photos make you feel? Why? (4) What new things did you learn about family celebrations from your classmates? A few pairs share reflections with the whole class.',
         time: '15 min',
-        materials: 'A small ball or object to pass',
-        example: 'The biggest challenge I faced was learning English, but it was the best decision I ever made.',
-        teacherNote: 'Create a supportive atmosphere. Keep responses focused on comparatives/superlatives.',
+        materials: 'Display of student celebration portraits (physical or digital); reflection prompts (projected or printed); optional reflection sheet with written responses',
+        example: 'My partner\'s family celebration is simpler than mine, but it seems more meaningful because they focus on being together.',
+        teacherNote: 'Provide an optional written reflection sheet for students who prefer writing. Keep the atmosphere supportive and respectful.',
       },
     ],
     abstract: [
       {
-        title: 'Adjective Sorting Challenge',
-        studentTask: 'Work in small groups. You will receive 20 adjective cards (big, beautiful, good, interesting, bad, tall, expensive, etc.). Sort them into three categories: (1) Short adjectives (+er/+est), (2) Long adjectives (more/most), (3) Irregular (good→better→best). After sorting, write the comparative and superlative forms for each. Check your answers with the answer key. Then create 2 original sentences for each category.',
+        title: 'Listening Comprehension: Festivals Around the World',
+        studentTask: 'Listen to short descriptions of six global celebrations (St. Patrick\'s Day, Moon Festival, Bob Marley Day, Day of the Dead, Kartini Day, St. Lucia\'s Day). Before listening, look at images and share what you know. Learn key words: parade, candles, harvest, concert. Listen once for gist: identify where and when each celebration takes place.',
         time: '25 min',
-        materials: 'Adjective cards, sorting mat, answer key',
-        example: 'Short: tall → taller → the tallest | Long: beautiful → more beautiful → the most beautiful',
-        teacherNote: 'Let students discover rules before confirming. Use discovery-based learning.',
+        materials: 'Audio from english-practice.net (A2 Celebrations); images of the celebrations; listening transcript + answer key',
+        example: 'St. Patrick\'s Day has bigger parades than Kartini Day, but Kartini Day is more meaningful for Indonesian women.',
+        teacherNote: 'Audio source: english-practice.net A2 Celebrations. Pre-teach vocabulary before playing audio. Play once for gist only.',
+        links: [
+          { label: 'Audio: Six Global Celebrations', url: 'https://eafit.sharepoint.com/sites/IdiomasEAFIT/jefaturacad%C3%A9mica/profesidiomas/inglesadultos/_layouts/15/stream.aspx?id=%2Fsites%2FIdiomasEAFIT%2Fjefaturacad%C3%A9mica%2Fprofesidiomas%2Finglesadultos%2FDocumentos%20compartidos%2FAdult%20English%20Program%20Curriculum%2FNew%20Curriculum%202026%2FA2%20Elementary%2FElementary%202%2FUnit%201%2FRecursos%2Fsix%20global%20celebrations%2Emp3&referrer=StreamWebApp%2EWeb&referrerScenario=AddressBarCopied%2Eview%2E11da4d6a%2Da649%2D4b21%2Da110%2Dbb1b5b7f4c7f', type: 'audio' },
+          { label: 'Images About the Celebrations', url: 'https://eafit.sharepoint.com/:w:/r/sites/IdiomasEAFIT/jefaturacad%C3%A9mica/profesidiomas/inglesadultos/_layouts/15/Doc.aspx?sourcedoc=%7B0F2A68E0-B63A-4A31-8835-C14B92F4057C%7D&file=images%20about%20the%20celebrations.docx&action=default&mobileredirect=true', type: 'images' },
+          { label: 'Transcript and Answer Key', url: 'https://eafit.sharepoint.com/:w:/r/sites/IdiomasEAFIT/jefaturacad%C3%A9mica/profesidiomas/inglesadultos/_layouts/15/Doc.aspx?sourcedoc=%7B071C7FF6-E4D9-4D4E-AA3C-205A5F040A3E%7D&file=transcript%20and%20answer%20key.docx&action=default&mobileredirect=true', type: 'worksheet' },
+        ],
       },
       {
-        title: 'Grammar Detective: Find the Pattern',
-        studentTask: 'Read the 10 example sentences your teacher gives you. Each sentence contains a comparative or superlative form. With your partner, highlight all comparison forms and answer these detective questions: (1) When do we add -er/-est? (2) When do we use more/most? (3) Which adjectives are irregular? Write your "grammar rules" in your own words. Compare your rules with another pair.',
-        time: '20 min',
-        materials: 'Detective worksheet with 10 sentences, highlighters',
-        example: '"New York is bigger than Medellín" → short adjective + -er + than',
-        teacherNote: 'Provide sentences with clear patterns. Guide discovery but avoid giving rules directly.',
-      },
-      {
-        title: 'Comparative & Superlative Rule Builders',
-        studentTask: 'Using the patterns you discovered, complete the rule builder chart with your group. Fill in: (1) The rule for 1-syllable adjectives, (2) The rule for 2+ syllable adjectives, (3) Spelling rules (doubling consonants, dropping -e, changing -y to -i), (4) Irregular forms. Then test your rules by creating 5 new sentences and asking another group to check them.',
+        title: 'Guided Discovery of Grammar',
+        studentTask: 'Listen to the audio again. After each description, write down adjectives you hear. Review the grammar reference (Essential Grammar in Use, 3rd Ed, 2007) summarizing comparative and superlative rules and do the included exercises as a class. Look at examples from the audio scripts (e.g., "St. Patrick\'s Day is a bigger festival in the United States than in Ireland"). In pairs, create sentences comparing the celebrations using at least one comparative and one superlative. Prompts: "Which celebration is more colorful?", "Which celebration has the biggest parades?" Share with the class. Complete the fill-in-the-blank worksheet and short writing task.',
         time: '25 min',
-        materials: 'Rule builder chart templates, markers',
-        example: 'Rule: For adjectives ending in -y, change -y to -ier (happy → happier → the happiest)',
-        teacherNote: 'Have students present rules to the class. Correct any misconceptions together.',
+        materials: 'Listening audio (same as Activity 1); transcript; grammar reference (Essential Grammar in Use, 3rd Ed, 2007); fill-in-the-blank + short writing task worksheet',
+        example: 'The Moon Festival is quieter than St. Patrick\'s Day. St. Patrick\'s Day has the biggest parades of all six celebrations.',
+        teacherNote: 'Extension homework: research another celebration from a different country and write a short paragraph using comparatives and superlatives.',
+        links: [
+          { label: 'Grammar Reference (Essential Grammar in Use)', url: 'https://eafit.sharepoint.com/sites/IdiomasEAFIT/jefaturacad%C3%A9mica/profesidiomas/inglesadultos/Documentos%20compartidos/Forms/AllItems.aspx?viewid=3f7bdafa%2D8368%2D47b1%2Da8a1%2D57bd0da68bd5&newTargetListUrl=%2Fsites%2FIdiomasEAFIT%2Fjefaturacad%C3%A9mica%2Fprofesidiomas%2Finglesadultos%2FDocumentos%20compartidos&viewpath=%2Fsites%2FIdiomasEAFIT%2Fjefaturacad%C3%A9mica%2Fprofesidiomas%2Finglesadultos%2FDocumentos%20compartidos%2FForms%2FAllItems%2Easpx&id=%2Fsites%2FIdiomasEAFIT%2Fjefaturacad%C3%A9mica%2Fprofesidiomas%2Finglesadultos%2FDocumentos%20compartidos%2FAdult%20English%20Program%20Curriculum%2FNew%20Curriculum%202026%2FA2%20Elementary%2FElementary%202%2FUnit%201%2FRecursos%2Fgrammar%20reference%20from%20Essential%20%20English%20Grammar%20in%20Use%20%283rd%20Ed%29%20%282007%29%2Epdf&parent=%2Fsites%2FIdiomasEAFIT%2Fjefaturacad%C3%A9mica%2Fprofesidiomas%2Finglesadultos%2FDocumentos%20compartidos%2FAdult%20English%20Program%20Curriculum%2FNew%20Curriculum%202026%2FA2%20Elementary%2FElementary%202%2FUnit%201%2FRecursos', type: 'reference' },
+        ],
       },
       {
-        title: 'Error Hospital',
-        studentTask: 'You are a "grammar doctor." Read 8 sentences with comparison errors. For each one: (1) Find the error, (2) Explain what is wrong, (3) Write the correct version. Examples of errors: "She is more taller than me," "This is the most good restaurant," "He is importanter than his brother." After fixing all errors, exchange with a partner and verify each other\'s corrections.',
-        time: '20 min',
-        materials: 'Error correction worksheet',
-        example: 'Error: "more taller" → Fix: "taller" (short adjective, no need for "more")',
-        teacherNote: 'Include common errors your students actually make. Great diagnostic activity.',
+        title: 'Comparative Bingo',
+        studentTask: 'Look at the projected bingo grid with adjectives. Choose 9 adjectives and write one sentence per square (comparative or superlative) about any topic. The teacher reads one prompt per round (e.g., "-er than", "more/less... than", "the most/least", themed prompts like "longer/longest", "more expensive/most expensive"). If you have a matching sentence, tick the square and read it aloud to validate. Everyone with a matching sentence marks it. First line (row/column/diagonal) shouts "Bingo!" and reads their winning sentences.',
+        time: '25 min',
+        materials: 'Bingo grid with adjectives (projected or printed)',
+        example: '"Cheaper" prompt → "Street food is cheaper than a restaurant meal." | "The most" prompt → "Christmas is the most popular celebration."',
+        teacherNote: 'End with quick board fix of common errors (e.g., "more cheap" → "cheaper", use of "than", "the" with superlatives). Keep energy high.',
+        icon: icons.gamepad,
+        links: [
+          { label: 'Bingo Grid', url: 'https://eafit.sharepoint.com/sites/IdiomasEAFIT/jefaturacad%C3%A9mica/profesidiomas/inglesadultos/Documentos%20compartidos/Forms/AllItems.aspx?viewid=3f7bdafa%2D8368%2D47b1%2Da8a1%2D57bd0da68bd5&newTargetListUrl=%2Fsites%2FIdiomasEAFIT%2Fjefaturacad%C3%A9mica%2Fprofesidiomas%2Finglesadultos%2FDocumentos%20compartidos&viewpath=%2Fsites%2FIdiomasEAFIT%2Fjefaturacad%C3%A9mica%2Fprofesidiomas%2Finglesadultos%2FDocumentos%20compartidos%2FForms%2FAllItems%2Easpx&id=%2Fsites%2FIdiomasEAFIT%2Fjefaturacad%C3%A9mica%2Fprofesidiomas%2Finglesadultos%2FDocumentos%20compartidos%2FAdult%20English%20Program%20Curriculum%2FNew%20Curriculum%202026%2FA2%20Elementary%2FElementary%202%2FUnit%201%2FRecursos%2Fbingo%20grid%2Epdf&parent=%2Fsites%2FIdiomasEAFIT%2Fjefaturacad%C3%A9mica%2Fprofesidiomas%2Finglesadultos%2FDocumentos%20compartidos%2FAdult%20English%20Program%20Curriculum%2FNew%20Curriculum%202026%2FA2%20Elementary%2FElementary%202%2FUnit%201%2FRecursos', type: 'worksheet' },
+        ],
+      },
+      {
+        title: 'Personal Celebration – Compare and Choose',
+        studentTask: 'Read a passage with birthday-party activity options (ranging from active games to creative experiences). Then: (1) Quick warm-up: write "birthday" and jot three ideas, build a spidergram/word cloud; (2) Complete the vocabulary task; (3) Answer reading comprehension items; (4) Do the Compare & Choose scenario: use comparatives and superlatives to describe and compare activities from the text and choose your favorites.',
+        time: '30 min',
+        materials: 'Passage with birthday-party activity options; optional writing sheet for party paragraph extension',
+        example: 'A treasure hunt is more exciting than a movie night, but karaoke is the most fun of all the activities.',
+        teacherNote: 'Extension: students write a paragraph describing their ideal birthday party using target language.',
+        links: [
+          { label: 'Passage with Birthday-Party Options', url: 'https://eafit.sharepoint.com/:w:/r/sites/IdiomasEAFIT/jefaturacad%C3%A9mica/profesidiomas/inglesadultos/_layouts/15/Doc.aspx?sourcedoc=%7B50FFB941-E264-45F0-8131-C3E5E5193730%7D&file=passage%20with%20birthday-party%20activity%20options.docx&action=default&mobileredirect=true', type: 'worksheet' },
+        ],
+      },
+      {
+        title: 'Vocabulary Building – Major Life Events',
+        studentTask: 'Start with a photo of a bride. In pairs, describe what you see and answer: What is happening? What important transitions does this suggest? As a class, build a list of transitions (starting school, getting a driver\'s license, voting, changing careers, divorce). Learn about the cultural context: the image shows a Kosovar Bosnian bride with traditional intricate face painting believed to prevent bad luck. Then learn the concept of "milestones." Look at major life-event images (graduation, first job, marriage, moving, retirement), guess event names, and confirm meanings. Reflect: At what age do people in your country usually experience these milestones? Is there a "right time"? In groups, discuss milestone-related questions and report 1-2 insights.',
+        time: '30 min',
+        materials: 'Photo of a bride; set of major life-event images; printed milestone-related question slips for group work',
+        example: 'Getting married is more common at a younger age in Colombia than in Europe. Graduation is the most celebrated milestone for students.',
+        teacherNote: 'Provide cultural context about the Kosovar bride photo. Encourage cross-cultural reflection on milestone timing.',
+        links: [
+          { label: 'Photo of a Bride', url: 'https://eafit.sharepoint.com/:w:/r/sites/IdiomasEAFIT/jefaturacad%C3%A9mica/profesidiomas/inglesadultos/_layouts/15/Doc.aspx?sourcedoc=%7B282BE5C8-7CD6-4DE0-88B8-E249DE7A800C%7D&file=photo%20of%20a%20bride.docx&action=default&mobileredirect=true', type: 'images' },
+          { label: 'Major Life-Event Images', url: 'https://eafit.sharepoint.com/:p:/r/sites/IdiomasEAFIT/jefaturacad%C3%A9mica/profesidiomas/inglesadultos/_layouts/15/Doc.aspx?sourcedoc=%7B7BD3CDC8-4642-413E-B940-FD7FD0ADAB3A%7D&file=major%20life%20events.pptx&action=edit&mobileredirect=true', type: 'images' },
+          { label: 'Milestone-Related Questions', url: 'https://eafit.sharepoint.com/:w:/r/sites/IdiomasEAFIT/jefaturacad%C3%A9mica/profesidiomas/inglesadultos/_layouts/15/Doc.aspx?sourcedoc=%7BAC9F7719-5B8F-4ADF-9C21-C918F32CBC52%7D&file=milestone-related%20questions.docx&action=default&mobileredirect=true', type: 'worksheet' },
+        ],
+      },
+      {
+        title: 'Vocabulary Building and Reading About Celebrations',
+        studentTask: 'Explore the Hogmanay celebration (New Year\'s festival in Edinburgh, Scotland). Steps: (1) Look at a Hogmanay photo and think about what you see and what activities take place; (2) From a provided word list, choose three words you expect to encounter in the reading; (3) Read a short passage about Hogmanay together with the class; (4) While reading, underline eight important words related to celebrations; (5) Match vocabulary words to their meanings; (6) Complete sentences using the discussed vocabulary.',
+        time: '30 min',
+        materials: 'Photo of Hogmanay festival (projected or printed); vocabulary and reading worksheet',
+        example: 'Hogmanay is the biggest New Year celebration in Scotland. It is more lively than a typical New Year\'s Eve party.',
+        teacherNote: 'Vocabulary prediction helps activate prior knowledge. Guide students through the reading together.',
+        links: [
+          { label: 'Hogmanay Festival', url: 'https://eafit.sharepoint.com/:w:/r/sites/IdiomasEAFIT/jefaturacad%C3%A9mica/profesidiomas/inglesadultos/_layouts/15/Doc.aspx?sourcedoc=%7BE7EC2302-FFDD-43A6-BF9B-956BE1B6C82E%7D&file=Hogmanay%20Festival.docx&action=default&mobileredirect=true', type: 'reference' },
+          { label: 'Vocabulary and Reading Worksheet', url: 'https://eafit.sharepoint.com/:w:/r/sites/IdiomasEAFIT/jefaturacad%C3%A9mica/profesidiomas/inglesadultos/_layouts/15/Doc.aspx?sourcedoc=%7BD9EFAF86-D589-4142-A14D-1C0954BEABDA%7D&file=vocabulary%20and%20reading%20worksheet.docx&action=default&mobileredirect=true', type: 'worksheet' },
+        ],
       },
     ],
     practice: [
       {
-        title: 'My Life Awards Ceremony',
-        studentTask: 'Create your own "Life Awards" for personal achievements. Make award categories (e.g., "The Most Challenging Achievement," "The Best Small Win," "The Most Unexpected Success"). For each category, write a short acceptance speech (30-40 words) using comparatives and superlatives. Present your awards to a small group. Each group member votes for the most interesting award. Use expressions like: "This was harder than..." and "...is the most rewarding thing I\'ve ever done."',
-        time: '40 min',
-        materials: 'Award certificate templates, presentation space',
-        example: 'I give myself the award for Most Challenging Achievement: learning to swim. It was scarier than any exam!',
-        teacherNote: 'Print fun award certificates. Make it celebratory and supportive.',
-        icon: icons.trophy,
+        title: 'Cultural Celebration Research Presentation',
+        studentTask: 'Guiding question: "How do cultural celebrations reflect the values and traditions of different societies, and how can we compare them to understand their significance?" Choose a celebration from any culture (e.g., Dia de los Muertos, Thanksgiving — well-known or lesser-known). In small groups, discuss what you know, then research: origins, cultural significance, typical practices, cost, venue, etc. Choose a presentation format (digital presentation, poster, storytelling). Your product must include: comparatives and superlatives to describe findings (e.g., "Dia de los Muertos is more colorful than Halloween"); visuals and evidence. Present to the class, then participate in a wrap-up discussion comparing similarities and differences.',
+        time: '80 min',
+        materials: 'Research planning worksheet; comparative & superlative reference sheet; rubric or checklist; visual aids (photos, flags, maps, videos); display space or digital platform',
+        example: 'Dia de los Muertos is more colorful than Halloween. Thanksgiving is the most family-oriented celebration we researched.',
+        teacherNote: 'Include discussion prompts about shared traditions, symbols, values, setting, participants, costs, inclusivity, sustainability, music/food/rituals.',
+        icon: icons.globe,
       },
       {
-        title: 'Celebration Comparison Poster',
-        studentTask: 'In pairs, choose two celebrations (from your culture or others). Create a comparison poster with: (1) A Venn diagram showing similarities and differences, (2) At least 8 comparative/superlative sentences, (3) Your personal opinion: "We think ___ is better because..." Present your poster to the class. Classmates can ask follow-up questions using comparison forms.',
-        time: '45 min',
-        materials: 'Poster paper, markers, printed images (optional)',
-        example: "Christmas is more traditional than Valentine's Day, but Valentine's Day is more romantic.",
-        teacherNote: 'Encourage cultural comparisons (Colombian vs. other celebrations). Display finished posters.',
+        title: 'Celebration Planning',
+        studentTask: 'Scenario: Plan a Networking Event for your university (or celebration for an organization) — e.g., end-of-semester party, cultural festival to welcome foreign students. Budget: COP $5,000,000 covering venue, catering, and entertainment. Goal: memorable experience promoting connections and showcasing cultural diversity. Phase 1 — Research (30-40 min): research options using guided questions about venues, food/drinks, entertainment, cultural values, costs, and accessibility. Phase 2 — Decision making (25-30 min): use planning worksheet to compare criteria (cost, capacity, cultural significance, accessibility) applying comparatives and superlatives. Phase 3 — Presentation (20-30 min): present your celebration plan with introduction, details, and justifications. Class discussion and reflection follow.',
+        time: '95 min',
+        materials: 'Scenario (including budget and planning goal); event planning worksheet; comparative & superlative grammar support sheet; online resources for research; rubric or checklist',
+        example: 'This venue is cheaper than the other one, but the other has the best capacity. The most culturally diverse menu costs more.',
+        teacherNote: 'Provide online resources: Cornell event planning guide, Medellin caterers list, entertainment ideas. Encourage creative presentation formats.',
+        icon: icons.puzzle,
+        links: [
+          { label: 'Event Planning Guide (Cornell)', url: 'https://scheduling.cornell.edu/planning-guide-and-policies/event-planning-guide', type: 'reference' },
+          { label: 'Best Event Caterers in Medellín', url: 'https://eventflare.io/expert-advice/medellin/the-7-best-event-caterers-in-medellin', type: 'reference' },
+          { label: 'Party Entertainment Ideas', url: 'https://www.fielddrive.com/blog/party-entertainment-ideas-event-size', type: 'reference' },
+          { label: 'Planning Worksheet', url: 'https://eafit.sharepoint.com/:w:/r/sites/IdiomasEAFIT/jefaturacad%C3%A9mica/profesidiomas/inglesadultos/_layouts/15/Doc.aspx?sourcedoc=%7BA219BCC1-1042-40B2-ACE9-3E8C1052082C%7D&file=planning%20worksheet.docx&action=default&mobileredirect=true', type: 'worksheet' },
+        ],
+      },
+      {
+        title: 'Celebration Review Writing',
+        studentTask: 'Write a review comparing three different celebrations using target language structures. Steps: (1) Watch video clips or look at images of celebrations for initial reactions; (2) Read 1-2 sample reviews/articles/blogs about celebrations; (3) Walk through the writing outline: short introduction/"hook," three comparison criteria (meaning, energy, accessibility), conclusion/personal opinion; optional title, image, question to readers; (4) Draft your review using the outline; (5) Exchange drafts for peer feedback on clarity of comparison, coherence, and language structures; (6) Revise to final version of 180-220 words with specific details and well-formed comparisons.',
+        time: '95 min',
+        materials: 'Short video clips or still images of 3+ celebrations; 1-2 sample celebration reviews; writing outline handout; access to writing/editing tools',
+        example: 'Carnival of Barranquilla is the most energetic celebration I have experienced. It is more colorful than the Feria de las Flores.',
+        teacherNote: 'Publishing option: best reviews on Google Sites, Medium, or Padlet. Provide the writing outline handout for structure.',
+        icon: icons.pen,
+      },
+      {
+        title: 'Latin American Cultural Fair',
+        studentTask: 'Create interactive booths representing various Latin American celebrations (e.g., Dia de los Muertos, Carnaval de Rio de Janeiro, Inti Raymi). Develop informative posters highlighting key vocabulary and comparison language from the unit. Incorporate artifacts (traditional decorations, music playlists, food samples like pan de muerto). You are encouraged to wear traditional costumes and engage visitors by explaining the significance of your celebration using comparatives and superlatives.',
+        time: '120 min',
+        materials: 'Informational poster supplies; comparison language reference (comparatives/superlatives prompt sheet); celebration-specific vocabulary lists; cultural artifacts (optional: traditional decorations, flags); traditional music playlists; traditional costumes (optional); food samples (optional, check allergies); presentation checklist; visitor feedback form',
+        example: 'Inti Raymi is the oldest celebration at our fair. The Carnaval de Rio is more famous internationally than Inti Raymi.',
+        teacherNote: 'Check for food allergies in advance. Encourage students to curate music playlists. This is a multi-session project.',
         icon: icons.palette,
       },
+    ],
+    closing: [
       {
-        title: 'Everyday Wins Blog Post',
-        studentTask: 'Write a short blog post (100-120 words) titled "My Everyday Wins This Week." Describe at least 3 small achievements from your week and compare them. Use comparatives and superlatives naturally. Include: (1) What you did, (2) Why it matters, (3) How it compares to other achievements. Share with a partner for peer feedback. Revise based on their suggestions.',
-        time: '35 min',
-        materials: 'Notebooks or digital devices for writing',
-        example: 'This week, cooking dinner for my family was more satisfying than finishing my homework...',
-        teacherNote: 'If possible, use a class blog or Padlet. Peer feedback should focus on comparison forms.',
-        icon: icons.pen,
+        title: 'Reflective Ball Toss with Questions',
+        studentTask: 'Gather in a circle. Catch the ball, answer a reflective question (e.g., "What was your favorite cultural celebration learned in this unit and why?", "Describe a celebration you would like to experience and why."), then toss to another classmate. Students ask follow-up questions after each response. At the end, discuss common themes. Optional: write a journal entry summarizing your reflections.',
+        time: '10 min',
+        materials: 'Soft tossable ball; list of 6-10 reflective questions (printed or projected); optional reflection journal sheet',
+        teacherNote: 'Prepare a lightweight ball and 6-10 reflective questions. Encourage follow-up questions between students.',
+      },
+      {
+        title: 'Create News "Headlines"',
+        studentTask: 'Synthesize key learnings by creating impactful headlines. In pairs, brainstorm at least two headlines in 5-10 minutes (e.g., "Celebrations Around the World: Colorful traditions!", "How cultures get together to celebrate!"). Share and explain which concepts you aimed to capture. The class compiles headlines on the whiteboard or poster and discusses which headline best represents the unit\'s essence.',
+        time: '15 min',
+        materials: 'Slips of paper or mini whiteboards; optional headline samples for inspiration; large poster or board for collecting group headlines',
+        teacherNote: 'Encourage creative, catchy headlines. Display the best ones on a poster for the classroom.',
+      },
+    ],
+    livingLearning: [
+      {
+        title: 'Cooking Demonstrations (Cocina Pedagógica)',
+        studentTask: 'Participate in an interactive cooking or craft-making session relevant to the celebrations studied in this unit. Follow the recipe handout, learn about the cultural background of the dish, and practice using comparative and superlative language to describe the experience.',
+        time: '75 min',
+        materials: 'Ingredients, portable cooking setup or kitchen access, recipe handouts, cultural background info',
+        teacherNote: 'Coordinate kitchen access in advance. Check for food allergies. Connect the cooking to specific celebrations studied.',
+      },
+      {
+        title: 'Multi-Cultural Celebration Crafts',
+        studentTask: 'Create crafts focused on celebrations from different cultures (New Year, Christmas, Diwali, Eid, etc.). Follow cultural guides or video instructions to make traditional items. Describe your craft using comparative forms.',
+        time: '45 min',
+        materials: 'Craft supplies (paper, glue, scissors, markers), cultural guides or video instructions',
+        teacherNote: 'Provide a variety of craft options representing different cultures. Video instructions help visual learners.',
+      },
+      {
+        title: 'Guest Speakers from the Spanish Program',
+        studentTask: 'Listen to guest speakers discuss cultural practices related to celebrations. Take notes, prepare questions in advance, and participate in the Q&A session using comparative and superlative language to compare what you learn with your own culture.',
+        time: '40 min',
+        materials: 'Speaker invitation, projector/audio setup, Q&A prompts for students',
+        teacherNote: 'Arrange speakers in advance from the Spanish program. Provide students with Q&A prompts to prepare.',
+      },
+      {
+        title: 'Regional Diversity Group Projects',
+        studentTask: 'In groups, incorporate regional diversity (students from Cartagena, Bogota, Huila, etc.) through a group project requiring collaboration and learning from each other\'s regional perspectives on celebrations. Create a poster, chart, or digital presentation comparing celebrations across regions.',
+        time: '150 min (spread across sessions)',
+        materials: 'Poster/chart paper or digital tools (Canva, Slides), project rubric, celebration profile templates',
+        teacherNote: 'Spread across 2-3 sessions. Leverage the diverse backgrounds of students in the class.',
+      },
+      {
+        title: 'Language Exchange Opportunities',
+        studentTask: 'Participate in language exchange events at various city venues to exchange ideas about celebrations with speakers of other languages. Use guiding questions from the worksheet to structure your conversations and practice comparative forms.',
+        time: 'Flexible (1-2 events, 1-2 hours each)',
+        materials: 'Info flyers or list of local exchange venues, optional worksheet with guiding questions',
+        teacherNote: 'Encourage participation outside class hours. Provide a list of local language exchange venues in the city.',
       },
     ],
   },
   unit2: {
     warmUps: [
       {
-        title: 'Dream Home Pictionary',
-        instructions: 'In teams, one person draws features of their dream home on the board while teammates guess. Use quantity words when guessing: "Does it have many bedrooms?" "Is there a lot of space?" The fastest team to guess correctly gets a point. Play 3-4 rounds with different drawers.',
-        time: '10 min',
-        materials: 'Whiteboard, markers',
-        teacherNote: 'Model quantity questions before starting. Keep rounds fast-paced.',
+        title: 'Concentric Circles Discussion',
+        instructions: 'Form two concentric circles (inner facing outer). Ask and answer questions about your current living situations. After each timed round, the inner circle rotates one seat right so you get a new partner. At the end, volunteers share one interesting point learned from a partner.',
+        time: '15 min',
+        materials: 'Questions about current living situations (printed or projected)',
+        teacherNote: 'Prepare 4-5 questions about living situations. Keep rounds timed (2-3 min each). Encourage use of quantity expressions.',
+        links: [
+          { label: 'Discussion Questions', url: 'https://eafit.sharepoint.com/:w:/r/sites/IdiomasEAFIT/jefaturacad%C3%A9mica/profesidiomas/inglesadultos/_layouts/15/Doc.aspx?sourcedoc=%7B0AE97C3E-FC45-4F67-9960-51ED83DA9B11%7D&file=questions%20about%20their%20current%20living%20situations.docx&action=default&mobileredirect=true', type: 'worksheet' },
+        ],
       },
       {
-        title: 'Neighborhood Word Cloud',
-        instructions: 'Think about your neighborhood. In 2 minutes, write down as many things you can find in a neighborhood as possible: buildings, services, features. Then compare your list with a partner. Together, sort your words into COUNTABLE and UNCOUNTABLE categories. Share your longest list with the class.',
-        time: '10 min',
-        materials: 'Paper, pens',
-        teacherNote: 'This activates vocabulary and previews the countable/uncountable distinction naturally.',
+        title: 'Video – "Where do you live?"',
+        instructions: 'Watch a video of real people discussing their living environments (likes/dislikes). Before viewing, the teacher introduces the topic and asks what makes a good living environment, presenting key vocabulary. Take notes, complete the video worksheet with comprehension questions, then discuss: Where do you live? House or apartment? What do you like/dislike? Share your own experiences.',
+        time: '15 min',
+        materials: 'Video, video answer key, video worksheet (from Speakout Elementary, Pearson)',
+        teacherNote: 'Based on Speakout Elementary (Pearson). Pre-teach key vocabulary before viewing.',
+        links: [
+          { label: 'Video Script', url: 'https://eafit.sharepoint.com/:w:/r/sites/IdiomasEAFIT/jefaturacad%C3%A9mica/profesidiomas/inglesadultos/_layouts/15/Doc.aspx?sourcedoc=%7B53C4FA09-DD96-4274-83C9-E8433B272A36%7D&file=script.doc&action=default&mobileredirect=true', type: 'worksheet' },
+          { label: 'Video Worksheet', url: 'https://eafit.sharepoint.com/:b:/s/IdiomasEAFIT/jefaturacad%C3%A9mica/profesidiomas/inglesadultos/IQAUhQ1xK88-R6ZsYEePcK4oAfVIFZ22yFg8LQJ7YjXmszw?e=6Mo20D', type: 'worksheet' },
+          { label: 'Video Answer Key', url: 'https://eafit.sharepoint.com/sites/IdiomasEAFIT/jefaturacad%C3%A9mica/profesidiomas/inglesadultos/Documentos%20compartidos/Forms/AllItems.aspx?viewid=3f7bdafa%2D8368%2D47b1%2Da8a1%2D57bd0da68bd5&FolderCTID=0x012000B3680363A70AE44ABDD184DD23BA61F5&id=%2Fsites%2FIdiomasEAFIT%2Fjefaturacad%C3%A9mica%2Fprofesidiomas%2Finglesadultos%2FDocumentos%20compartidos%2FAdult%20English%20Program%20Curriculum%2FNew%20Curriculum%202026%2FA2%20Elementary%2FElementary%202%2FUnit%202%2FResources%2Fvideo%20answer%20key%2Epng&parent=%2Fsites%2FIdiomasEAFIT%2Fjefaturacad%C3%A9mica%2Fprofesidiomas%2Finglesadultos%2FDocumentos%20compartidos%2FAdult%20English%20Program%20Curriculum%2FNew%20Curriculum%202026%2FA2%20Elementary%2FElementary%202%2FUnit%202%2FResources', type: 'worksheet' },
+        ],
       },
       {
-        title: 'Four Corners: Housing Preferences',
-        instructions: 'The teacher labels four corners of the room: "Apartment," "House," "Student dorm," "Shared flat." Go to the corner that matches where you would most like to live. In your corner group, discuss WHY using quantity expressions: "I chose apartment because there is not much maintenance." Then each group presents their reasons to the class.',
-        time: '10 min',
-        materials: 'Corner labels',
-        teacherNote: 'Encourage using target language: how much/many, a lot of, not much/many.',
+        title: 'Trashketball',
+        instructions: 'Your teacher places a basket/bin as a shooting target. Form teams of 3-4 with rotating roles (answer, shoot, score-keep). The teacher reads 20 unit-related vocabulary prompts (furniture, parts of the house). First team to raise their hand answers with a full sentence. Correct answer = 1 point + 1 shot for an extra point. Incorrect = chance passes to another team. Roles rotate each turn.',
+        time: '15 min',
+        materials: 'Basket or bin, vocabulary prompts (20 items: furniture, parts of the house)',
+        teacherNote: 'TPR activity. Prepare 20 vocabulary prompts about furniture and parts of the house. Keep energy high with the physical element.',
+        links: [
+          { label: '20 Questions', url: 'https://eafit.sharepoint.com/:w:/r/sites/IdiomasEAFIT/jefaturacad%C3%A9mica/profesidiomas/inglesadultos/_layouts/15/Doc.aspx?sourcedoc=%7BCA372DA5-5BC7-4884-9A62-D7EE0F04D179%7D&file=20%20questions.docx&action=default&mobileredirect=true', type: 'worksheet' },
+        ],
       },
     ],
     concreteExperience: [
       {
-        title: 'Apartment Hunting Role-Play',
-        studentTask: 'Work in pairs. One person is a real estate agent, the other is looking for an apartment. The agent describes available apartments using quantity expressions: "This apartment has a lot of natural light and a few closets." The client asks questions: "How many bathrooms does it have?" "How much is the rent?" After 5 minutes, switch roles. Choose the best apartment and explain your decision to the class.',
-        time: '25 min',
-        materials: 'Apartment description cards, role-play prompts',
-        example: '"This apartment has a lot of space but there aren\'t many windows."',
-        teacherNote: 'Provide apartment cards with visual details. Pre-teach real estate vocabulary.',
+        title: 'Global Housing Collage',
+        studentTask: 'Act as international urban planners. In pairs, select 3 types of homes from a curated image bank and build a digital collage on Padlet (or similar). For each home, answer guided questions about: (1) Location — where is it and what is culturally/geographically important; (2) Housing features — materials and standout features; (3) Basic needs — how the home meets needs for water, food, heating, compared to your own; (4) Affordability & preferences — could someone afford it, would you want to live there and why. Close with a short written or oral reflection justifying your preferred home.',
+        time: '35 min',
+        materials: 'Collaborative platform (Padlet), curated image bank of global housing, optional sentence frames',
+        example: 'This house in Indonesia uses a lot of wood. There isn\'t much heating because the climate is warm.',
+        teacherNote: 'Prepare a curated image bank of diverse global housing types. Provide optional sentence frames for weaker students.',
+        icon: icons.globe,
+        links: [
+          { label: 'Image Bank', url: 'https://eafit.sharepoint.com/:p:/r/sites/IdiomasEAFIT/jefaturacad%C3%A9mica/profesidiomas/inglesadultos/_layouts/15/Doc.aspx?sourcedoc=%7BA9BD0F88-E3A1-4B2E-ADE3-49416AC7AFAB%7D&file=image%20bank.pptx&action=edit&mobileredirect=true', type: 'images' },
+          { label: 'Sentence Frames', url: 'https://eafit.sharepoint.com/:w:/r/sites/IdiomasEAFIT/jefaturacad%C3%A9mica/profesidiomas/inglesadultos/_layouts/15/Doc.aspx?sourcedoc=%7BD0380D14-0D7D-4521-9BC3-C5E7CAB8D4E6%7D&file=Sentence%20frames.docx&action=default&mobileredirect=true', type: 'worksheet' },
+          { label: 'Padlet', url: 'https://padlet.com/', type: 'reference' },
+        ],
+      },
+      {
+        title: 'One Person, One Home',
+        studentTask: 'Your teacher writes "Home =" on the board and asks "What does home mean to you?" Then shows sample images. You receive an individual image of a home from somewhere in the world (rural, urban, aquatic, developed, developing) with a location caption. Silently reflect using 7 guiding questions: (1) What does this home look like? (2) What objects/features on/in/around the home? (3) How much water or food might people need daily? (4) How is this similar/different from your own? (5) What is daily life like here? (6) How would you describe the people/family? (7) Do you think this home is important to them? Why? Then pair up or group to share insights, followed by whole-class sharing of surprises.',
+        time: '35 min',
+        materials: 'One image per student (printed or digital) with location captions, reflection questions, optional Google Docs for letter-writing extension, sticky notes',
+        example: 'There isn\'t much space in this home, but there are many personal items. How much water do they use daily?',
+        teacherNote: 'Prepare diverse images (rural, urban, aquatic, developed, developing). Each student gets a different image. Encourage empathy.',
         icon: icons.home,
       },
       {
-        title: 'My Neighborhood Map',
-        studentTask: 'Draw a simple map of your neighborhood or an ideal neighborhood. Label at least 10 places (shops, parks, schools, etc.). Then describe your neighborhood to a partner using countable and uncountable nouns: "There are a few supermarkets but there isn\'t much green space." Compare neighborhoods: "Your neighborhood has more parks than mine." Present the most interesting difference to the class.',
-        time: '30 min',
-        materials: 'Paper, colored pencils, map template',
-        example: '"There are a lot of restaurants near my home but there isn\'t much parking."',
-        teacherNote: 'Provide a simple map template for students who need structure.',
-        icon: icons.map,
-      },
-      {
-        title: 'Furniture Shopping Challenge',
-        studentTask: 'You just moved into an empty apartment! With a partner, look at the furniture catalog your teacher provides. You have a budget of $2,000. Decide together what to buy using quantity expressions: "We need some chairs. How many do we need?" "We don\'t have much money left for decorations." Create a shopping list and present it to the class. Which pair furnished their apartment the best?',
-        time: '25 min',
-        materials: 'Furniture catalog (printed or digital), budget worksheet',
-        example: '"We bought a lot of kitchen items because there weren\'t any in the apartment."',
-        teacherNote: 'Make catalogs with prices. This activates countable/uncountable naturally.',
-        icon: icons.shoppingCart,
+        title: 'Collaborative Write-On – "What We Need for Comfortable Living"',
+        studentTask: 'Multi-phase activity: Phase 1 — Stations: Visit thematic stations with real objects representing comfort (blanket, lamp, plant, cup, photo of a fan). Discuss "How does this object contribute to a comfortable home?" and write short notes. Phase 2 — Watch a brief video/slideshow on different living conditions with the guiding question: "What does it mean to live comfortably, and why does it matter?" Phase 3 — Roleplay: you get a role (environmentalist, student on a budget, parent of three, elderly person) and discuss what is essential for comfortable living from that perspective. Phase 4 — Mini-survey: interview 3 classmates about what they consider essential for comfort. Phase 5 — Write a two-paragraph text titled "What we need for comfortable living" selecting at least 5 essential items with justifications. Phase 6 — Gallery walk: post texts and leave sticky-note comments.',
+        time: '45 min',
+        materials: 'Real objects for stations (blanket, lamp, plant, cup, fan photo), slideshow/video, sentence stems, writing template, poster paper, sticky notes',
+        example: 'How much natural light do we need? There are a few essential items every home should have.',
+        teacherNote: 'Set up stations before class. Assign roles for Phase 3. Provide sentence stems for the roleplay discussion.',
+        icon: icons.users,
+        links: [
+          { label: 'Video: Small Rural House in Cornwall', url: 'https://eafit.sharepoint.com/sites/IdiomasEAFIT/jefaturacad%C3%A9mica/profesidiomas/inglesadultos/_layouts/15/stream.aspx?id=%2Fsites%2FIdiomasEAFIT%2Fjefaturacad%C3%A9mica%2Fprofesidiomas%2Finglesadultos%2FDocumentos%20compartidos%2FAdult%20English%20Program%20Curriculum%2FNew%20Curriculum%202026%2FA2%20Elementary%2FElementary%202%2FUnit%202%2FResources%2F09%2E%20small%20rural%20house%20in%20Cornwall%2Emp4&referrer=StreamWebApp%2EWeb&referrerScenario=AddressBarCopied%2Eview%2E6f0e0a2a%2D248f%2D42df%2Da746%2D68dd8b9c6603', type: 'video' },
+          { label: 'Slideshow', url: 'https://eafit.sharepoint.com/:p:/s/RenovacinCursosAdultos/EXzzJp2PLAhJvu42IAsDFYQBOXOwfE5ObtnxAzO6fcmxVw?e=qaMTVd', type: 'images' },
+          { label: 'Sentence Stems', url: 'https://eafit.sharepoint.com/:w:/r/sites/IdiomasEAFIT/jefaturacad%C3%A9mica/profesidiomas/inglesadultos/_layouts/15/Doc.aspx?sourcedoc=%7BAD04501E-8445-4A36-805A-67E6316C2A01%7D&file=Sentence%20Stems.docx&action=default&mobileredirect=true', type: 'worksheet' },
+          { label: 'Writing Template', url: 'https://eafit.sharepoint.com/:w:/r/sites/IdiomasEAFIT/jefaturacad%C3%A9mica/profesidiomas/inglesadultos/_layouts/15/Doc.aspx?sourcedoc=%7BDD15D265-54F0-4964-8FC3-B8AE1E3F979D%7D&file=writing%20template.docx&action=default&mobileredirect=true', type: 'worksheet' },
+        ],
       },
     ],
     reflection: [
       {
-        title: 'Housing Survey Reflection',
-        studentTask: 'Complete a survey about your current living situation: How many rooms do you have? How much space? How many people live with you? How much noise is there? Then compare your answers with two classmates. Write 5 sentences about the differences you found: "Maria has more rooms than me, but I have a lot more peace and quiet."',
-        time: '20 min',
-        materials: 'Housing survey worksheet',
-        example: 'I have fewer rooms than Carlos but more natural light than Ana.',
-        teacherNote: 'Use the survey to naturally practice how much/many in question forms.',
-      },
-      {
-        title: 'What Makes a Good Neighborhood?',
-        studentTask: 'In groups of 3, create a ranked list of the 5 most important features of a good neighborhood. Discuss and justify your ranking using quantifiers: "A good neighborhood needs a lot of green spaces and a few good schools." Compare your group\'s list with another group. Do you agree? Write a group statement: "We believe the most important thing is..."',
-        time: '20 min',
-        materials: 'Ranking worksheets, markers',
-        example: 'We ranked safety first because there isn\'t much crime in a good neighborhood.',
-        teacherNote: 'Focus on negotiation language and quantity expressions in justification.',
-      },
-      {
-        title: 'Before & After Reflection',
-        studentTask: 'Think about a time you moved or changed your living situation. Write a short comparison (60-80 words) of before and after: "Before, I lived in a place with a lot of noise. Now, there isn\'t much traffic." Share with a partner and identify all the quantity expressions used. Discuss which living situation was better.',
+        title: '"What Makes a Home?" (Reflection on Housing Collage)',
+        studentTask: 'In small groups, exchange and discuss your collages using guided sentence starters: "One interesting thing we found was...", "Compared to your homes, we noticed...", "A surprising feature of this house was...", "This type of housing reflects the culture because..." Then answer teacher-led reflection questions comparing "house" vs. "home" and analyzing how geography/culture influence housing. Optional: write an individual reflection choosing 2-3 prompts from: "After seeing different homes, I think a home is...", "I was surprised by...because...", "My home is comfortable because..."',
         time: '15 min',
-        materials: 'Notebooks',
-        example: 'Before, there were many neighbors. Now, there are only a few, and it is much quieter.',
-        teacherNote: 'Students who haven\'t moved can imagine or compare two places they know well.',
+        materials: 'Guided sentence starters (projected), teacher-led questions, optional written reflection sheet',
+        example: 'One interesting thing we found was that there isn\'t much furniture in traditional Japanese homes.',
+        teacherNote: 'Start with small group discussion, then teacher-led reflection. Compare "house" vs. "home" concepts.',
+        links: [
+          { label: 'Teacher-Led Reflection Questions', url: 'https://eafit.sharepoint.com/:w:/r/sites/IdiomasEAFIT/jefaturacad%C3%A9mica/profesidiomas/inglesadultos/_layouts/15/Doc.aspx?sourcedoc=%7BE1628973-2980-4432-B36D-DCFC361132FF%7D&file=teacher-led%20reflection%20questions.docx&action=default&mobileredirect=true', type: 'worksheet' },
+        ],
+      },
+      {
+        title: '"Home, More Than a Structure" (Reflection on One Person, One Home)',
+        studentTask: 'Revisit the "home" question — likely you focused on physical characteristics. The teacher suggests additional dimensions: family, meals, comfort, rest, safety. Use a T-chart graphic organizer (one side "homes" / other side "home/family life") to show a home is both a physical structure and the life/relationships inside it. Add more words/phrases to your lists. Reflect on "Do people need homes? Why?" Alternative: write two paragraphs about what your home means to you and why having a home is important to all people worldwide.',
+        time: '15 min',
+        materials: 'T-chart graphic organizer, markers/post-its, optional soft background music',
+        example: 'How many people share this home? There is a lot of love in a small space. Not much furniture, but much happiness.',
+        teacherNote: 'Use a T-chart on the board. Play soft background music to create a reflective atmosphere.',
+        links: [
+          { label: 'T-Chart', url: 'https://eafit.sharepoint.com/sites/IdiomasEAFIT/jefaturacad%C3%A9mica/profesidiomas/inglesadultos/Documentos%20compartidos/Forms/AllItems.aspx?viewid=3f7bdafa%2D8368%2D47b1%2Da8a1%2D57bd0da68bd5&newTargetListUrl=%2Fsites%2FIdiomasEAFIT%2Fjefaturacad%C3%A9mica%2Fprofesidiomas%2Finglesadultos%2FDocumentos%20compartidos&viewpath=%2Fsites%2FIdiomasEAFIT%2Fjefaturacad%C3%A9mica%2Fprofesidiomas%2Finglesadultos%2FDocumentos%20compartidos%2FForms%2FAllItems%2Easpx&id=%2Fsites%2FIdiomasEAFIT%2Fjefaturacad%C3%A9mica%2Fprofesidiomas%2Finglesadultos%2FDocumentos%20compartidos%2FAdult%20English%20Program%20Curriculum%2FNew%20Curriculum%202026%2FA2%20Elementary%2FElementary%202%2FUnit%202%2FResources%2Ft%2Dchart%2Epdf&parent=%2Fsites%2FIdiomasEAFIT%2Fjefaturacad%C3%A9mica%2Fprofesidiomas%2Finglesadultos%2FDocumentos%20compartidos%2FAdult%20English%20Program%20Curriculum%2FNew%20Curriculum%202026%2FA2%20Elementary%2FElementary%202%2FUnit%202%2FResources', type: 'worksheet' },
+        ],
+      },
+      {
+        title: 'Comfort Corners (Reflection on Collaborative Writing)',
+        studentTask: 'Four classroom corners are labeled: "Absolutely Essential," "Nice to Have," "Not Really Needed," and "It Depends." The teacher calls out household items/resources (hot shower, internet, fan, natural light, fridge, sofa, microwave, green space). Move to the corner matching your opinion. In your corner, discuss your reasoning with same-opinion peers. After several rounds, volunteers share key arguments. Closing discussion: "Did anyone change their mind?" "What new perspectives did you gain about comfort needs?"',
+        time: '20 min',
+        materials: '4 large signs for corners, list of 6-8 household comfort items',
+        example: 'How much do we really need internet? I think it is absolutely essential because there isn\'t much you can do without it today.',
+        teacherNote: 'Physical movement activity. Label corners clearly. Read items one at a time and let students move between rounds.',
       },
     ],
     abstract: [
       {
-        title: 'Countable vs. Uncountable Sorting',
-        studentTask: 'Work in pairs. You will receive 30 word cards. Sort them into two categories: COUNTABLE and UNCOUNTABLE. For tricky words (like "room" which can be both), discuss and decide. Then answer: Which quantifiers go with countable nouns? (many, a few, several) Which go with uncountable nouns? (much, a little) Which work with both? (some, any, a lot of). Create a grammar poster with your rules.',
+        title: 'Reading About World Homes',
+        studentTask: 'Four phases: (1) Build context (10 min): Read the World Homes article intro aloud. Create a collaborative mind map: "What materials are used to build homes in your community?" and "What housing problems are common in Colombia?" Look at 4-5 images of Colombian homes. (2) Divide and assign (10 min): Split into 3 groups, each reading one article section (Indonesia, Mongolia, or Cote d\'Ivoire). Use guiding questions and a visual organizer (comparison chart, cause-effect map, or timeline). (3) Group presentations (10 min): Present key points using your visual summary, comparing with local housing. (4) Conceptual debate (10 min): "What makes housing fair?" and "Is housing a right or a privilege?" Justify with evidence from readings.',
+        time: '40 min',
+        materials: 'World Homes article (Habitat for Humanity), Colombian housing images, graphic organizers, guiding question handouts',
+        example: 'How many rooms do typical homes in Mongolia have? There isn\'t much wood in the desert, so they use felt.',
+        teacherNote: 'Source: Habitat for Humanity World Homes article. Prepare 3 sections for jigsaw. Include Colombian housing images for local context.',
+        links: [
+          { label: 'World Homes Article', url: 'https://eafit.sharepoint.com/sites/IdiomasEAFIT/jefaturacad%C3%A9mica/profesidiomas/inglesadultos/Documentos%20compartidos/Forms/AllItems.aspx?viewid=3f7bdafa%2D8368%2D47b1%2Da8a1%2D57bd0da68bd5&newTargetListUrl=%2Fsites%2FIdiomasEAFIT%2Fjefaturacad%C3%A9mica%2Fprofesidiomas%2Finglesadultos%2FDocumentos%20compartidos&viewpath=%2Fsites%2FIdiomasEAFIT%2Fjefaturacad%C3%A9mica%2Fprofesidiomas%2Finglesadultos%2FDocumentos%20compartidos%2FForms%2FAllItems%2Easpx&id=%2Fsites%2FIdiomasEAFIT%2Fjefaturacad%C3%A9mica%2Fprofesidiomas%2Finglesadultos%2FDocumentos%20compartidos%2FAdult%20English%20Program%20Curriculum%2FNew%20Curriculum%202026%2FA2%20Elementary%2FElementary%202%2FUnit%202%2FResources%2FWorld%20Homes%2Epdf&parent=%2Fsites%2FIdiomasEAFIT%2Fjefaturacad%C3%A9mica%2Fprofesidiomas%2Finglesadultos%2FDocumentos%20compartidos%2FAdult%20English%20Program%20Curriculum%2FNew%20Curriculum%202026%2FA2%20Elementary%2FElementary%202%2FUnit%202%2FResources', type: 'reference' },
+          { label: 'Guiding Questions', url: 'https://eafit.sharepoint.com/:w:/r/sites/IdiomasEAFIT/jefaturacad%C3%A9mica/profesidiomas/inglesadultos/_layouts/15/Doc.aspx?sourcedoc=%7BEF9B806E-D6B3-4174-842B-CD27FAE729B5%7D&file=guiding%20questions%20to%20facilitate%20discovery.docx&action=default&mobileredirect=true', type: 'worksheet' },
+        ],
+      },
+      {
+        title: 'House and Furniture Vocabulary',
+        studentTask: 'Vocabulary activation (10 min): The teacher writes "Parts of the House" on the board and elicits responses ("What do we call the place where we cook?"). Record parts (kitchen, bedroom, living room, bathroom) and related furniture items. Group work (10 min): Groups of 3-4 are assigned a specific room; list 7-10 furniture pieces and present to class. Then complete rooms/parts worksheet and furniture worksheet. Practice — Battleship game: place furniture/house words on a grid and guess coordinates to find your partner\'s words. Hit = partner reveals letter. You can guess full words at any point. First to find all words wins.',
+        time: '20 min',
+        materials: 'Vocabulary worksheet (from Teach This), furniture worksheet (from English Vocabulary in Use, Elementary), battleship game sheet, optional flashcards/picture prompts',
+        example: 'How many bedrooms are there? There is a lot of furniture in the living room.',
+        teacherNote: 'Elicit before teaching. The Battleship game adds a fun competitive element to vocabulary practice.',
+        links: [
+          { label: 'Rooms and Parts of the House Worksheet', url: 'https://eafit.sharepoint.com/:b:/s/IdiomasEAFIT/jefaturacad%C3%A9mica/profesidiomas/inglesadultos/IQCpLUDNl396T69snpBqSryKARRhEYKZIvv8pm_5_E2C4JE?e=62G7gL', type: 'worksheet' },
+          { label: 'Furniture Worksheet', url: 'https://eafit.sharepoint.com/sites/IdiomasEAFIT/jefaturacad%C3%A9mica/profesidiomas/inglesadultos/Documentos%20compartidos/Forms/AllItems.aspx?viewid=3f7bdafa%2D8368%2D47b1%2Da8a1%2D57bd0da68bd5&newTargetListUrl=%2Fsites%2FIdiomasEAFIT%2Fjefaturacad%C3%A9mica%2Fprofesidiomas%2Finglesadultos%2FDocumentos%20compartidos&viewpath=%2Fsites%2FIdiomasEAFIT%2Fjefaturacad%C3%A9mica%2Fprofesidiomas%2Finglesadultos%2FDocumentos%20compartidos%2FForms%2FAllItems%2Easpx&id=%2Fsites%2FIdiomasEAFIT%2Fjefaturacad%C3%A9mica%2Fprofesidiomas%2Finglesadultos%2FDocumentos%20compartidos%2FAdult%20English%20Program%20Curriculum%2FNew%20Curriculum%202026%2FA2%20Elementary%2FElementary%202%2FUnit%202%2FResources%2Ffurniture%20worksheet%2Epdf&parent=%2Fsites%2FIdiomasEAFIT%2Fjefaturacad%C3%A9mica%2Fprofesidiomas%2Finglesadultos%2FDocumentos%20compartidos%2FAdult%20English%20Program%20Curriculum%2FNew%20Curriculum%202026%2FA2%20Elementary%2FElementary%202%2FUnit%202%2FResources', type: 'worksheet' },
+          { label: 'Battleship Game Sheet', url: 'https://eafit.sharepoint.com/:b:/s/IdiomasEAFIT/jefaturacad%C3%A9mica/profesidiomas/inglesadultos/IQBG_5vNKMhETqDJdAvMdcn6AXnJxw1hJQYK68BnbZovqpI?e=oX1YnE', type: 'worksheet' },
+          { label: 'Answer Key', url: 'https://eafit.sharepoint.com/sites/IdiomasEAFIT/jefaturacad%C3%A9mica/profesidiomas/inglesadultos/Documentos%20compartidos/Forms/AllItems.aspx?viewid=3f7bdafa%2D8368%2D47b1%2Da8a1%2D57bd0da68bd5&newTargetListUrl=%2Fsites%2FIdiomasEAFIT%2Fjefaturacad%C3%A9mica%2Fprofesidiomas%2Finglesadultos%2FDocumentos%20compartidos&viewpath=%2Fsites%2FIdiomasEAFIT%2Fjefaturacad%C3%A9mica%2Fprofesidiomas%2Finglesadultos%2FDocumentos%20compartidos%2FForms%2FAllItems%2Easpx&id=%2Fsites%2FIdiomasEAFIT%2Fjefaturacad%C3%A9mica%2Fprofesidiomas%2Finglesadultos%2FDocumentos%20compartidos%2FAdult%20English%20Program%20Curriculum%2FNew%20Curriculum%202026%2FA2%20Elementary%2FElementary%202%2FUnit%202%2FResources%2F04%2E%20answer%20key%2Epdf&parent=%2Fsites%2FIdiomasEAFIT%2Fjefaturacad%C3%A9mica%2Fprofesidiomas%2Finglesadultos%2FDocumentos%20compartidos%2FAdult%20English%20Program%20Curriculum%2FNew%20Curriculum%202026%2FA2%20Elementary%2FElementary%202%2FUnit%202%2FResources', type: 'worksheet' },
+        ],
+      },
+      {
+        title: 'Grammar Guided Discovery 1 – Countable vs. Uncountable',
+        studentTask: 'Warm-up reflection (5 min): Answer the board question "What things are important for you when choosing a place to live?" Brainstorm 5 aspects individually. Pair work (5 min): Discuss and justify answers. The teacher collects 10-12 nouns on the board. Discovery stage (10 min): Look at a two-column chart (Countable / Uncountable) and classify the listed nouns using guiding questions. Clarify rules with real-life housing vocabulary. Review grammar reference. Controlled practice (10 min): Complete the countable/uncountable worksheet.',
+        time: '30 min',
+        materials: 'Guiding questions, grammar reference, controlled practice worksheet + answers (from TeachThis.com)',
+        example: '"Space" is uncountable but "room" can be both. How much space do you need? How many rooms?',
+        teacherNote: 'Let students classify before confirming. Metacognitive closure: "What do countable and uncountable nouns allow us to do when talking about housing?"',
+        links: [
+          { label: 'Guiding Questions', url: 'https://eafit.sharepoint.com/:w:/r/sites/IdiomasEAFIT/jefaturacad%C3%A9mica/profesidiomas/inglesadultos/_layouts/15/Doc.aspx?sourcedoc=%7BEF9B806E-D6B3-4174-842B-CD27FAE729B5%7D&file=15.%20guiding%20questions%20to%20facilitate%20discovery.docx&action=default&mobileredirect=true', type: 'worksheet' },
+          { label: 'Grammar Reference (Count vs. Uncount)', url: 'https://eafit.sharepoint.com/:p:/r/sites/IdiomasEAFIT/jefaturacad%C3%A9mica/profesidiomas/inglesadultos/_layouts/15/Doc.aspx?sourcedoc=%7B1BEF7A8A-AD38-4C73-841A-E26AC2108760%7D&file=grammar%20reference%20count%20vs%20uncount.pptx&action=edit&mobileredirect=true', type: 'reference' },
+          { label: 'Practice Worksheet', url: 'https://eafit.sharepoint.com/:b:/s/IdiomasEAFIT/jefaturacad%C3%A9mica/profesidiomas/inglesadultos/IQAHbbnY5YiFTLnzLx0LmyBpAfNEDrbeP7LJm3kUl05rj-c?e=ErNdFO', type: 'worksheet' },
+          { label: 'Controlled Practice Worksheet', url: 'https://eafit.sharepoint.com/sites/IdiomasEAFIT/jefaturacad%C3%A9mica/profesidiomas/inglesadultos/Documentos%20compartidos/Forms/AllItems.aspx?viewid=3f7bdafa%2D8368%2D47b1%2Da8a1%2D57bd0da68bd5&newTargetListUrl=%2Fsites%2FIdiomasEAFIT%2Fjefaturacad%C3%A9mica%2Fprofesidiomas%2Finglesadultos%2FDocumentos%20compartidos&viewpath=%2Fsites%2FIdiomasEAFIT%2Fjefaturacad%C3%A9mica%2Fprofesidiomas%2Finglesadultos%2FDocumentos%20compartidos%2FForms%2FAllItems%2Easpx&id=%2Fsites%2FIdiomasEAFIT%2Fjefaturacad%C3%A9mica%2Fprofesidiomas%2Finglesadultos%2FDocumentos%20compartidos%2FAdult%20English%20Program%20Curriculum%2FNew%20Curriculum%202026%2FA2%20Elementary%2FElementary%202%2FUnit%202%2FResources%2Fcountable%20and%20uncountable%20controlled%20practice%2Epdf&parent=%2Fsites%2FIdiomasEAFIT%2Fjefaturacad%C3%A9mica%2Fprofesidiomas%2Finglesadultos%2FDocumentos%20compartidos%2FAdult%20English%20Program%20Curriculum%2FNew%20Curriculum%202026%2FA2%20Elementary%2FElementary%202%2FUnit%202%2FResources', type: 'worksheet' },
+        ],
+      },
+      {
+        title: 'Grammar Guided Discovery 2 – How Much / How Many',
+        studentTask: 'Adapted from face2face Elementary (Cambridge). Exercise 1 & 2: Review vocabulary for rooms and household items using an apartment plan. Exercise 3: Answer comprehension questions (individually or pairs). Exercise 4: Classify nouns as countable/uncountable and deduce grammar rules for "how much" vs. "how many." Explain your reasoning, compare with a partner, then check as a group and formulate rules together. Wrap up with a short oral activity: ask and answer questions about your own homes using the target language.',
         time: '25 min',
-        materials: 'Word cards, sorting mat, grammar poster template',
-        example: 'Countable: chair, bedroom, neighbor | Uncountable: furniture, space, traffic',
-        teacherNote: 'Include "tricky" words that seem uncountable but aren\'t (suggestion, complaint). Discovery approach.',
+        materials: 'Guided discovery worksheet (adapted from face2face Elementary, Cambridge), worksheet key, optional visual aids of household items',
+        example: 'How much rent do you pay? How many windows does your apartment have?',
+        teacherNote: 'Based on face2face Elementary (Cambridge). Let students deduce rules before confirming.',
+        links: [
+          { label: 'Guided Discovery Worksheet', url: 'https://eafit.sharepoint.com/:w:/r/sites/IdiomasEAFIT/jefaturacad%C3%A9mica/profesidiomas/inglesadultos/_layouts/15/Doc.aspx?sourcedoc=%7BFD556BA5-66CD-4580-A1A8-E97F2FEA8795%7D&file=guided%20discovery%20worksheet.docx&action=default&mobileredirect=true', type: 'worksheet' },
+          { label: 'Worksheet Key', url: 'https://eafit.sharepoint.com/:w:/r/sites/IdiomasEAFIT/jefaturacad%C3%A9mica/profesidiomas/inglesadultos/_layouts/15/Doc.aspx?sourcedoc=%7BB613FDD4-B362-47A8-B56B-64426B328714%7D&file=Worksheet%20key.docx&action=default&mobileredirect=true', type: 'worksheet' },
+          { label: 'Short Oral Activity', url: 'https://eafit.sharepoint.com/:w:/s/RenovacinCursosAdultos/EadUn2dde8VGs6JvhOIFgAsBYsz4TZEnj1vHR-6lp3UAAg?e=qlehCo', type: 'worksheet' },
+        ],
       },
       {
-        title: 'How Much vs. How Many Quiz Show',
-        studentTask: 'Play a quiz show game! The teacher shows a word on the board (e.g., "sugar," "books," "homework"). You must hold up the correct sign: "HOW MUCH" or "HOW MANY." Then create a complete question with the word: "How much sugar do you put in your coffee?" The fastest correct answer gets a point. After 10 rounds, the champion creates 3 original questions for the class.',
-        time: '20 min',
-        materials: '"How much" and "How many" signs, word list',
-        example: '"Water → How much water do you drink every day?"',
-        teacherNote: 'Start easy, then add tricky words. Let students make signs from paper.',
+        title: 'Find Someone Who',
+        studentTask: 'Receive a "Find Someone Who" housing worksheet. Talk to a different classmate for each item. When someone answers "Yes" or gives a specific quantity, write that student\'s name. Before starting, review countable/uncountable nouns and how much vs. how many. Ask follow-up questions ("Why?", "Is that a lot or a little for you?", "Do you like that?"). After, report key findings. Optional: create a class bar graph from the most common answers.',
+        time: '25 min',
+        materials: 'Printed Find Someone Who worksheet',
+        example: '"Find someone who has more than 3 rooms" → "How many rooms do you have?" "I have a few — four rooms."',
+        teacherNote: 'Model one sample question with a volunteer first. Encourage follow-up questions. Metacognitive closure: "What surprised you? How did using how much/how many help?"',
+        icon: icons.users,
+        links: [
+          { label: 'Find Someone Who Housing Worksheet', url: 'https://eafit.sharepoint.com/:w:/r/sites/IdiomasEAFIT/jefaturacad%C3%A9mica/profesidiomas/inglesadultos/_layouts/15/Doc.aspx?sourcedoc=%7BC3DEFB01-1781-4DF5-90E6-C6B9AD3402AD%7D&file=Find_Someone_Who_Housing.docx&action=default&mobileredirect=true', type: 'worksheet' },
+        ],
       },
       {
-        title: 'Grammar Pattern Discovery',
-        studentTask: 'Read the 12 sentences about housing on your worksheet. Highlight all quantifiers (some, any, much, many, a lot of, a few, a little). Then answer these questions: (1) Which quantifiers appear in affirmative sentences? (2) Which appear in negative sentences? (3) Which appear in questions? Write your discovery rules and compare with a partner.',
-        time: '20 min',
-        materials: 'Discovery worksheet with 12 housing sentences',
-        example: 'Rule: "Any" usually appears in negative sentences and questions.',
-        teacherNote: 'Sentences should clearly show patterns. Don\'t give rules — let students find them.',
-      },
-      {
-        title: 'Quantifier Board Game',
-        studentTask: 'Play the quantifier board game in groups of 3-4. Roll the dice, move your token, and complete the sentence on the square using the correct quantifier. If your group agrees your answer is correct, you stay. If not, go back 2 spaces. Example squares: "There is ___ (much/many) furniture in my room" → "There is a lot of furniture in my room." First to finish wins!',
-        time: '20 min',
-        materials: 'Board game, dice, tokens',
-        example: 'Square: "How ___ books do you have?" → "How many books do you have?"',
-        teacherNote: 'Print one board per group. Include answer key for self-checking.',
+        title: 'A Place to Rent',
+        studentTask: 'Information gap activity from English File Elementary (Oxford). In pairs, role-play a phone call about a rental property. Student A = estate agent with a London flat ad; Student B = customer who reviews prompts under "What I want to know" and forms complete questions. Student B initiates the conversation. Do not show each other your worksheets. After the first role-play, check how many Student Bs chose to rent. Then switch roles and repeat with a second property listing. Debrief: Who rented? Why? What influenced the decision?',
+        time: '25 min',
+        materials: 'Information gap worksheet (Student A and Student B), from English File Elementary (Oxford)',
+        example: '"How much is the rent?" "It\'s £1,200 per month." "How many bedrooms does it have?" "There are a few — two bedrooms."',
+        teacherNote: 'From English File Elementary (Oxford). Students must NOT show each other their worksheets. Metacognitive closure: "What strategies helped you ask questions fluently?"',
+        icon: icons.home,
+        links: [
+          { label: 'Information Gap Worksheet', url: 'https://eafit.sharepoint.com/:b:/s/IdiomasEAFIT/jefaturacad%C3%A9mica/profesidiomas/inglesadultos/IQB284OU86FxRpsR4MmK_sCNAb8G8KwI9l9RyB0muDdU7hs?e=NOck5g', type: 'worksheet' },
+        ],
       },
     ],
     practice: [
       {
-        title: '"Find Your Perfect Home" Presentation',
-        studentTask: 'You are a real estate agent! Create a short presentation (1-2 minutes) advertising a home or apartment. Include: (1) Description with at least 6 quantifier expressions, (2) Comparison with other homes, (3) Why this is the best choice. Use visuals (drawings, photos from magazines). Present to the class. Classmates ask "How much...?" and "How many...?" questions. Vote for the best agent.',
-        time: '40 min',
-        materials: 'Paper for visuals, presentation space',
-        example: '"This beautiful apartment has a lot of natural light, a few balconies, and not much noise..."',
-        teacherNote: 'Encourage creativity. Students can use magazines for visuals.',
+        title: 'Housing Across Colombia – A Showcase of Diversity',
+        studentTask: 'Each group selects a Colombian city/region representing a distinct cultural and geographic identity (Caribbean coast, Andean highlands, Amazon basin, etc.). Guiding question: "How do climate, culture, and economy influence housing in different parts of Colombia?" Research phase: Gather info using websites, blogs, digital maps with a structured template (housing types, average rent, materials, local lifestyle). Creative element: Create a "Day in the Life" narrative or video diary about a fictional family in your chosen region, incorporating drawings, images, or video clips. Presentation: Simple visual display (poster, collage, or slide) + the narrative. Include interactive components (quizzes, polls). Culmination: Mini housing fair where groups showcase work. Closing discussion: "What did you learn about housing diversity in Colombia?"',
+        time: '105 min',
+        materials: 'Research template, poster board/markers/digital tools (Canva, Google Slides), optional sticky notes or online polling',
+        example: 'There is a lot of humidity on the Caribbean coast, so houses have many windows. In the Andes, there isn\'t much heat, so homes use a lot of brick.',
+        teacherNote: 'Provide the structured research template. Encourage interactive components. This is a multi-session project.',
+        icon: icons.map,
+        links: [
+          { label: 'Structured Research Template', url: 'https://eafit.sharepoint.com/:w:/r/sites/IdiomasEAFIT/jefaturacad%C3%A9mica/profesidiomas/inglesadultos/_layouts/15/Doc.aspx?sourcedoc=%7BF85083BF-0789-4B83-8DB0-E1641067E898%7D&file=structured%20template.docx&action=default&mobileredirect=true', type: 'worksheet' },
+        ],
+      },
+      {
+        title: 'Room Makeover Challenge',
+        studentTask: 'Redesign a room in your own home based on a real need or personal goal. Step 1: Reflect on a space to improve (bedroom, study area, shared space). Identify a specific problem (lack of light, not enough storage, no privacy). Step 2: Search online stores (Homecenter, Exito, IKEA) for affordable solutions within a budget (e.g., 600,000 COP). Record prices, quantities, and purpose. Justify choices using unit target language, explain trade-offs. Step 3: Create a visual plan of the redesigned space (Canva, PowerPoint, or before/after layout). Step 4: Brief presentation — pitch your redesign to an "interior design committee." Present current space, issues, redesigned plan, and total cost. Classmates ask follow-up questions using quantity expressions.',
+        time: '70 min',
+        materials: 'Budget template, access to online stores, Canva or PowerPoint',
+        example: 'How much does the new desk cost? There aren\'t many affordable options, but I found a few good ones.',
+        teacherNote: 'Provide a budget template. Students search real online stores for authentic pricing. Encourage peer questions using quantity expressions.',
         icon: icons.home,
+        links: [
+          { label: 'Budget Template', url: 'https://eafit.sharepoint.com/sites/IdiomasEAFIT/jefaturacad%C3%A9mica/profesidiomas/inglesadultos/Documentos%20compartidos/Forms/AllItems.aspx?viewid=3f7bdafa%2D8368%2D47b1%2Da8a1%2D57bd0da68bd5&newTargetListUrl=%2Fsites%2FIdiomasEAFIT%2Fjefaturacad%C3%A9mica%2Fprofesidiomas%2Finglesadultos%2FDocumentos%20compartidos&viewpath=%2Fsites%2FIdiomasEAFIT%2Fjefaturacad%C3%A9mica%2Fprofesidiomas%2Finglesadultos%2FDocumentos%20compartidos%2FForms%2FAllItems%2Easpx&id=%2Fsites%2FIdiomasEAFIT%2Fjefaturacad%C3%A9mica%2Fprofesidiomas%2Finglesadultos%2FDocumentos%20compartidos%2FAdult%20English%20Program%20Curriculum%2FNew%20Curriculum%202026%2FA2%20Elementary%2FElementary%202%2FUnit%202%2FResources%2Fbudget%20template%2Epdf&parent=%2Fsites%2FIdiomasEAFIT%2Fjefaturacad%C3%A9mica%2Fprofesidiomas%2Finglesadultos%2FDocumentos%20compartidos%2FAdult%20English%20Program%20Curriculum%2FNew%20Curriculum%202026%2FA2%20Elementary%2FElementary%202%2FUnit%202%2FResources', type: 'worksheet' },
+        ],
       },
       {
-        title: 'Neighborhood Improvement Plan',
-        studentTask: 'In pairs, choose a real neighborhood in your city. Research or discuss its current features, then create an improvement plan. Use quantity expressions throughout: "Currently, there aren\'t many parks. We propose adding a few green spaces." Present your plan as a poster or slide, including: What the neighborhood has now, what it needs, and your top 3 improvement ideas with justification.',
-        time: '45 min',
-        materials: 'Poster paper or digital tools, neighborhood information',
-        example: '"There is a lot of traffic but not much public transport. We suggest adding a few bus routes."',
-        teacherNote: 'Use neighborhoods near EAFIT for relevance. This integrates community awareness.',
+        title: 'Life on a Budget',
+        studentTask: 'Teams represent different Colombian families (4 members: 2 parents, 2 children) with assigned income levels: Team A (Low: 1,500,000 COP/month), Team B (Lower-Middle: 2,500,000), Team C (Middle: 3,500,000), Team D (Upper-Middle: 4,500,000), Team E (High: 25,000,000). Driving question: "How can effective budgeting help different Colombian families manage their finances?" Steps: (1) Discuss financial stability in Colombia, review budgeting resources; (2) Use budget template with expense categories and local price examples; (3) Research real local prices using flyers, websites, family interviews; (4) Create a budget allocating funds for essential needs while balancing discretionary spending and savings; (5) Create a visual presentation and present using target language. Q&A session. Class vote on most realistic/balanced budget. Reflection on what you learned about budgeting across income levels.',
+        time: '95 min',
+        materials: 'Budget template, online flyers/websites, voting slips, budgeting resources (articles from TeachMoney)',
+        example: 'How much money is left for savings? There isn\'t much after rent. A few families can save a lot, but many cannot.',
+        teacherNote: 'Assign income levels randomly. Provide real local price references. Discuss budgeting mistakes ("sick budgets" from TeachMoney). Extension: written justification of budget decisions.',
         icon: icons.building,
+        links: [
+          { label: 'Budget Template', url: 'https://eafit.sharepoint.com/:b:/s/IdiomasEAFIT/jefaturacad%C3%A9mica/profesidiomas/inglesadultos/IQA-3Vw1bdo3SLUni3enKLQ2AcGCl387Y0BWrYD7-nSvaHg?e=BpAaan', type: 'worksheet' },
+          { label: 'Spending Plan', url: 'https://eafit.sharepoint.com/:b:/s/IdiomasEAFIT/jefaturacad%C3%A9mica/profesidiomas/inglesadultos/IQA8uzjiBHGVTbVt2HbglIP8ASSzqdookerB_dRl2UQoVj4?e=85NpcL', type: 'worksheet' },
+          { label: 'Money Management Video', url: 'https://eafit.sharepoint.com/:v:/s/IdiomasEAFIT/jefaturacad%C3%A9mica/profesidiomas/inglesadultos/IQBhTDlmQKmBRpd3N6K2uNR0AQhwJa4zEXhmN0oT5o1aYkQ?e=XG4FAa', type: 'video' },
+          { label: 'Master Your Finance (Infographic)', url: 'https://www.kwsp.gov.my/en/w/article/master-your-finance', type: 'reference' },
+          { label: 'Sick Budgets', url: 'https://eafit.sharepoint.com/:b:/s/IdiomasEAFIT/jefaturacad%C3%A9mica/profesidiomas/inglesadultos/IQD7yPY3E4ufQIDZoIufZmqKAbgXLi-EPjStpyRcB_J0pwc?e=EOYhfT', type: 'reference' },
+        ],
+      },
+    ],
+    closing: [
+      {
+        title: 'Sticky Notes Insights',
+        studentTask: 'On sticky notes, write one personal insight about housing, budgeting, or comfort that changed during the unit (e.g., "I didn\'t realize how different homes are around Colombia" or "I used to think only rich homes are comfortable, but now I think differently"). Post your notes on a "Reflection Wall" divided into 4 themes: Housing Around the World, Budgeting & Priorities, Language I Learned, What I\'d Like to Learn Next.',
+        time: '12 min',
+        materials: 'Sticky notes (1-3 per student), markers, wall/board divided into 4 sections',
+        teacherNote: 'Prepare the Reflection Wall with 4 labeled sections before the activity. Read a few notes aloud at the end.',
       },
       {
-        title: 'Roommate Compatibility Interview',
-        studentTask: 'You are looking for a roommate! Write 8 interview questions using "how much" and "how many": "How much noise do you make?" "How many hours do you study?" Then interview 2-3 classmates. Based on the answers, decide who would be your ideal roommate and write a short explanation (60-80 words) using quantifiers: "I chose Ana because she doesn\'t make much noise and she has a few hobbies we share."',
-        time: '30 min',
-        materials: 'Interview question template, recording sheet',
-        example: '"How many guests do you usually have?" "Not many, maybe a few friends on weekends."',
-        teacherNote: 'This is authentic and fun. Encourage follow-up questions.',
-        icon: icons.users,
+        title: 'Tweeting',
+        studentTask: 'Write a "tweet" (max 280 characters) summarizing what you learned about budgeting and life priorities (e.g., "I discovered I can\'t live without Wi-Fi, but I can survive without an expensive lamp. #BudgetLife #Adulting"). Display tweets around the classroom or on a Padlet wall.',
+        time: '12 min',
+        materials: 'Whiteboard or digital board, Padlet (optional)',
+        teacherNote: 'Encourage creativity and humor. Share favorites with the class.',
+      },
+      {
+        title: 'Comfort Spectrum Corners',
+        studentTask: 'Four classroom corners are labeled: Essential, Important, Nice to Have, Not Necessary. The teacher reads aloud housing conditions/items (hot shower, natural light, two bathrooms, low rent, privacy, internet, etc.). Walk to the corner matching your opinion. After 4-5 rounds, pause to explain your choices using quantity expressions and home-related vocabulary. Closing reflective question: "Has your opinion changed about what makes a good living space?"',
+        time: '12 min',
+        materials: '4 signs, list of 8-10 housing-related items, optional ball/talking stick',
+        teacherNote: 'Physical movement activity. Read items one at a time. Encourage explanations using unit target language.',
+      },
+    ],
+    livingLearning: [
+      {
+        title: 'Family Expense Discussion',
+        studentTask: 'At home, discuss typical monthly expenses (housing, food, transport) with your relatives. Bring real data to class for the budgeting activities. Use interview questions to guide the conversation.',
+        time: '10 min (homework)',
+        materials: 'Interview questions about family expenses',
+        teacherNote: 'Assign as homework before the budgeting activities. Emphasize privacy — students share only what they are comfortable with.',
+      },
+      {
+        title: 'Home Comfort Walk',
+        studentTask: 'Walk through your home and list objects/features contributing to comfort (windows, lighting, quiet spaces). Bring your list to class to compare with classmates using quantity expressions.',
+        time: '10 min (homework)',
+        materials: 'Observation checklist',
+        teacherNote: 'Simple homework task. Lists feed into classroom comparison activities.',
+      },
+      {
+        title: 'Neighbourhood Housing Observation',
+        studentTask: 'Take photos or notes about housing types in your neighbourhood (materials, size, rent estimates). Reflect on how location affects comfort or affordability. Bring observations to class.',
+        time: '10 min (homework)',
+        materials: 'Mobile phone/camera, observation notebook',
+        teacherNote: 'Connects classroom learning to real-world observation. Students share findings in class.',
+      },
+      {
+        title: 'Room Makeover Family Feedback',
+        studentTask: 'Show your final redesign ideas from the Room Makeover Challenge to a family member. Ask for their feedback and report it to the class: "My mom said there isn\'t much storage in my plan" or "My dad thinks I need a few more shelves."',
+        time: '10 min (homework)',
+        materials: 'Room Makeover project from class',
+        teacherNote: 'Bridges classroom work to family engagement. Students report feedback using target language.',
       },
     ],
   },
   unit3: {
     warmUps: [
       {
-        title: 'EAFIT Campus Quest',
-        instructions: 'In teams, explore photos of different services available on the EAFIT campus (library, sports center, cafeteria, health services, etc.). For each service shown, write a sentence using a determiner or quantifier: "There are some computers in the library" or "There isn\'t much space in the gym at noon." The team with the most correct sentences in 5 minutes wins!',
-        time: '10 min',
-        materials: 'Photos of campus services, answer sheets',
-        teacherNote: 'Use real EAFIT campus photos. Builds immediate relevance and vocabulary.',
+        title: 'Bingo Town',
+        instructions: 'Play bingo using place names related to services. The teacher (or a student caller) reads definitions of places aloud without saying the place name. Listen, check your card, and cross off matching places. First to get four in a row shouts "Bingo!" and reads aloud the places crossed off.',
+        time: '15 min',
+        materials: 'Bingo cards with place names (1 per student), caller\'s definition sheet, markers or paper pieces',
+        teacherNote: 'Prepare bingo cards with service-related place names. Read definitions only — do not say the place name. Vocabulary activation activity.',
+        links: [
+          { label: 'Bingo Cards and Caller\'s Sheet', url: 'https://eafit.sharepoint.com/:w:/r/sites/IdiomasEAFIT/jefaturacad%C3%A9mica/profesidiomas/inglesadultos/_layouts/15/Doc.aspx?sourcedoc=%7B0C283724-BCF5-40D2-B219-48ED430EBD2E%7D&file=bingo%20cards%20and%20caller%E2%80%99s%20sheet.docx&action=default&mobileredirect=true', type: 'worksheet' },
+        ],
       },
       {
-        title: 'Tourist Information Center',
-        instructions: 'Imagine you work at a tourist information center. A tourist asks you about services in your city. In pairs, take turns being the tourist and the information officer. The tourist asks: "Are there any good restaurants near here?" "Is there much nightlife?" The officer answers using quantifiers: "Yes, there are a lot of restaurants. There are a few traditional ones on this street." Practice for 3 rounds each.',
+        title: 'Words Within Words',
+        instructions: 'The teacher writes a long unit-related word on the board (e.g., "transportation," "entertainment," "community center"). In pairs or groups, you have 3 minutes to make as many new English words as possible using only the letters from that word. 1 point per correct word, 1 bonus for the longest valid word. Optionally connect found words to the unit theme and add them to a word wall.',
         time: '10 min',
-        materials: 'City service prompt cards',
-        teacherNote: 'This previews the unit vocabulary and grammar naturally. Provide a word bank.',
+        materials: 'Timer, board/markers',
+        teacherNote: 'Good words to use: "transportation," "entertainment," "community center." Quick vocabulary activation and teamwork.',
       },
       {
-        title: 'Service Pictionary Race',
-        instructions: 'In teams, one person draws a community service (bakery, pharmacy, gym, hospital, post office) while teammates guess. When they guess correctly, everyone must say a sentence about it using determiners: "That\'s a pharmacy! There is a pharmacy near my house." or "There are some pharmacies in my neighborhood." Fastest team wins each round!',
-        time: '10 min',
-        materials: 'Whiteboard, service word cards',
-        teacherNote: 'Keep rounds fast and energetic. Focus on a/an, some, any usage.',
+        title: 'Place Taboo',
+        instructions: 'Guess common places related to the unit (zoo, market, mall) while one student describes the location without using three "taboo" words shown on screen. Can be played whole-class (volunteer stands with back to screen, class gives clues) or in small groups. 30-60 seconds per round.',
+        time: '15 min',
+        materials: 'Taboo cards (digital or printed), screen/projector, optional timer/buzzer',
+        teacherNote: 'Prepare taboo cards with common service places and 3 forbidden words per card. Keep rounds fast (30-60 seconds).',
+        links: [
+          { label: 'Taboo Cards', url: 'https://eafit.sharepoint.com/:p:/r/sites/IdiomasEAFIT/jefaturacad%C3%A9mica/profesidiomas/inglesadultos/_layouts/15/Doc.aspx?sourcedoc=%7BB732678B-3EB7-461B-99B8-7826A4178FDB%7D&file=taboo%20cards.pptx&action=edit&mobileredirect=true', type: 'worksheet' },
+        ],
       },
     ],
     concreteExperience: [
       {
-        title: 'Street Food Stall Comparison',
-        studentTask: 'Look at the photos of two street food stalls your teacher shows you (e.g., a Chinese food stall and a pizza stall in London). With your group, discuss which stall you would prefer to eat at and why. Use determiners and quantifiers: "The pizza stall has some vegetarian options" or "There isn\'t any variety at the Chinese stall." Then listen to a conversation between two friends discussing the same stalls. Compare their opinions with yours: Did they agree with your group?',
-        time: '30 min',
-        materials: 'Photos of food stalls, conversation audio, transcript',
-        example: '"There are some interesting dishes at the Chinese stall, but there isn\'t much seating."',
-        teacherNote: 'Based on Navigate Elementary (Oxford). Use the conversation to introduce a/an, some, any naturally.',
-        icon: icons.coffee,
+        title: 'EAFIT Campus Quest – Scavenger Hunt',
+        studentTask: 'Three phases: (1) Orientation Phase (~10 min): Explore an illustrated campus map (2018) and an OpenStreetMap digital map. In pairs, answer questions like "Can you find the cafeteria?" and "Which services have you used before?" (2) Field Trip Phase (~60 min): In teams, visit 8 campus locations, each with short missions (take a photo, ask a question, describe something, record a short video). Scoring: up to 10 base points per stop + up to 20 bonus points (+2 English use, +3 creative output, +2 real-life interaction in English, +2 teamwork). Maximum: 100 points. (3) Return Phase (~15 min): Check evidence at a "checkpoint station" (photos, videos, notes). Upload to shared Padlet/Google Drive/Slides. Small rewards given.',
+        time: '120 min',
+        materials: 'Printed missions, timer, small rewards, printed/digital campus maps (EAFIT 2018 illustrated map + OpenStreetMap), clipboard, Padlet/Google Drive for uploads',
+        example: 'There are some computers in the library. There isn\'t much space in the gym at noon.',
+        teacherNote: 'Originally designed for main campus; adaptable to other sites. Prepare 8 mission cards with specific tasks per location. Maximum 100 points.',
+        icon: icons.map,
+        links: [
+          { label: 'Illustrated Campus Map', url: 'https://eafit.sharepoint.com/sites/IdiomasEAFIT/jefaturacad%C3%A9mica/profesidiomas/inglesadultos/Documentos%20compartidos/Forms/AllItems.aspx?viewid=3f7bdafa%2D8368%2D47b1%2Da8a1%2D57bd0da68bd5&newTargetListUrl=%2Fsites%2FIdiomasEAFIT%2Fjefaturacad%C3%A9mica%2Fprofesidiomas%2Finglesadultos%2FDocumentos%20compartidos&viewpath=%2Fsites%2FIdiomasEAFIT%2Fjefaturacad%C3%A9mica%2Fprofesidiomas%2Finglesadultos%2FDocumentos%20compartidos%2FForms%2FAllItems%2Easpx&id=%2Fsites%2FIdiomasEAFIT%2Fjefaturacad%C3%A9mica%2Fprofesidiomas%2Finglesadultos%2FDocumentos%20compartidos%2FAdult%20English%20Program%20Curriculum%2FNew%20Curriculum%202026%2FA2%20Elementary%2FElementary%202%2FUnit%203%2FResources%2Fillustrated%20campus%20map%2Epdf&parent=%2Fsites%2FIdiomasEAFIT%2Fjefaturacad%C3%A9mica%2Fprofesidiomas%2Finglesadultos%2FDocumentos%20compartidos%2FAdult%20English%20Program%20Curriculum%2FNew%20Curriculum%202026%2FA2%20Elementary%2FElementary%202%2FUnit%203%2FResources', type: 'images' },
+          { label: 'EAFIT Campus Map (OpenStreetMap)', url: 'https://www.eafit.edu.co/campus-eafit/mapa', type: 'reference' },
+          { label: 'Missions', url: 'https://eafit.sharepoint.com/:w:/r/sites/IdiomasEAFIT/jefaturacad%C3%A9mica/profesidiomas/inglesadultos/_layouts/15/Doc.aspx?sourcedoc=%7B7C278E15-F26E-4286-8FBB-CA4196578FB0%7D&file=missions.docx&action=default&mobileredirect=true', type: 'worksheet' },
+          { label: 'Printed Maps', url: 'https://eafit.sharepoint.com/:b:/s/IdiomasEAFIT/jefaturacad%C3%A9mica/profesidiomas/inglesadultos/IQAuqhYXmO_UQb2hJuRNBiQvAZNN4TJ4kj1J6O0aFGYMWLc?e=tAWQI3', type: 'images' },
+        ],
       },
       {
-        title: 'Shopping List Pair Activity',
-        studentTask: 'Work in pairs. Each person has a different version (A or B) of a shopping list for a party. Check items together to see what you still need to buy. Use the target language: "Do we need any napkins?" "Yes, we need some napkins." "No, we don\'t need any." Take turns asking and responding. At the end, create a complete shopping list together. Present your final list to the class: "We need some fruit, but we don\'t need any drinks."',
-        time: '30 min',
-        materials: 'Shopping list worksheets (A and B versions)',
-        example: '"Do we need any cups?" "Yes, we need some cups, but we don\'t need any plates."',
-        teacherNote: 'From English File Elementary (Oxford). Cut worksheets into A/B halves.',
-        icon: icons.shoppingCart,
+        title: 'Medellin Tourist Information Center',
+        studentTask: 'Simulate interactions in a Tourist Information Centre in Medellin. Three phases: (1) Vocabulary activation worksheet (15 min): classify destination words by category, then name real Medellin places and explain why you\'d recommend them. (2) Tourist task cards (15 min): Using cards like "Where can I try local food?", small groups brainstorm actual places that meet tourist needs, select and justify choices. 5-minute whole-class debrief. (3) Role-play rotations (20 min): Tourist Information Officers stay at desks, tourists move around completing information sheets. After 15 min, switch roles.',
+        time: '75 min',
+        materials: 'Posters/photos of real Medellin locations, vocabulary activation worksheet, tourist task cards, information sheets for tourists',
+        example: 'Are there any good restaurants near Parque Lleras? Yes, there are some traditional ones. There is a lot of nightlife there.',
+        teacherNote: 'Use real Medellin locations and photos. Prepare tourist task cards with specific needs (local food, museums, nightlife, etc.).',
+        icon: icons.globe,
+        links: [
+          { label: 'Vocabulary Activation Worksheet', url: 'https://eafit.sharepoint.com/:w:/r/sites/IdiomasEAFIT/jefaturacad%C3%A9mica/profesidiomas/inglesadultos/_layouts/15/Doc.aspx?sourcedoc=%7B9138FD02-6D3E-41CC-8F6F-6C068B85A758%7D&file=vocabulary%20activation%20worksheet.docx&action=default&mobileredirect=true', type: 'worksheet' },
+          { label: 'Tourist Task Cards', url: 'https://eafit.sharepoint.com/:w:/r/sites/IdiomasEAFIT/jefaturacad%C3%A9mica/profesidiomas/inglesadultos/_layouts/15/Doc.aspx?sourcedoc=%7BEA2106ED-9DB6-4F22-B2FD-AEE9D66E2804%7D&file=tourist%20task%20cards.docx&action=default&mobileredirect=true', type: 'worksheet' },
+          { label: 'Information Sheet', url: 'https://eafit.sharepoint.com/:w:/r/sites/IdiomasEAFIT/jefaturacad%C3%A9mica/profesidiomas/inglesadultos/_layouts/15/Doc.aspx?sourcedoc=%7B16E18D67-2769-4AC2-81EB-EE6A8DDF9DC1%7D&file=information%20sheet.docx&action=default&mobileredirect=true', type: 'worksheet' },
+        ],
       },
       {
-        title: 'Campus Service Exploration',
-        studentTask: 'Visit (virtually or in person) three EAFIT campus services: the library, sports area, and student wellbeing center. For each service, observe and note: What services are available? How many students are there? How much equipment is there? How much space is available? Write 5 sentences per service using quantifiers and determiners. Compare your observations with a partner using: "There are a lot of/few/many..."',
-        time: '30 min',
-        materials: 'Observation worksheet, mobile phones or cameras',
-        example: '"There are a lot of students in the library but there isn\'t much available seating."',
-        teacherNote: 'If in-person visit is not possible, use photos. This is a living learning environment activity.',
-        icon: icons.building,
+        title: 'Learning Stations – Exploring Services in Real Life',
+        studentTask: 'Rotate through three stations (15-20 min each): Station 1: "Flying Isn\'t Always Easy" — Watch an airport documentary, discuss common travel problems, identify problems in the video, share personal experiences, write humorous/realistic complaints in an airport forum. Station 2: "Quick Service, Big Taste" — Watch a documentary on street food in Brazil, Morocco, and Thailand. Match visuals to food items, complete sentences with descriptive adjectives, reflect on street food as a culturally rich service. Station 3: "Books on the Move — El Biblioburro" — Read about a creative rural education service in Colombia. Answer comprehension questions, discuss community impact, reflect on educational access. After all rotations, share your final task from each station with the whole class.',
+        time: '65 min',
+        materials: 'Station 1/2/3 worksheets, devices to watch videos (airport documentary, street food documentary)',
+        example: 'There aren\'t any direct flights from here. There is some amazing street food in Thailand. There aren\'t many libraries in rural Colombia.',
+        teacherNote: 'Set up 3 physical stations before class. Each station needs a device for video and a printed worksheet. Time rotations carefully.',
+        icon: icons.play,
+        links: [
+          { label: 'Airport Documentary Video', url: 'https://eafit.sharepoint.com/:v:/s/IdiomasEAFIT/jefaturacad%C3%A9mica/profesidiomas/inglesadultos/IQCRam-m2CifTaAyMAYETEDRAdDS3UuZqh29qtWpljHpR9E?e=stAtDY', type: 'video' },
+          { label: 'Street Food Documentary Video', url: 'https://eafit.sharepoint.com/:v:/s/IdiomasEAFIT/jefaturacad%C3%A9mica/profesidiomas/inglesadultos/IQDQ0jakfqh6SphlAqLWT4vYAWi9elPcfguLTx5u5DOcnoU?e=dfNIsn', type: 'video' },
+          { label: 'Station 1 Worksheet', url: 'https://eafit.sharepoint.com/:w:/r/sites/IdiomasEAFIT/jefaturacad%C3%A9mica/profesidiomas/inglesadultos/_layouts/15/Doc.aspx?sourcedoc=%7B2EF45546-3392-4A20-ABAA-B7CBE0489EEC%7D&file=station%201%20worksheet.docx&action=default&mobileredirect=true', type: 'worksheet' },
+          { label: 'Station 2 Worksheet', url: 'https://eafit.sharepoint.com/:w:/r/sites/IdiomasEAFIT/jefaturacad%C3%A9mica/profesidiomas/inglesadultos/_layouts/15/Doc.aspx?sourcedoc=%7B4FDE6713-5164-4108-B4F3-F385AF034F81%7D&file=station%202%20worksheet.docx&action=default&mobileredirect=true', type: 'worksheet' },
+          { label: 'Station 3 Worksheet', url: 'https://eafit.sharepoint.com/:w:/r/sites/IdiomasEAFIT/jefaturacad%C3%A9mica/profesidiomas/inglesadultos/_layouts/15/Doc.aspx?sourcedoc=%7B1390AB29-547A-4DF6-8CD5-43CA9148BB7D%7D&file=station%203%20worksheet.docx&action=default&mobileredirect=true', type: 'worksheet' },
+        ],
       },
     ],
     reflection: [
       {
-        title: 'Grammar Discovery: A/An, Some, Any',
-        studentTask: 'Look at the conversation transcript from the street food stall activity. In small groups, find all examples of "a," "an," "some," and "any." Organize them into categories: (1) Which words appear in affirmative sentences? (2) Which appear in negative sentences? (3) Which appear in questions? Complete the grammar checklist: "We found examples of \'some\' in affirmative sentences ✓ / We found \'any\' in negative and question forms ✓ / We identified \'a/an\' before singular countable nouns ✓." Write your group\'s grammar rules.',
-        time: '30 min',
-        materials: 'Conversation transcript, grammar checklist, grammar reference sheet',
-        example: 'Rule: Use "some" in affirmative. Use "any" in negatives and questions. Use "a/an" for singular countable nouns.',
-        teacherNote: 'Guide students to discover rules, do not give them directly. Provide controlled practice link.',
-      },
-      {
-        title: 'Shopping Habits Quiz Reflection',
-        studentTask: 'Complete the Shopping Habits Quiz. Read each statement about shopping and decide how often you do each thing. Notice the highlighted quantifiers in each sentence (some, any, much, many, a lot of, a few, a little). After the quiz, sort the quantifiers into categories: which ones go with countable nouns? Which go with uncountable nouns? Which work with both? Create a reference chart for your notebook.',
-        time: '30 min',
-        materials: 'Shopping habits quiz, highlighted quantifiers handout',
-        example: 'Countable: many, a few, several | Uncountable: much, a little | Both: some, any, a lot of',
-        teacherNote: 'This connects grammar with personal experience. Include controlled practice links.',
-      },
-      {
-        title: 'Service Observation Debrief',
-        studentTask: 'Share your campus service observations from the exploration activity with your group. Together, answer these reflection questions: (1) Which service surprised you the most? (2) What phrases with quantifiers did you use most often? (3) Complete the sentence starters: "One thing I noticed was..." / "The service with the most ___ was..." / "I was surprised that there wasn\'t much/many..." Write a short group reflection paragraph.',
+        title: 'Reflection on EAFIT Campus Quest',
+        studentTask: 'Do a gallery walk or screen share of photos/captions/notes from the scavenger hunt. In pairs, discuss: "Which service surprised you the most and why?" and "Which mission was the most fun or difficult?" Language noticing: "What useful words or phrases did you use today?" 2-3 volunteers share with the class. Highlight how English was used to navigate real spaces.',
         time: '15 min',
-        materials: 'Notes from campus exploration, reflection question sheet',
-        example: 'One phrase I used a lot was "there aren\'t many..." because several services had limited resources.',
-        teacherNote: 'This bridges concrete experience to abstract rules. Keep discussion focused on language use.',
+        materials: 'Photos/notes/captions from the hunt, completed mission cards, physical or digital gallery display, optional Padlet/Google Slides',
+        example: 'I used "Are there any...?" a lot during the scavenger hunt. The most surprising service was the wellness center.',
+        teacherNote: 'Focus on language noticing — write useful words/phrases on the board. Highlight real-world English use.',
+      },
+      {
+        title: 'Reflection on Medellin Tourist Information Center',
+        studentTask: 'Class discussion: "What made a recommendation effective?", "Was it easy/hard to answer tourists\' questions?", "Which expressions did you use most?", "Did people understand you?" Then complete a written reflection with three prompts: (1) One useful thing I said/heard, (2) One thing I want to improve, (3) A new word/phrase I learned. Optionally share anonymously.',
+        time: '15 min',
+        materials: 'Role-play notes/cue cards, printed/projected discussion questions, reflection template',
+        example: 'One useful thing I said was "There are some great cafés near the university." I want to improve using "any" in questions.',
+        teacherNote: 'Start with whole-class discussion, then move to individual written reflection. Anonymous sharing reduces pressure.',
+      },
+      {
+        title: 'Reflection on Learning Stations',
+        studentTask: 'The teacher asks "Which station was most interesting or surprising, and why?" Share your answers. In pairs, complete a noticing task: recall one useful phrase from each station (e.g., "You can visit...", "There is a place where..."). Discuss how different needs lead to different communication. Final question: "What do these stations show us about how people solve problems or provide services?"',
+        time: '15 min',
+        materials: 'Printed/projected discussion questions, whiteboard/digital board, optional poster paper, sticky notes',
+        example: 'At the airport station I used "There aren\'t any..." At the food station I used "There is some..." Each service needs different language.',
+        teacherNote: 'Metalinguistic discussion about how different needs lead to different communication. Keep focus on language patterns.',
       },
     ],
     abstract: [
       {
+        title: 'Grammar Discovery 1 – A/An, Some, Any',
+        studentTask: 'Look at photos of two London street food stalls (Chinese food and pizza) and discuss which you\'d eat at. Listen to a conversation (from Navigate Elementary, Oxford) where two friends order food at a market. First listen: identify which stall and what they order. Second listen: match sentence beginnings 1-6 to endings a-f. Then analyze the highlighted transcript to discover uses of a/an/some/any: "any" in questions, "some" in affirmative sentences, "any" in negative sentences, "a/an" with singular countable nouns. Complete grammar rules. Review grammar reference (from Speakout Elementary, Pearson). Do controlled practice.',
+        time: '30 min',
+        materials: 'Images of food stalls, conversation audio (Navigate Elementary, Oxford), transcript, grammar reference (Speakout Elementary, Pearson), practice link',
+        example: '"Can I have some chicken?" "Do you have any Coke?" "I\'d like a coffee." — "some" in affirmative, "any" in questions, "a" with singular.',
+        teacherNote: 'Based on Navigate Elementary (Oxford). Grammar reference from Speakout Elementary (Pearson). Guide discovery, don\'t give rules directly.',
+        links: [
+          { label: 'Chinese Food Stall Image', url: 'https://eafit.sharepoint.com/sites/IdiomasEAFIT/jefaturacad%C3%A9mica/profesidiomas/inglesadultos/Documentos%20compartidos/Forms/AllItems.aspx?viewid=3f7bdafa%2D8368%2D47b1%2Da8a1%2D57bd0da68bd5&newTargetListUrl=%2Fsites%2FIdiomasEAFIT%2Fjefaturacad%C3%A9mica%2Fprofesidiomas%2Finglesadultos%2FDocumentos%20compartidos&viewpath=%2Fsites%2FIdiomasEAFIT%2Fjefaturacad%C3%A9mica%2Fprofesidiomas%2Finglesadultos%2FDocumentos%20compartidos%2FForms%2FAllItems%2Easpx&id=%2Fsites%2FIdiomasEAFIT%2Fjefaturacad%C3%A9mica%2Fprofesidiomas%2Finglesadultos%2FDocumentos%20compartidos%2FAdult%20English%20Program%20Curriculum%2FNew%20Curriculum%202026%2FA2%20Elementary%2FElementary%202%2FUnit%203%2FResources%2Fchinese%20food%20stall%2Ewebp&parent=%2Fsites%2FIdiomasEAFIT%2Fjefaturacad%C3%A9mica%2Fprofesidiomas%2Finglesadultos%2FDocumentos%20compartidos%2FAdult%20English%20Program%20Curriculum%2FNew%20Curriculum%202026%2FA2%20Elementary%2FElementary%202%2FUnit%203%2FResources', type: 'images' },
+          { label: 'Pizza Stall Image', url: 'https://eafit.sharepoint.com/sites/IdiomasEAFIT/jefaturacad%C3%A9mica/profesidiomas/inglesadultos/Documentos%20compartidos/Forms/AllItems.aspx?viewid=3f7bdafa%2D8368%2D47b1%2Da8a1%2D57bd0da68bd5&newTargetListUrl=%2Fsites%2FIdiomasEAFIT%2Fjefaturacad%C3%A9mica%2Fprofesidiomas%2Finglesadultos%2FDocumentos%20compartidos&viewpath=%2Fsites%2FIdiomasEAFIT%2Fjefaturacad%C3%A9mica%2Fprofesidiomas%2Finglesadultos%2FDocumentos%20compartidos%2FForms%2FAllItems%2Easpx&id=%2Fsites%2FIdiomasEAFIT%2Fjefaturacad%C3%A9mica%2Fprofesidiomas%2Finglesadultos%2FDocumentos%20compartidos%2FAdult%20English%20Program%20Curriculum%2FNew%20Curriculum%202026%2FA2%20Elementary%2FElementary%202%2FUnit%203%2FResources%2Fpizza%20stall%2Ejpg&parent=%2Fsites%2FIdiomasEAFIT%2Fjefaturacad%C3%A9mica%2Fprofesidiomas%2Finglesadultos%2FDocumentos%20compartidos%2FAdult%20English%20Program%20Curriculum%2FNew%20Curriculum%202026%2FA2%20Elementary%2FElementary%202%2FUnit%203%2FResources', type: 'images' },
+          { label: 'Audio: Two Friends', url: 'https://eafit.sharepoint.com/sites/IdiomasEAFIT/jefaturacad%C3%A9mica/profesidiomas/inglesadultos/_layouts/15/stream.aspx?id=%2Fsites%2FIdiomasEAFIT%2Fjefaturacad%C3%A9mica%2Fprofesidiomas%2Finglesadultos%2FDocumentos%20compartidos%2FAdult%20English%20Program%20Curriculum%2FNew%20Curriculum%202026%2FA2%20Elementary%2FElementary%202%2FUnit%203%2FResources%2Ftwo%20friends%2Emp3&referrer=StreamWebApp%2EWeb&referrerScenario=AddressBarCopied%2Eview%2Ea96f610f%2Db505%2D4407%2D9a97%2D3536a7d0dc02', type: 'audio' },
+          { label: 'Highlighted Transcript', url: 'https://eafit.sharepoint.com/:w:/r/sites/IdiomasEAFIT/jefaturacad%C3%A9mica/profesidiomas/inglesadultos/_layouts/15/Doc.aspx?sourcedoc=%7B73888942-9E54-4735-A483-816F1A7FA4EA%7D&file=highlighted%20transcript.docx&action=default&mobileredirect=true', type: 'worksheet' },
+          { label: 'Grammar Reference (A/AN, SOME, ANY)', url: 'https://eafit.sharepoint.com/:p:/r/sites/IdiomasEAFIT/jefaturacad%C3%A9mica/profesidiomas/inglesadultos/_layouts/15/Doc.aspx?sourcedoc=%7BF4611292-FCD8-4C1F-897B-1F77B354046A%7D&file=grammar%20reference%20%20for%20A-AN%20SOME%20ANY%20-%20Copia.pptx&action=edit&mobileredirect=true', type: 'reference' },
+          { label: 'Practice: A/Some/Any (test-english.com)', url: 'https://test-english.com/grammar-points/a1/a-some-any-countable-uncountable/', type: 'reference' },
+        ],
+      },
+      {
+        title: 'Shopping List',
+        studentTask: 'Pairwork grammar practice from English File Elementary (4th Ed., Oxford). Practice "Do we need any...? / Yes, we need some... / No, we don\'t need any..." The teacher demonstrates with classroom materials. Pairs get A/B worksheets — Student A is in the supermarket calling Student B at home. B looks at the fridge picture and answers. A marks tick/cross for items needed. Then swap roles. Wrap-up: pairs share what they needed most or found surprising.',
+        time: '30 min',
+        materials: 'Shopping list worksheet (A and B) from English File Elementary (4th Ed., Oxford)',
+        example: '"Do we need any milk?" "Yes, we need some milk." "Do we need any eggs?" "No, we don\'t need any eggs."',
+        teacherNote: 'From English File Elementary (4th Ed., Oxford). Demonstrate with classroom materials first.',
+        links: [
+          { label: 'Shopping List Worksheet', url: 'https://eafit.sharepoint.com/sites/IdiomasEAFIT/jefaturacad%C3%A9mica/profesidiomas/inglesadultos/Documentos%20compartidos/Forms/AllItems.aspx?viewid=3f7bdafa%2D8368%2D47b1%2Da8a1%2D57bd0da68bd5&newTargetListUrl=%2Fsites%2FIdiomasEAFIT%2Fjefaturacad%C3%A9mica%2Fprofesidiomas%2Finglesadultos%2FDocumentos%20compartidos&viewpath=%2Fsites%2FIdiomasEAFIT%2Fjefaturacad%C3%A9mica%2Fprofesidiomas%2Finglesadultos%2FDocumentos%20compartidos%2FForms%2FAllItems%2Easpx&id=%2Fsites%2FIdiomasEAFIT%2Fjefaturacad%C3%A9mica%2Fprofesidiomas%2Finglesadultos%2FDocumentos%20compartidos%2FAdult%20English%20Program%20Curriculum%2FNew%20Curriculum%202026%2FA2%20Elementary%2FElementary%202%2FUnit%203%2FResources%2Fshopping%20list%20worksheet%2Epdf&parent=%2Fsites%2FIdiomasEAFIT%2Fjefaturacad%C3%A9mica%2Fprofesidiomas%2Finglesadultos%2FDocumentos%20compartidos%2FAdult%20English%20Program%20Curriculum%2FNew%20Curriculum%202026%2FA2%20Elementary%2FElementary%202%2FUnit%203%2FResources', type: 'worksheet' },
+        ],
+      },
+      {
+        title: 'Grammar in Context – Quantifiers',
+        studentTask: 'Take a shopping habits quiz (circle Y/N for each statement). Count your answers and read the quiz result interpretation (careful shopper vs. impulsive shopper). Discuss if it matches you. Then focus on highlighted quantifiers in the quiz (much, a lot of, a few, some, a bit). Sort quantifiers/determiners into categories: singular countable, plural countable, uncountable, or both. Review answers as a class. Reinforce with online practice exercises for: much/many/little/few/some/any, demonstratives (this/that/these/those), a little/a few, each/every/all.',
+        time: '30 min',
+        materials: 'Shopping habits quiz, highlighted quantifiers handout, sorting handout, each/every/all worksheet (from Business Grammar and Practice, Collins), online practice links',
+        example: '"I buy a lot of snacks" — "a lot of" works with both countable and uncountable. "I spend much time shopping" — "much" with uncountable.',
+        teacherNote: 'Multiple online practice links available. Include the each/every/all worksheet from Business Grammar and Practice (Collins).',
+        links: [
+          { label: 'Shopping Habits Quiz', url: 'https://eafit.sharepoint.com/:w:/r/sites/IdiomasEAFIT/jefaturacad%C3%A9mica/profesidiomas/inglesadultos/_layouts/15/Doc.aspx?sourcedoc=%7B7C0C9F96-AE50-4AA2-A2A1-D55CD3654F5D%7D&file=shopping%20habits%20quiz.docx&action=default&mobileredirect=true', type: 'worksheet' },
+          { label: 'Highlighted Quantifiers', url: 'https://eafit.sharepoint.com/:w:/r/sites/IdiomasEAFIT/jefaturacad%C3%A9mica/profesidiomas/inglesadultos/_layouts/15/Doc.aspx?sourcedoc=%7B33112595-1123-4B91-B163-DA283738C523%7D&file=highlighted%20quantifiers.docx&action=default&mobileredirect=true', type: 'worksheet' },
+          { label: 'Sort Quantifiers and Determiners', url: 'https://eafit.sharepoint.com/:p:/r/sites/IdiomasEAFIT/jefaturacad%C3%A9mica/profesidiomas/inglesadultos/_layouts/15/Doc.aspx?sourcedoc=%7B6FD687A7-EC44-4B27-B1E7-767DCCC6E21D%7D&file=sort%20the%20following%20quantifiers%20and%20determiners.pptx&action=edit&mobileredirect=true', type: 'reference' },
+          { label: 'Practice: Much/Many/Little/Few (test-english.com)', url: 'https://test-english.com/grammar-points/a2/much-many-little-few-some-any/', type: 'reference' },
+          { label: 'This vs These (prowritingaid.com)', url: 'https://prowritingaid.com/grammar/1000142/-these-vs-this-', type: 'reference' },
+          { label: 'This/That/These/Those (test-english.com)', url: 'https://test-english.com/grammar-points/a1/this-that-these-those/', type: 'reference' },
+          { label: 'Little vs Few (ego4u.com)', url: 'https://www.ego4u.com/en/cram-up/vocabulary/little-few', type: 'reference' },
+          { label: 'Each/Every/All Worksheet', url: 'https://eafit.sharepoint.com/:b:/s/RenovacinCursosAdultos/ESh2R_6Z36hAiAIokQEktNEB0HiUAPtwLbE0JNluOAF7Ug?e=jqccqG', type: 'worksheet' },
+        ],
+      },
+      {
         title: 'Quantifiers Board Game',
-        studentTask: 'Play a board game in pairs or small groups to practice quantifiers (some, many, much, a lot of, a few, a little, not much, not many) in real-life contexts about services, shopping, and everyday habits. Each square includes a "How much/many...?" question that you must answer in a complete sentence. Example: "How many streaming services do you use?" → "I use a few streaming services, like Netflix and Spotify." Roll the dice, move, answer, and keep going!',
+        studentTask: 'Play in pairs or groups of three. Roll a die, move your token, land on a square with a "How much/many...?" question (e.g., "How many online subscriptions do you have?" or "How much money do you spend on delivery apps?"). First decide whether the question requires "How much" or "How many," say it aloud, then answer using an appropriate quantifier (some, a few, a lot of, not much, etc.). Group members ask follow-up questions.',
         time: '20 min',
-        materials: 'One board game per pair/group, dice, tokens',
-        example: '"How much time do you spend shopping online?" → "I spend a lot of time shopping online!"',
-        teacherNote: 'Print one board per group. Students can use coins or erasers as tokens.',
-      },
-      {
-        title: 'Demonstratives in Context',
-        studentTask: 'Look at the classroom objects your teacher has placed at different distances. Practice using demonstratives: "This pen is mine" (near) vs. "That notebook is yours" (far) / "These books are new" (near, plural) vs. "Those posters are old" (far, plural). Then write 6 sentences describing services or products using demonstratives correctly. Compare with a partner: "These reviews are positive. Those ratings are low."',
-        time: '20 min',
-        materials: 'Classroom objects at various distances, demonstrative reference card',
-        example: '"This café has great coffee, but that restaurant across the street is cheaper."',
-        teacherNote: 'Use physical demonstration with objects. Practice links available for homework.',
-      },
-      {
-        title: 'Grammar Pattern Wall',
-        studentTask: 'Create a "grammar pattern wall" on a large poster. Organize examples from all previous activities into clear categories: (1) a/an + singular countable, (2) some + plural countable/uncountable (affirmative), (3) any + plural countable/uncountable (neg/questions), (4) much + uncountable, (5) many + countable, (6) a lot of + both. For each category, write the rule AND 2 original examples about services in your community.',
-        time: '25 min',
-        materials: 'Large poster paper, markers, sticky notes',
-        example: 'Rule: "any" = negative & questions. Example: "Are there any gyms near here?" / "There aren\'t any parks."',
-        teacherNote: 'Display the wall for reference throughout the rest of the unit. Student-generated rules stick better.',
-      },
-      {
-        title: 'Error Correction Workshop',
-        studentTask: 'Find and fix errors in 10 sentences about community services. Each sentence has one determiner or quantifier error. Example: "There are much restaurants in my area" → "There are many restaurants in my area." For each correction, explain WHY it was wrong. After fixing all 10, write 3 of your own "tricky" error sentences and challenge a partner to fix them.',
-        time: '20 min',
-        materials: 'Error correction worksheet',
-        example: 'Error: "I don\'t have some money" → Fix: "I don\'t have any money" (use "any" in negatives)',
-        teacherNote: 'Include errors students commonly make. Peer-generated errors are powerful diagnostic tools.',
+        materials: 'Board game (one per pair/group), dice (one per group), small tokens/counters',
+        example: '"How many streaming services do you use?" → "I use a few — Netflix and Spotify." Follow-up: "How much do you pay for them?"',
+        teacherNote: 'Print one board per group. Encourage follow-up questions to extend speaking time.',
+        icon: icons.gamepad,
+        links: [
+          { label: 'Quantifiers Board Game', url: 'https://eafit.sharepoint.com/:w:/r/sites/IdiomasEAFIT/jefaturacad%C3%A9mica/profesidiomas/inglesadultos/_layouts/15/Doc.aspx?sourcedoc=%7B12749F76-3E6D-4AFE-8EAD-A5A4CF4821B0%7D&file=quantifiers%20board%20game.docx&action=default&mobileredirect=true', type: 'worksheet' },
+        ],
       },
     ],
     practice: [
       {
         title: 'A Service Review',
-        studentTask: 'Write a review (100-120 words) of a real service you have used (a restaurant, gym, store, app, or campus service), similar to a Google Maps or TripAdvisor review. Include: (1) What service you used (a/an), (2) What was available (some, many, a lot of), (3) What was missing (any, not much, not many), (4) Your recommendation. Share with peers for feedback, then revise. Present your final review to the class. Vote for the "Most Helpful Review" and "Best Use of Quantifiers."',
+        studentTask: 'Seven-step task: (1) Service Experience Stories (5-10 min): In pairs, share a memorable service experience (positive or negative), then summarize partner\'s story to class. (2) Pre-task Recap (5-10 min): Review useful expressions/grammar. Discuss characteristics of a good review. (3) Model Reading & Analyzing (10-15 min): Analyze real TripAdvisor/Google Maps reviews for vocabulary, tone, and structure using model worksheets. (4) Task Instructions: Write a review of a recently used service. (5) Production Phase (15-20 min): Write the review using quantifiers/determiners (a lot of noise, a few problems, not enough staff, some nice features). (6) Sharing & Peer Review (10-15 min): Share in pairs/groups. Peers ask questions and give feedback. Optional: vote for "most helpful review." (7) Whole-class Reflection (5 min): "What did you learn about using English to give recommendations?"',
         time: '60 min',
-        materials: 'Service review template, peer feedback checklist',
-        example: '"I visited a new coffee shop near EAFIT. There are some comfortable seats but there isn\'t much Wi-Fi..."',
-        teacherNote: 'Show real Google Maps reviews as models. Include peer feedback and self-assessment.',
+        materials: 'Service review worksheet/digital template, peer feedback checklist, real-life service review examples (TripAdvisor/Google Maps), model 1 and model 2 worksheets, optional Padlet',
+        example: '"I visited a new coffee shop near EAFIT. There are some comfortable seats but there isn\'t much Wi-Fi. I would recommend it for a quick coffee."',
+        teacherNote: 'Potential summative assessment. Show real reviews as models. Two model worksheets available: Model 1 (extended narrative) and Model 2 (shorter online review form).',
         icon: icons.star,
+        links: [
+          { label: 'TripAdvisor Example Review', url: 'https://www.tripadvisor.ca/Restaurant_Review-g297478-d19114830-Reviews-Hatoviejo_Oviedo-Medellin_Antioquia_Department.html', type: 'reference' },
+          { label: 'Model 1 Worksheet', url: 'https://eafit.sharepoint.com/sites/IdiomasEAFIT/jefaturacad%C3%A9mica/profesidiomas/inglesadultos/Documentos%20compartidos/Forms/AllItems.aspx?viewid=3f7bdafa%2D8368%2D47b1%2Da8a1%2D57bd0da68bd5&newTargetListUrl=%2Fsites%2FIdiomasEAFIT%2Fjefaturacad%C3%A9mica%2Fprofesidiomas%2Finglesadultos%2FDocumentos%20compartidos&viewpath=%2Fsites%2FIdiomasEAFIT%2Fjefaturacad%C3%A9mica%2Fprofesidiomas%2Finglesadultos%2FDocumentos%20compartidos%2FForms%2FAllItems%2Easpx&id=%2Fsites%2FIdiomasEAFIT%2Fjefaturacad%C3%A9mica%2Fprofesidiomas%2Finglesadultos%2FDocumentos%20compartidos%2FAdult%20English%20Program%20Curriculum%2FNew%20Curriculum%202026%2FA2%20Elementary%2FElementary%202%2FUnit%203%2FResources%2Fmodel%201%20worksheet%2Epdf&parent=%2Fsites%2FIdiomasEAFIT%2Fjefaturacad%C3%A9mica%2Fprofesidiomas%2Finglesadultos%2FDocumentos%20compartidos%2FAdult%20English%20Program%20Curriculum%2FNew%20Curriculum%202026%2FA2%20Elementary%2FElementary%202%2FUnit%203%2FResources', type: 'worksheet' },
+          { label: 'Model 2 Worksheet', url: 'https://eafit.sharepoint.com/sites/IdiomasEAFIT/jefaturacad%C3%A9mica/profesidiomas/inglesadultos/Documentos%20compartidos/Forms/AllItems.aspx?viewid=3f7bdafa%2D8368%2D47b1%2Da8a1%2D57bd0da68bd5&newTargetListUrl=%2Fsites%2FIdiomasEAFIT%2Fjefaturacad%C3%A9mica%2Fprofesidiomas%2Finglesadultos%2FDocumentos%20compartidos&viewpath=%2Fsites%2FIdiomasEAFIT%2Fjefaturacad%C3%A9mica%2Fprofesidiomas%2Finglesadultos%2FDocumentos%20compartidos%2FForms%2FAllItems%2Easpx&id=%2Fsites%2FIdiomasEAFIT%2Fjefaturacad%C3%A9mica%2Fprofesidiomas%2Finglesadultos%2FDocumentos%20compartidos%2FAdult%20English%20Program%20Curriculum%2FNew%20Curriculum%202026%2FA2%20Elementary%2FElementary%202%2FUnit%203%2FResources%2Fmodel%202%20worksheet%2Epdf&parent=%2Fsites%2FIdiomasEAFIT%2Fjefaturacad%C3%A9mica%2Fprofesidiomas%2Finglesadultos%2FDocumentos%20compartidos%2FAdult%20English%20Program%20Curriculum%2FNew%20Curriculum%202026%2FA2%20Elementary%2FElementary%202%2FUnit%203%2FResources', type: 'worksheet' },
+        ],
       },
       {
-        title: 'Product Unboxing Video',
-        studentTask: 'Create and present a 2-minute unboxing video (recorded or live). Choose a product or service subscription. In your video: (1) Introduce the product using a/an, (2) Describe the contents using some, a few, a lot of, (3) Give your opinion on quality and value for money, (4) Make a recommendation. Watch example unboxing videos for inspiration first. Use the description worksheet to plan your content. Present to the class and receive creative awards!',
+        title: 'A Product Unboxing Video',
+        studentTask: 'Five-step task: (1) Opening: Watch a trending unboxing video from social media. Discussion: "What products have you recently unboxed or would like to unbox?" (2) Introduction to New Material: Brainstorm key unboxing vocabulary (packaging, features, user experience) on digital whiteboard. Discuss adjectives for product quality. Optional description worksheet. (3) Practice: Groups receive a mystery product to unbox together. Role-play an unboxing presentation focusing on packaging, features, and excitement of discovery. Choose a spokesperson. (4) Unboxing: Create an individual unboxing video with introduction, unboxing process, product feature description, and conclusion. Encourage sharing on TikTok or Instagram. (5) Closing: Discussion about new vocabulary and what you learned.',
         time: '90 min',
-        materials: 'Mobile phone for recording, product to unbox, description worksheet',
-        example: '"Today I\'m unboxing a subscription box! There are some snacks, a few stickers, and a lot of candy..."',
-        teacherNote: 'Show a trending unboxing video first. This is a multi-class project. Formative + summative.',
+        materials: 'Selection of unboxing videos, description worksheet (optional, from English for Everyone, Business English), mystery products for group practice, mobile phones for recording',
+        example: '"Today I\'m unboxing a subscription box! There are some snacks, a few stickers, and a lot of candy inside. This product has a lot of variety."',
+        teacherNote: 'Potential summative assessment. Show a trending unboxing video first. Provide mystery products for group practice before individual recording.',
         icon: icons.camera,
+        links: [
+          { label: 'Best Unboxing Videos', url: 'https://www.demoup-cliplister.com/en/blog/best-unboxing-videos/', type: 'video' },
+          { label: 'Description Worksheet', url: 'https://eafit.sharepoint.com/sites/IdiomasEAFIT/jefaturacad%C3%A9mica/profesidiomas/inglesadultos/Documentos%20compartidos/Forms/AllItems.aspx?viewid=3f7bdafa%2D8368%2D47b1%2Da8a1%2D57bd0da68bd5&newTargetListUrl=%2Fsites%2FIdiomasEAFIT%2Fjefaturacad%C3%A9mica%2Fprofesidiomas%2Finglesadultos%2FDocumentos%20compartidos&viewpath=%2Fsites%2FIdiomasEAFIT%2Fjefaturacad%C3%A9mica%2Fprofesidiomas%2Finglesadultos%2FDocumentos%20compartidos%2FForms%2FAllItems%2Easpx&id=%2Fsites%2FIdiomasEAFIT%2Fjefaturacad%C3%A9mica%2Fprofesidiomas%2Finglesadultos%2FDocumentos%20compartidos%2FAdult%20English%20Program%20Curriculum%2FNew%20Curriculum%202026%2FA2%20Elementary%2FElementary%202%2FUnit%203%2FResources%2Fdescription%20worksheet%2Epdf&parent=%2Fsites%2FIdiomasEAFIT%2Fjefaturacad%C3%A9mica%2Fprofesidiomas%2Finglesadultos%2FDocumentos%20compartidos%2FAdult%20English%20Program%20Curriculum%2FNew%20Curriculum%202026%2FA2%20Elementary%2FElementary%202%2FUnit%203%2FResources', type: 'worksheet' },
+        ],
       },
       {
-        title: 'Community Service Catalog',
-        studentTask: 'Research and catalog services available in your neighborhood or community. Work individually or in small groups. Essential question: "What services are available in our neighborhoods, and how do community members perceive their effectiveness?" Steps: (1) Discuss local services and create a survey using open and closed questions, (2) Interview neighbors or classmates, (3) Organize findings in a catalog with descriptions using determiners and quantifiers, (4) Present your catalog to the class. Include photos if possible!',
+        title: 'A Catalog of Services in My Community',
+        studentTask: 'Essential Research Question: "What services are available in our neighborhoods, and how do community members perceive their effectiveness and quality?" Six steps: (1) Warm-up Discussion: Conversation question set about local services to activate prior knowledge. (2) Research and Planning: Select 2-3 services, develop a specific research question (e.g., "How do local cafes support community events?"). Conduct field research: visit locations, interview providers, survey community members. Optional mini-lesson on open-ended vs. closed-ended questions. (3) Data Collection: Create and use a structured survey/questionnaire. Document findings through notes, photos, or recordings. (4) Catalog Creation: Compile catalog with brief descriptions, key survey findings (ratings, feedback), and visual elements. (5) Presentation: Present catalogs to the class, highlighting interesting findings. (6) Class Discussion & Reflection: Discuss variety of services and importance of customer feedback.',
         time: '120 min',
-        materials: 'Survey templates, catalog design materials, mobile phones for photos',
-        example: '"In my neighborhood, there are a lot of small shops but there aren\'t any bookstores."',
-        teacherNote: 'This is a multi-session project. Great for real-world application and community engagement.',
+        materials: 'Survey templates, catalog design materials, conversation question set, open-ended vs. closed-ended questions handout, mobile phones for photos',
+        example: '"In my neighborhood, there are a lot of small shops but there aren\'t any bookstores. Some residents want more cultural services."',
+        teacherNote: 'Potential summative assessment. Multi-session project. Great for real-world application and community engagement.',
         icon: icons.globe,
+        links: [
+          { label: 'Conversation Question Set', url: 'https://eafit.sharepoint.com/:w:/r/sites/IdiomasEAFIT/jefaturacad%C3%A9mica/profesidiomas/inglesadultos/_layouts/15/Doc.aspx?sourcedoc=%7BB38F3051-4C2D-4627-9D0E-423F9385BA7A%7D&file=conversation%20question%20set%20about%20local%20services.docx&action=default&mobileredirect=true', type: 'worksheet' },
+          { label: 'Open-Ended vs Closed-Ended Questions Handout', url: 'https://eafit.sharepoint.com/:w:/r/sites/IdiomasEAFIT/jefaturacad%C3%A9mica/profesidiomas/inglesadultos/_layouts/15/Doc.aspx?sourcedoc=%7B7CF68EE9-60C7-43E9-80D5-92C813EA3F78%7D&file=open%20ended%20vs%20closed%20ended%20questions%20handout.pdf.docx&action=default&mobileredirect=true', type: 'worksheet' },
+        ],
+      },
+    ],
+    closing: [
+      {
+        title: 'Cultural Service Storytelling Circle',
+        studentTask: 'Form a circle and share a brief personal story about a cultural service you experienced during the unit (on campus, community, or fieldwork). Express how it made you feel and what you learned about accessibility or quality. Use determiners and quantifiers in your story.',
+        time: '15 min',
+        materials: 'Optional talking object to pass around',
+        teacherNote: 'Affective reflection activity. Create a supportive atmosphere. Encourage students to connect their stories to unit themes.',
+      },
+      {
+        title: 'Service Review Awards Ceremony',
+        studentTask: 'Present your service reviews or unboxing videos and receive creative awards (e.g., "Most Helpful Review," "Most Creative Unboxing," "Best Use of Quantifiers"). Celebrate each other\'s work and give positive feedback.',
+        time: '15 min',
+        materials: 'Printed/digital award certificates or badges, optional background music/sound effects/applause animations',
+        teacherNote: 'Informal celebration. Prepare fun award categories in advance. Make it celebratory.',
+      },
+      {
+        title: 'Reflection Wall',
+        studentTask: 'Post on a collaborative wall (physical or digital) three items: (1) One new thing I learned, (2) One challenge I overcame, (3) One cultural service I want to explore more. Read your classmates\' posts and add comments or reactions.',
+        time: '15 min',
+        materials: 'Large poster paper/bulletin board, sticky notes or reflection cards, optional Padlet',
+        teacherNote: 'Collaborative visual reflection. Prepare the wall space before the activity. Can be physical or digital (Padlet).',
+      },
+    ],
+    livingLearning: [
+      {
+        title: 'Neighborhood Service Exploration',
+        studentTask: 'Explore services around your neighborhood (bakery, pharmacy, gym). Take photos, list key information (opening hours, prices, offerings). Describe findings using quantifiers and demonstratives: "This bakery has some great bread. There isn\'t much variety, but the prices are low."',
+        time: '30 min (outside class)',
+        materials: 'Mobile phones/cameras, guided worksheet (name of service, opening hours, prices, services offered), notebook/Google Docs, optional Padlet/printed neighborhood map',
+        teacherNote: 'Out-of-class fieldwork. Provide a guided worksheet for structured observations.',
+      },
+      {
+        title: 'Service Budget Classification',
+        studentTask: 'Create a simple service-related budget (phone, transport, streaming) and classify countable/uncountable items. Use quantifiers to describe your spending: "I spend a lot of money on transport. There are a few subscriptions I don\'t need."',
+        time: '30 min (outside class)',
+        materials: 'Sample budget template, word bank with quantifiers/determiners, vocabulary cards (countable/uncountable categories)',
+        teacherNote: 'Real-world language application. Connect to budgeting skills from Unit 2.',
+      },
+      {
+        title: 'Voice Message Service Inquiry',
+        studentTask: 'Send short voice messages (via WhatsApp or similar) asking someone about a service they used recently. Report back using target language: "She said there are some good options. There isn\'t much parking, but there is a lot of variety."',
+        time: '30 min (outside class)',
+        materials: 'Guided worksheet for reporting findings',
+        teacherNote: 'Authentic communication task. Students practice speaking and reporting.',
+      },
+      {
+        title: 'Bienestar Universitario Visit',
+        studentTask: 'Prepare questions about available student services and visit Bienestar Universitario. Ask your questions using target language and report findings: "There are some free counseling sessions. There isn\'t much information about sports classes."',
+        time: '20 min (outside class)',
+        materials: 'Printed/digital questionnaire, vocabulary list of common student services, optional recording permission, reflection sheet',
+        teacherNote: 'On-campus fieldwork. Prepare questions in class before the visit.',
+      },
+      {
+        title: 'Sports Area Observation',
+        studentTask: 'Visit the sports area and count how many classes or courts are available. Observe peak hours and report using quantifiers: "There are a lot of students at noon. There are a few courts available in the morning. There aren\'t many classes in the evening."',
+        time: '20 min (outside class)',
+        materials: 'Observation worksheet, watch/phone for timing, optional photos, whiteboard/group poster for reporting',
+        teacherNote: 'On-campus observation task. Students observe and report using quantifiers. Combine with reporting activity in class.',
       },
     ],
   },
@@ -830,249 +1231,314 @@ const sentenceBuilderGames: {
 
 const activityInstructionPacks: { [unitKey: string]: { [activityTitle: string]: ActivityInstructionPack } } = {
   unit1: {
-    'Small Wins Bingo': {
-      steps: ['Each student receives a bingo card with "small wins" in each square.', 'Walk around the classroom and find a classmate who has achieved each small win.', 'Write the classmate\'s name in the square and compare achievements using comparatives.', 'First to complete a full line calls "Bingo!" and shares their comparisons with the class.'],
-      materials: ['Bingo cards with small wins printed', 'Pens for each student'],
-      tips: ['Pre-teach comparative phrases on the board.', 'Model one exchange first to set expectations.'],
+    'Celebrations Kickoff': {
+      steps: ['Teacher introduces the unit on celebrations through two lenses on the board.', 'Students work in pairs, choosing one question from each section of the question bank.', 'Pairs discuss their questions and share answers.', 'Quick whole-class share of representative ideas.'],
+      materials: ['Question bank (printed or projected)', 'Mini word bank on board'],
+      tips: ['Set up the board with "Celebrations" and two headers before class.', 'Provide a printed or projected question bank for pairs to select from.'],
     },
-    'Guess the Celebration': {
-      steps: ['Teacher displays photos of celebrations from around the world.', 'In pairs, students guess which celebration each photo shows.', 'Students describe photos using adjectives and make comparisons.', 'Share guesses with the class and discuss cultural differences.'],
-      materials: ['Projected photos of diverse celebrations', 'Optional: printed photo cards'],
-      tips: ['Include Colombian celebrations alongside international ones.', 'Use this to build cultural awareness and vocabulary.'],
+    'Image Spark: Festival Photos': {
+      steps: ['Teacher shows photos of a street parade (e.g., Chinese New Year).', 'Elicit descriptions: "What can you see? What\'s happening?"', 'Teach/confirm vocabulary like "parade" and "costume."', 'In pairs, discuss celebration questions. Whole-class harvest of ideas and vocabulary.'],
+      materials: ['Festival photos (projected)', 'Discussion prompts'],
+      tips: ['Elicit descriptions before teaching vocabulary.', 'Build a class vocabulary list from emergent words.'],
     },
-    'Music & Milestones': {
-      steps: ['Play background music while students walk around the room.', 'Stop the music — students pair up with the nearest person.', 'Each person shares one milestone and compares it with their partner\'s.', 'After 3 rounds, volunteers share the most interesting milestone they heard.'],
-      materials: ['Background music and speakers', 'Timer'],
-      tips: ['Keep rounds under 2 minutes for energy.', 'Model the comparative sentence structure before starting.'],
+    'Think-Pair-Share: What is a Celebration?': {
+      steps: ['Students write a short personal definition of "celebration."', 'In pairs, compare definitions and share personal experiences.', 'Class builds a mind map on the board distinguishing celebration, festival, tradition, custom.', 'Clarify overlaps and differences.'],
+      materials: ['Board or whiteboard for mind map'],
+      tips: ['Guide the mind map construction collaboratively.', 'Encourage personal examples from diverse backgrounds.'],
     },
-    'My Achievement Timeline': {
-      steps: ['Students brainstorm 6-8 personal achievements (small wins and big events).', 'Write or draw each achievement on a card and arrange from smallest to biggest.', 'Present timeline to a partner, using comparatives and superlatives to rank.', 'Partner asks at least 2 follow-up questions about the achievements.'],
-      materials: ['Index cards or sticky notes', 'Markers', 'Timeline template (optional)'],
-      tips: ['Provide sentence frames for students who need support.', 'Encourage authentic, personal stories for engagement.'],
+    'Celebration Snapshots': {
+      steps: ['Watch 3-5 short video clips of celebrations from around the world.', 'Individually take notes on key elements, cultural reflections, and similarities/differences.', 'In pairs, discuss notes and capture partner\'s ideas.', 'Each pair shares key takeaways plus one unique aspect with the class.'],
+      materials: ['3-5 celebration videos (curated list)', 'Note-taking sheet'],
+      tips: ['Curate 3-5 clips from diverse cultures.', 'Links are reference only — substitute with other resources as needed.'],
     },
-    'Celebration Photo Gallery Walk': {
-      steps: ['Post celebration photos around the classroom walls.', 'Students walk around and write observations on their worksheet.', 'Compare at least 3 celebrations with a classmate using comparative forms.', 'Choose the most interesting celebration and explain why to the group.'],
-      materials: ['Printed celebration photos posted on walls', 'Observation worksheets', 'Pens'],
-      tips: ['Include cultural celebrations from Colombia and various countries.', 'Encourage students to ask each other comparative questions.'],
+    'Celebration Gallery Walk: Exploring Global Festivities': {
+      steps: ['Post 8-10 celebration photos around the room with guiding criteria visible.', 'Students rotate clockwise in pairs, writing short notes at each photo.', 'Use criteria: Place, People, Activities, Meaning, Energy, Access.', 'Each pair presents one similarity, one difference, and one unique aspect.'],
+      materials: ['8-10 celebration photos', 'Markers', 'Guiding criteria posted near each photo'],
+      tips: ['Include both public/community festivals and private/family celebrations.', 'Alternative: Padlet, Jamboard, or Google Slides for digital version.'],
     },
-    'Achievement Speed Dating': {
-      steps: ['Arrange seats in two facing rows.', 'Students share achievements and compare with their partner for 2 minutes.', 'When the teacher signals "switch," one row moves to the next seat.', 'After 4-5 rounds, share the most impressive achievement heard with the class.'],
-      materials: ['Timer', 'Optional conversation prompt cards'],
-      tips: ['Model the activity with a volunteer first.', 'Strict time-keeping maintains energy and pace.'],
+    'Family Celebration Portraits': {
+      steps: ['Pre-class: Students bring a printed photo and complete the worksheet.', 'In-class: Pair interview — share celebration details with a partner.', 'Mini gallery walk: display worksheets and leave comments/questions.', 'Whole-class discussion of interesting observations.'],
+      materials: ['Printed photo or drawing', 'Family Celebration Portrait Worksheet', 'Sticky notes or Padlet'],
+      tips: ['Assign pre-class homework in advance.', 'Provide a digital Padlet option for students who prefer it.'],
     },
-    'Comparison Journal Entry': {
-      steps: ['Write a 60-80 word paragraph comparing one everyday win and one major life event.', 'Use at least 4 comparative or superlative forms.', 'Exchange journals with a partner and underline comparison forms found.', 'Discuss: Did you use similar structures? Which were hardest?'],
-      materials: ['Journals or notebooks', 'Highlighters'],
-      tips: ['Encourage peer discussion, not just identification.', 'Display strong examples for the class.'],
+    'Reflect on Celebration Snapshots (Video Activity)': {
+      steps: ['Teacher replays 20-30 seconds from two contrasting clips or shows two still images.', 'In pairs, share observations using the sentence frame.', 'Class discussion: How does this celebration reflect values or community?', 'Identify one similarity and one difference compared to another celebration.'],
+      materials: ['Short video clips or still images', 'Sentence frame (projected)', 'Optional mini whiteboards'],
+      tips: ['Only replay 20-30 seconds — keep it brief.', 'Project the sentence frame for all students to see.'],
     },
-    'What Made It Special? Discussion': {
-      steps: ['In groups of 3-4, share which celebration from the gallery walk impacted you most.', 'Explain using comparatives: "The quinceañera was more colorful than the graduation."', 'Rank the top 3 most interesting celebrations as a group.', 'Present rankings with comparative reasoning to the class.'],
-      materials: ['Notes from gallery walk activity'],
-      tips: ['Push for justification with comparative reasoning.', 'Encourage respectful discussion of different cultural celebrations.'],
+    'Reflect on Celebration Gallery Walk': {
+      steps: ['Silently revisit gallery walls and place two dots on interesting/confusing comments.', 'In pairs, discuss guided questions requiring comparatives/superlatives.', 'Questions move from observation to inference across cultural dimensions.', 'Optional: class discussion or written synthesis.'],
+      materials: ['Gallery photos with comments', 'Colored dots/stickers (2 per student)', 'Guiding question handout'],
+      tips: ['Questions progress: access, tradition/modernity, safety, scale, roles, meaning.', 'Optional follow-up: written synthesis on celebrations vs. personal gatherings.'],
     },
-    'Reflection Circle': {
-      steps: ['Sit in a circle and pass a talking object.', 'Complete sentence starters using comparatives and superlatives.', 'Listen to all classmates share their reflections.', 'Discuss patterns: What do your classmates value most?'],
-      materials: ['Small ball or talking object', 'Sentence starter cards (optional)'],
-      tips: ['Create a safe, supportive atmosphere.', 'Keep focus on comparative/superlative language use.'],
+    'Reflect on Family Celebration Portraits': {
+      steps: ['In pairs or small groups, discuss 4 reflection prompts about the photos observed.', 'Focus on similarities, differences, feelings, and new learnings.', 'A few pairs share reflections with the whole class.', 'Optional: written reflection sheet.'],
+      materials: ['Display of student celebration portraits', 'Reflection prompts (projected or printed)'],
+      tips: ['Keep the atmosphere supportive and respectful.', 'Provide an optional written reflection sheet.'],
     },
-    'Adjective Sorting Challenge': {
-      steps: ['Receive 20 adjective cards and sort into: Short (+er/+est), Long (more/most), Irregular.', 'Write the comparative and superlative of each adjective.', 'Check answers with the answer key provided.', 'Create 2 original sentences per category.'],
-      materials: ['20 adjective cards per group', 'Sorting mat with 3 columns', 'Answer key'],
-      tips: ['Let students discover rules before confirming.', 'Include tricky adjectives like "clever" and "narrow."'],
+    'Listening Comprehension: Festivals Around the World': {
+      steps: ['Show images of six celebrations and ask what students know.', 'Pre-teach key words: parade, candles, harvest, concert.', 'Play audio once for gist: identify where and when celebrations take place.', 'Check comprehension as a class.'],
+      materials: ['Audio from english-practice.net (A2 Celebrations)', 'Celebration images', 'Transcript + answer key'],
+      tips: ['Pre-teach vocabulary before playing audio.', 'Play once for gist only at this stage.'],
     },
-    'Grammar Detective: Find the Pattern': {
-      steps: ['Read 10 sentences containing comparatives and superlatives.', 'Highlight all comparison forms with your partner.', 'Answer detective questions about when to use -er/-est vs. more/most.', 'Write grammar rules in your own words and compare with another pair.'],
-      materials: ['Detective worksheet', 'Highlighters'],
-      tips: ['Sentences should have clear, discoverable patterns.', 'Guide discovery without giving rules directly.'],
+    'Guided Discovery of Grammar': {
+      steps: ['Play audio again; students write down adjectives heard after each description.', 'Review grammar reference summarizing comparative/superlative rules.', 'In pairs, create sentences comparing celebrations.', 'Complete fill-in-the-blank worksheet and short writing task.'],
+      materials: ['Listening audio', 'Grammar reference (Essential Grammar in Use)', 'Worksheet'],
+      tips: ['Extension homework: research another celebration and write a paragraph with comparatives/superlatives.'],
     },
-    'Comparative & Superlative Rule Builders': {
-      steps: ['Complete the rule builder chart with spelling and formation rules.', 'Include rules for 1-syllable, 2+ syllable, and irregular adjectives.', 'Test rules by creating 5 new sentences.', 'Have another group check your sentences.'],
-      materials: ['Rule builder chart templates', 'Markers'],
-      tips: ['Have students present their rules to the class.', 'Correct misconceptions collaboratively.'],
+    'Comparative Bingo': {
+      steps: ['Project bingo grid with adjectives.', 'Students choose 9 and write one sentence per square (comparative or superlative).', 'Teacher reads prompts; matching sentences get ticked.', 'First line shouts "Bingo!" and reads winning sentences.'],
+      materials: ['Bingo grid with adjectives'],
+      tips: ['End with quick board fix of common errors.', 'Keep energy high throughout.'],
     },
-    'Error Hospital': {
-      steps: ['Read 8 sentences with comparison errors.', 'Find the error, explain what is wrong, and write the correct version.', 'Exchange with a partner and verify corrections.', 'Discuss the most common errors.'],
-      materials: ['Error correction worksheet'],
-      tips: ['Include errors your students commonly make.', 'This is a great diagnostic activity.'],
+    'Personal Celebration – Compare and Choose': {
+      steps: ['Quick warm-up: "birthday" spidergram/word cloud.', 'Complete vocabulary task.', 'Read passage with birthday-party activity options.', 'Compare & Choose scenario using comparatives and superlatives.'],
+      materials: ['Passage with birthday-party options', 'Optional writing sheet'],
+      tips: ['Extension: students write a paragraph about their ideal birthday party.'],
     },
-    'My Life Awards Ceremony': {
-      steps: ['Create award categories for personal achievements (e.g., "Most Challenging").', 'Write a 30-40 word acceptance speech per category using comparatives/superlatives.', 'Present awards to a small group.', 'Group votes for the most interesting award.'],
-      materials: ['Award certificate templates', 'Presentation space'],
-      tips: ['Print fun award certificates.', 'Make it celebratory and supportive.'],
+    'Vocabulary Building – Major Life Events': {
+      steps: ['Start with photo of a bride — pairs describe what they see.', 'Build a class list of transitions/milestones.', 'Learn about cultural context (Kosovar Bosnian bride).', 'Groups discuss milestone-related questions and report insights.'],
+      materials: ['Photo of a bride', 'Major life-event images', 'Question slips for group work'],
+      tips: ['Provide cultural context about the bride photo.', 'Encourage cross-cultural reflection on milestone timing.'],
     },
-    'Celebration Comparison Poster': {
-      steps: ['Choose two celebrations to compare with your partner.', 'Create a Venn diagram showing similarities and differences.', 'Write at least 8 comparative/superlative sentences.', 'Present your poster and handle classmate questions.'],
-      materials: ['Poster paper', 'Markers', 'Optional: printed images'],
-      tips: ['Encourage cultural comparisons.', 'Display finished posters in the classroom.'],
+    'Vocabulary Building and Reading About Celebrations': {
+      steps: ['Look at Hogmanay photo and predict what happens.', 'Choose three words expected in the reading from a word list.', 'Read the Hogmanay passage together.', 'Match vocabulary to meanings and complete sentences.'],
+      materials: ['Hogmanay photo', 'Vocabulary and reading worksheet'],
+      tips: ['Vocabulary prediction activates prior knowledge.', 'Guide the reading collaboratively.'],
     },
-    'Everyday Wins Blog Post': {
-      steps: ['Write a 100-120 word blog post about everyday wins this week.', 'Include at least 3 achievements and compare them.', 'Share with a partner for peer feedback.', 'Revise based on feedback suggestions.'],
-      materials: ['Notebooks or digital devices'],
-      tips: ['Consider using a class blog or Padlet.', 'Peer feedback should focus on comparison forms.'],
+    'Cultural Celebration Research Presentation': {
+      steps: ['Choose a celebration from any culture.', 'Research origins, significance, practices, cost, venue.', 'Create presentation with comparatives/superlatives and visuals.', 'Present to class and participate in wrap-up discussion.'],
+      materials: ['Research planning worksheet', 'Reference sheet', 'Rubric/checklist'],
+      tips: ['Include discussion prompts about shared traditions and values.', 'Allow various presentation formats.'],
+    },
+    'Celebration Planning': {
+      steps: ['Phase 1: Research options for the networking event (30-40 min).', 'Phase 2: Decision making using planning worksheet with comparatives (25-30 min).', 'Phase 3: Present celebration plan with justifications (20-30 min).', 'Class discussion and reflection.'],
+      materials: ['Scenario with budget', 'Event planning worksheet', 'Grammar support sheet'],
+      tips: ['Provide online resources for research.', 'Encourage creative presentation formats.'],
+    },
+    'Celebration Review Writing': {
+      steps: ['Watch clips/images of celebrations for initial reactions.', 'Read 1-2 sample reviews for structure analysis.', 'Draft review using writing outline (hook, 3 criteria, conclusion).', 'Peer feedback, revise to 180-220 words.'],
+      materials: ['Video clips/images', 'Sample reviews', 'Writing outline handout'],
+      tips: ['Publishing option: Google Sites, Medium, or Padlet.'],
+    },
+    'Latin American Cultural Fair': {
+      steps: ['Choose a Latin American celebration for your booth.', 'Create informative posters with comparison language.', 'Incorporate artifacts, music, optional food samples.', 'Engage visitors explaining significance using comparatives/superlatives.'],
+      materials: ['Poster supplies', 'Comparison language reference', 'Cultural artifacts', 'Visitor feedback form'],
+      tips: ['Check for food allergies in advance.', 'Multi-session project.'],
+    },
+    'Reflective Ball Toss with Questions': {
+      steps: ['Gather in a circle.', 'Catch the ball and answer a reflective question.', 'Toss to another classmate. Follow-up questions encouraged.', 'Discuss common themes at the end.'],
+      materials: ['Soft ball', 'List of 6-10 reflective questions'],
+      tips: ['Prepare questions in advance.', 'Encourage follow-up questions between students.'],
+    },
+    'Create News "Headlines"': {
+      steps: ['In pairs, brainstorm at least two headlines in 5-10 minutes.', 'Share and explain which concepts you aimed to capture.', 'Class compiles headlines on whiteboard/poster.', 'Discuss which headline best represents the unit.'],
+      materials: ['Slips of paper or mini whiteboards', 'Large poster for collecting headlines'],
+      tips: ['Encourage creative, catchy headlines.', 'Display the best ones on a classroom poster.'],
     },
   },
   unit2: {
-    'Dream Home Pictionary': {
-      steps: ['Teams take turns having one member draw home features on the board.', 'Teammates guess using quantity questions: "Does it have many rooms?"', 'Fastest team to guess correctly scores a point.', 'Play 3-4 rounds.'],
-      materials: ['Whiteboard and markers'],
-      tips: ['Model quantity questions before starting.', 'Keep rounds fast-paced.'],
+    'Concentric Circles Discussion': {
+      steps: ['Form two concentric circles (inner facing outer).', 'Ask and answer questions about living situations.', 'Inner circle rotates one seat right after each timed round.', 'Volunteers share one interesting point at the end.'],
+      materials: ['Questions about living situations'],
+      tips: ['Keep rounds timed (2-3 min each).', 'Encourage quantity expression use.'],
     },
-    'Neighborhood Word Cloud': {
-      steps: ['Write as many neighborhood features as possible in 2 minutes.', 'Compare your list with a partner.', 'Sort words into COUNTABLE and UNCOUNTABLE categories.', 'Share your longest list with the class.'],
-      materials: ['Paper and pens'],
-      tips: ['This previews the countable/uncountable distinction naturally.'],
+    'Video – "Where do you live?"': {
+      steps: ['Teacher introduces topic and key vocabulary.', 'Watch video of real people discussing living environments.', 'Complete video worksheet with comprehension questions.', 'Discuss video questions, sharing own experiences.'],
+      materials: ['Video', 'Video worksheet (Speakout Elementary, Pearson)', 'Answer key'],
+      tips: ['Pre-teach key vocabulary before viewing.', 'Based on Speakout Elementary (Pearson).'],
     },
-    'Four Corners: Housing Preferences': {
-      steps: ['Go to the corner matching your housing preference.', 'Discuss in your group using quantity expressions.', 'Each group presents reasons to the class.'],
-      materials: ['Corner labels: Apartment, House, Student dorm, Shared flat'],
-      tips: ['Encourage target language: how much/many, a lot of, not much/many.'],
+    'Trashketball': {
+      steps: ['Teacher reads vocabulary prompts (furniture, parts of house).', 'First team to raise hand answers with a full sentence.', 'Correct answer = 1 point + 1 basketball shot for bonus point.', 'Rotate roles each turn.'],
+      materials: ['Basket or bin', '20 vocabulary prompts'],
+      tips: ['TPR activity — keep energy high.', 'Prepare 20 prompts about furniture and house parts.'],
     },
-    'Apartment Hunting Role-Play': {
-      steps: ['Pair up: one is a real estate agent, the other seeks an apartment.', 'Agent describes apartments using quantifiers.', 'Client asks how much/many questions.', 'Switch roles after 5 minutes; choose the best apartment.'],
-      materials: ['Apartment description cards', 'Role-play prompts'],
-      tips: ['Provide visual apartment cards.', 'Pre-teach real estate vocabulary.'],
+    'Global Housing Collage': {
+      steps: ['In pairs, select 3 homes from the image bank.', 'Build a digital collage on Padlet answering guided questions.', 'Address location, features, basic needs, affordability.', 'Close with reflection justifying preferred home.'],
+      materials: ['Padlet', 'Curated image bank', 'Optional sentence frames'],
+      tips: ['Prepare diverse global housing images.', 'Provide sentence frames for weaker students.'],
     },
-    'My Neighborhood Map': {
-      steps: ['Draw a map of your (real or ideal) neighborhood.', 'Label 10+ places.', 'Describe to a partner using countable/uncountable nouns and quantifiers.', 'Compare neighborhoods and present the most interesting difference.'],
-      materials: ['Paper', 'Colored pencils', 'Map template'],
-      tips: ['Provide a simple template for structure.'],
+    'One Person, One Home': {
+      steps: ['Teacher writes "Home =" on board, asks what home means.', 'Each student receives an individual home image with caption.', 'Silently reflect using 7 guiding questions.', 'Pair/group sharing, then whole-class sharing of surprises.'],
+      materials: ['One image per student with captions', 'Reflection questions'],
+      tips: ['Prepare diverse images (rural, urban, aquatic).', 'Encourage empathy and open-mindedness.'],
     },
-    'Furniture Shopping Challenge': {
-      steps: ['With a partner, browse the furniture catalog.', 'Use a $2,000 budget to furnish an empty apartment.', 'Discuss using quantity expressions: "We need some chairs. How many?"', 'Present your shopping list to the class.'],
-      materials: ['Furniture catalog (with prices)', 'Budget worksheet'],
-      tips: ['Print catalogs with clear prices.', 'This activates countable/uncountable naturally.'],
+    'Collaborative Write-On – "What We Need for Comfortable Living"': {
+      steps: ['Phase 1: Visit thematic stations with comfort objects.', 'Phase 2: Watch video/slideshow on living conditions.', 'Phase 3: Roleplay discussion from assigned perspectives.', 'Phase 4-6: Mini-survey, collaborative writing, gallery walk.'],
+      materials: ['Real objects for stations', 'Video/slideshow', 'Sentence stems', 'Poster paper', 'Sticky notes'],
+      tips: ['Set up stations before class.', 'Assign roles for Phase 3 (environmentalist, student, parent, elderly).'],
     },
-    'Housing Survey Reflection': {
-      steps: ['Complete a housing survey about your situation.', 'Compare answers with 2 classmates.', 'Write 5 comparative sentences about differences found.'],
-      materials: ['Housing survey worksheet'],
-      tips: ['Use the survey to naturally practice how much/many.'],
+    '"What Makes a Home?" (Reflection on Housing Collage)': {
+      steps: ['Small groups exchange and discuss collages with sentence starters.', 'Teacher-led reflection comparing "house" vs. "home."', 'Analyze how geography/culture influence housing.', 'Optional individual written reflection.'],
+      materials: ['Sentence starters', 'Teacher-led questions', 'Optional reflection sheet'],
+      tips: ['Compare "house" vs. "home" concepts.', 'Optional written reflection with provided prompts.'],
     },
-    'What Makes a Good Neighborhood?': {
-      steps: ['In groups of 3, rank the 5 most important neighborhood features.', 'Justify using quantifiers.', 'Compare your ranking with another group.', 'Write a group opinion statement.'],
-      materials: ['Ranking worksheets', 'Markers'],
-      tips: ['Focus on negotiation language and quantity expressions.'],
+    '"Home, More Than a Structure" (Reflection on One Person, One Home)': {
+      steps: ['Revisit "home" question — teacher suggests additional dimensions.', 'Use T-chart: "homes" vs. "home/family life."', 'Add words/phrases to both sides.', 'Reflect: "Do people need homes? Why?"'],
+      materials: ['T-chart graphic organizer', 'Markers/post-its', 'Optional soft music'],
+      tips: ['Play soft background music for reflection.', 'Alternative: students write two paragraphs.'],
     },
-    'Before & After Reflection': {
-      steps: ['Write a 60-80 word comparison of before/after a living change.', 'Share with a partner and identify quantity expressions.', 'Discuss which situation was better.'],
-      materials: ['Notebooks'],
-      tips: ['Students who haven\'t moved can compare two known places.'],
+    'Comfort Corners (Reflection on Collaborative Writing)': {
+      steps: ['Four corners labeled: Absolutely Essential, Nice to Have, Not Really Needed, It Depends.', 'Teacher reads items; students move to matching corner.', 'In corners, discuss reasoning with peers.', 'Closing: "Did anyone change their mind?"'],
+      materials: ['4 large signs', 'List of 6-8 household comfort items'],
+      tips: ['Physical movement activity.', 'Read items one at a time for each round.'],
     },
-    'Countable vs. Uncountable Sorting': {
-      steps: ['Sort 30 word cards into COUNTABLE and UNCOUNTABLE.', 'Discuss tricky words.', 'Map which quantifiers go with each category.', 'Create a grammar poster with rules.'],
-      materials: ['30 word cards', 'Sorting mat', 'Poster template'],
-      tips: ['Include tricky words. Use discovery approach.'],
+    'Reading About World Homes': {
+      steps: ['Build context: read intro, mind map, look at Colombian housing images.', 'Jigsaw: 3 groups each read one article section.', 'Group presentations with visual summaries.', 'Conceptual debate: "Is housing a right or a privilege?"'],
+      materials: ['World Homes article (Habitat for Humanity)', 'Colombian housing images', 'Graphic organizers'],
+      tips: ['Prepare 3 article sections for jigsaw.', 'Include local housing images for context.'],
     },
-    'How Much vs. How Many Quiz Show': {
-      steps: ['Teacher shows a word; hold up the correct sign.', 'Create a complete question with the word.', 'Score points for speed and accuracy.', 'Champion creates 3 original questions.'],
-      materials: ['"How much" and "How many" signs', 'Word list'],
-      tips: ['Start easy, add tricky words.', 'Let students make signs.'],
+    'House and Furniture Vocabulary': {
+      steps: ['Elicit parts of the house and furniture vocabulary.', 'Groups list 7-10 furniture pieces per assigned room.', 'Complete rooms/furniture worksheets.', 'Play Battleship game with house/furniture words.'],
+      materials: ['Vocabulary worksheets', 'Battleship game sheet', 'Optional flashcards'],
+      tips: ['Elicit before teaching.', 'Battleship adds a fun competitive element.'],
     },
-    'Grammar Pattern Discovery': {
-      steps: ['Read 12 housing sentences and highlight all quantifiers.', 'Categorize which quantifiers appear in affirmative, negative, and questions.', 'Write discovery rules.', 'Compare with a partner.'],
-      materials: ['Discovery worksheet with 12 sentences'],
-      tips: ['Let students find patterns; don\'t give rules directly.'],
+    'Grammar Guided Discovery 1 – Countable vs. Uncountable': {
+      steps: ['Warm-up: "What is important when choosing a place to live?"', 'Pair work: discuss and justify 5 aspects.', 'Discovery: classify nouns on board using two-column chart.', 'Controlled practice with worksheet.'],
+      materials: ['Guiding questions', 'Grammar reference', 'Practice worksheet'],
+      tips: ['Let students classify before confirming rules.', 'Metacognitive closure question included.'],
     },
-    'Quantifier Board Game': {
-      steps: ['Roll dice and move your token.', 'Complete the sentence on the square with the correct quantifier.', 'If the group agrees you\'re correct, stay; if wrong, go back 2.', 'First to finish wins!'],
-      materials: ['Board game', 'Dice', 'Tokens'],
-      tips: ['Print one board per group.', 'Include answer key for self-checking.'],
+    'Grammar Guided Discovery 2 – How Much / How Many': {
+      steps: ['Review vocabulary with apartment plan (Ex. 1-2).', 'Comprehension questions (Ex. 3).', 'Classify nouns and deduce how much/how many rules (Ex. 4).', 'Oral activity: ask/answer about own homes.'],
+      materials: ['Guided discovery worksheet (face2face Elementary)', 'Worksheet key'],
+      tips: ['Based on face2face Elementary (Cambridge).', 'Let students deduce rules before confirming.'],
     },
-    '"Find Your Perfect Home" Presentation': {
-      steps: ['Create a presentation advertising a home.', 'Include 6+ quantifier expressions and comparisons.', 'Present to the class.', 'Classmates ask how much/many questions; vote for best agent.'],
-      materials: ['Paper for visuals', 'Presentation space'],
-      tips: ['Encourage creativity with visuals.'],
+    'Find Someone Who': {
+      steps: ['Review countable/uncountable and how much/how many.', 'Teacher models one question with a volunteer.', 'Students mingle, talking to a different classmate per item.', 'Report findings. Optional: class bar graph.'],
+      materials: ['Find Someone Who worksheet'],
+      tips: ['Encourage follow-up questions.', 'Model before starting.'],
     },
-    'Neighborhood Improvement Plan': {
-      steps: ['Choose a real neighborhood in your city.', 'Document current features and identify what\'s missing.', 'Create an improvement plan with 3+ ideas.', 'Present as a poster or slide.'],
-      materials: ['Poster paper or digital tools', 'Neighborhood info'],
-      tips: ['Use neighborhoods near EAFIT for local relevance.'],
+    'A Place to Rent': {
+      steps: ['Pairs role-play a phone call about a rental (Student A = agent, B = customer).', 'Student B forms questions from "What I want to know" prompts.', 'After round 1, check how many chose to rent.', 'Switch roles and repeat with second property.'],
+      materials: ['Information gap worksheets (A and B)', 'From English File Elementary (Oxford)'],
+      tips: ['Students must NOT show each other their worksheets.', 'Debrief: Who rented? Why?'],
     },
-    'Roommate Compatibility Interview': {
-      steps: ['Write 8 interview questions using how much/many.', 'Interview 2-3 classmates.', 'Choose ideal roommate based on answers.', 'Write 60-80 word explanation using quantifiers.'],
-      materials: ['Interview template', 'Recording sheet'],
-      tips: ['Encourage follow-up questions.'],
+    'Housing Across Colombia – A Showcase of Diversity': {
+      steps: ['Select a Colombian city/region to research.', 'Research housing types, rent, materials, lifestyle.', 'Create "Day in the Life" narrative + visual display.', 'Mini housing fair and class reflection.'],
+      materials: ['Research template', 'Poster/digital tools', 'Optional polling tools'],
+      tips: ['Multi-session project.', 'Encourage interactive components at the fair.'],
+    },
+    'Room Makeover Challenge': {
+      steps: ['Reflect on a space to improve and identify a problem.', 'Search online stores for affordable solutions within budget.', 'Create visual plan of redesigned space.', 'Present to "interior design committee." Classmates ask questions.'],
+      materials: ['Budget template', 'Access to online stores', 'Canva/PowerPoint'],
+      tips: ['Real online stores for authentic pricing.', 'Encourage peer questions using quantity expressions.'],
+    },
+    'Life on a Budget': {
+      steps: ['Discuss financial stability; review budgeting resources.', 'Use budget template to allocate funds for assigned income level.', 'Research real local prices.', 'Create visual presentation. Q&A. Class votes on best budget.'],
+      materials: ['Budget template', 'Online flyers/websites', 'Voting slips'],
+      tips: ['Assign income levels randomly.', 'Extension: written justification of budget decisions.'],
+    },
+    'Sticky Notes Insights': {
+      steps: ['Write one personal insight on a sticky note.', 'Post on "Reflection Wall" under one of 4 themes.', 'Read classmates\' notes.', 'Teacher reads a few aloud.'],
+      materials: ['Sticky notes', 'Markers', 'Wall divided into 4 sections'],
+      tips: ['Prepare the Reflection Wall before the activity.'],
+    },
+    'Tweeting': {
+      steps: ['Write a "tweet" (max 280 characters) summarizing what you learned.', 'Display tweets on classroom wall or Padlet.', 'Read and react to classmates\' tweets.'],
+      materials: ['Whiteboard or Padlet'],
+      tips: ['Encourage creativity and humor.'],
+    },
+    'Comfort Spectrum Corners': {
+      steps: ['Four corners: Essential, Important, Nice to Have, Not Necessary.', 'Teacher reads housing items; students move to matching corner.', 'After 4-5 rounds, explain choices using quantity expressions.', 'Closing: "Has your opinion changed?"'],
+      materials: ['4 signs', 'List of 8-10 housing items'],
+      tips: ['Physical movement activity.', 'Encourage unit target language in explanations.'],
     },
   },
   unit3: {
-    'EAFIT Campus Quest': {
-      steps: ['In teams, study photos of EAFIT campus services.', 'Write sentences using determiners/quantifiers for each service.', 'Team with most correct sentences in 5 minutes wins!'],
-      materials: ['Photos of campus services', 'Answer sheets'],
-      tips: ['Use real EAFIT photos for relevance.'],
+    'Bingo Town': {
+      steps: ['Each student receives a bingo card with place names.', 'Teacher/caller reads definitions without saying the place name.', 'Students listen, check cards, and cross off matching places.', 'First with four in a row shouts "Bingo!" and reads places aloud.'],
+      materials: ['Bingo cards with place names', 'Caller\'s definition sheet', 'Markers'],
+      tips: ['Prepare bingo cards with service-related place names.', 'Read definitions only — never say the place name.'],
     },
-    'Tourist Information Center': {
-      steps: ['Take turns as tourist and info officer.', 'Tourist asks about services using "any," "much," etc.', 'Officer answers using quantifiers.', 'Practice 3 rounds each.'],
-      materials: ['City service prompt cards'],
-      tips: ['Provide a word bank.', 'This previews unit grammar naturally.'],
+    'Words Within Words': {
+      steps: ['Teacher writes a long unit-related word on the board.', 'Pairs/groups have 3 minutes to make as many words as possible.', '1 point per word, 1 bonus for longest valid word.', 'Connect found words to the unit theme.'],
+      materials: ['Timer', 'Board'],
+      tips: ['Good words: "transportation," "entertainment," "community center."'],
     },
-    'Service Pictionary Race': {
-      steps: ['One person draws a community service.', 'Team guesses; when correct, everyone says a sentence with determiners.', 'Fastest team wins each round!'],
-      materials: ['Whiteboard', 'Service word cards'],
-      tips: ['Keep rounds fast and energetic.'],
+    'Place Taboo': {
+      steps: ['One student describes a place without using 3 taboo words.', 'Class or group guesses the place.', '30-60 seconds per round.', 'Rotate to give multiple students a turn.'],
+      materials: ['Taboo cards', 'Screen/projector', 'Optional timer/buzzer'],
+      tips: ['Keep rounds fast (30-60 seconds).', 'Can be whole-class or small groups.'],
     },
-    'Street Food Stall Comparison': {
-      steps: ['Look at photos of two food stalls and discuss preferences in groups.', 'Use determiners: "some options," "any variety."', 'Listen to the conversation and compare opinions.', 'Report: Did the speakers agree with your group?'],
-      materials: ['Food stall photos', 'Conversation audio', 'Transcript'],
-      tips: ['Based on Navigate Elementary (Oxford).', 'Introduce a/an, some, any naturally.'],
+    'EAFIT Campus Quest – Scavenger Hunt': {
+      steps: ['Orientation: explore campus maps and answer warm-up questions (10 min).', 'Field Trip: teams visit 8 locations with mission cards (60 min).', 'Return: check evidence at checkpoint station (15 min).', 'Upload to Padlet/Google Drive. Small rewards.'],
+      materials: ['Mission cards', 'Campus maps', 'Timer', 'Small rewards', 'Padlet'],
+      tips: ['Prepare 8 mission cards per location.', 'Adaptable to other sites. Maximum 100 points.'],
     },
-    'Shopping List Pair Activity': {
-      steps: ['Each partner has a different shopping list version (A/B).', 'Ask: "Do we need any...?" Answer: "Yes, we need some..." / "No, we don\'t need any..."', 'Create a complete combined shopping list.', 'Present final list to the class.'],
-      materials: ['Shopping list worksheets (A and B versions)'],
-      tips: ['From English File Elementary (Oxford).', 'Cut worksheets into A/B.'],
+    'Medellin Tourist Information Center': {
+      steps: ['Vocabulary activation worksheet: classify destination words (15 min).', 'Tourist task cards: brainstorm places for tourist needs (15 min).', 'Role-play rotations: officers at desks, tourists move around (20 min).', 'Switch roles after 15 min.'],
+      materials: ['Medellin photos/posters', 'Vocabulary worksheet', 'Tourist task cards', 'Information sheets'],
+      tips: ['Use real Medellin locations.', 'Prepare tourist task cards with specific needs.'],
     },
-    'Campus Service Exploration': {
-      steps: ['Visit/observe 3 EAFIT campus services.', 'Note: services available, number of students, equipment, space.', 'Write 5 sentences per service using quantifiers.', 'Compare observations with a partner.'],
-      materials: ['Observation worksheet', 'Mobile phones or cameras'],
-      tips: ['Use photos if in-person visit is not possible.'],
+    'Learning Stations – Exploring Services in Real Life': {
+      steps: ['Station 1: Airport documentary — identify problems, write complaints (15-20 min).', 'Station 2: Street food documentary — match visuals, complete sentences (15-20 min).', 'Station 3: El Biblioburro reading — comprehension and reflection (15-20 min).', 'Whole-class share from each station.'],
+      materials: ['Station worksheets (3 sets)', 'Devices for videos'],
+      tips: ['Set up 3 physical stations before class.', 'Time rotations carefully (15-20 min each).'],
     },
-    'Grammar Discovery: A/An, Some, Any': {
-      steps: ['Find all a/an/some/any in the conversation transcript.', 'Categorize by sentence type: affirmative, negative, question.', 'Complete the grammar discovery checklist.', 'Write group rules.'],
-      materials: ['Conversation transcript', 'Grammar checklist', 'Reference sheet'],
-      tips: ['Guide discovery; don\'t give rules directly.', 'Provide controlled practice links.'],
+    'Reflection on EAFIT Campus Quest': {
+      steps: ['Gallery walk or screen share of hunt photos/notes.', 'Pairs discuss which service surprised them most.', 'Language noticing: write useful words/phrases on board.', '2-3 volunteers share with class.'],
+      materials: ['Photos/notes from hunt', 'Optional Padlet/Google Slides'],
+      tips: ['Focus on language noticing.', 'Highlight real-world English use.'],
     },
-    'Shopping Habits Quiz Reflection': {
-      steps: ['Complete the shopping habits quiz.', 'Notice highlighted quantifiers in each statement.', 'Sort quantifiers by: countable, uncountable, both.', 'Create a reference chart.'],
-      materials: ['Shopping habits quiz', 'Quantifier handout'],
-      tips: ['Connects grammar with personal experience.'],
+    'Reflection on Medellin Tourist Information Center': {
+      steps: ['Class discussion on effective recommendations.', 'Discuss expressions used and comprehension.', 'Individual written reflection: 3 prompts.', 'Optional anonymous sharing.'],
+      materials: ['Role-play notes', 'Discussion questions', 'Reflection template'],
+      tips: ['Start with whole-class, then individual.', 'Anonymous sharing reduces pressure.'],
     },
-    'Service Observation Debrief': {
-      steps: ['Share campus observations with your group.', 'Answer reflection questions about language used.', 'Complete sentence starters about what you noticed.', 'Write a short group reflection paragraph.'],
-      materials: ['Notes from exploration', 'Reflection questions'],
-      tips: ['Bridges concrete experience to abstract rules.'],
+    'Reflection on Learning Stations': {
+      steps: ['Teacher asks which station was most interesting/surprising.', 'Pairs recall one useful phrase from each station.', 'Metalinguistic discussion on different communication needs.', 'Final question: "How do people solve problems or provide services?"'],
+      materials: ['Discussion questions', 'Whiteboard/digital board'],
+      tips: ['Focus on metalinguistic awareness.', 'Keep discussion on language patterns.'],
+    },
+    'Grammar Discovery 1 – A/An, Some, Any': {
+      steps: ['Look at food stall photos and discuss preferences.', 'Listen to conversation: identify stall and order (1st listen).', 'Match sentence beginnings to endings (2nd listen).', 'Analyze transcript for a/an/some/any patterns. Complete grammar rules.'],
+      materials: ['Food stall images', 'Audio (Navigate Elementary)', 'Transcript', 'Grammar reference (Speakout Elementary)'],
+      tips: ['Based on Navigate Elementary (Oxford).', 'Guide discovery, don\'t give rules directly.'],
+    },
+    'Shopping List': {
+      steps: ['Teacher demonstrates with classroom materials.', 'Pairs get A/B worksheets — A calls from supermarket, B checks fridge.', 'A marks tick/cross; B answers using some/any.', 'Swap roles. Share what was needed most.'],
+      materials: ['Shopping list worksheets A and B (English File Elementary)'],
+      tips: ['From English File Elementary (4th Ed., Oxford).', 'Demonstrate first with classroom materials.'],
+    },
+    'Grammar in Context – Quantifiers': {
+      steps: ['Take the shopping habits quiz (Y/N).', 'Read interpretation. Discuss if it matches.', 'Focus on highlighted quantifiers; sort into categories.', 'Reinforce with online practice exercises.'],
+      materials: ['Shopping habits quiz', 'Quantifiers handout', 'Sorting handout', 'Each/every/all worksheet (Collins)'],
+      tips: ['Multiple online practice links available.', 'Include each/every/all worksheet.'],
     },
     'Quantifiers Board Game': {
-      steps: ['Roll dice, move to a square with a "How much/many" question.', 'Answer in a complete sentence using the correct quantifier.', 'If correct, stay; if wrong, go back.', 'First to finish wins!'],
-      materials: ['Board game per group', 'Dice', 'Tokens'],
-      tips: ['Students can use coins or erasers as tokens.'],
-    },
-    'Demonstratives in Context': {
-      steps: ['Practice with classroom objects at different distances.', 'Use this/that (singular) and these/those (plural).', 'Write 6 sentences using demonstratives about services.', 'Compare with a partner.'],
-      materials: ['Classroom objects', 'Demonstrative reference card'],
-      tips: ['Use physical demonstration with objects.'],
-    },
-    'Grammar Pattern Wall': {
-      steps: ['Create a poster organizing examples into grammar categories.', 'Include a/an, some, any, much, many, a lot of rules.', 'For each category, write the rule AND 2 original examples.', 'Display on the wall for reference.'],
-      materials: ['Large poster paper', 'Markers', 'Sticky notes'],
-      tips: ['Display for reference throughout the unit.'],
-    },
-    'Error Correction Workshop': {
-      steps: ['Find and fix errors in 10 sentences about community services.', 'Explain why each was wrong.', 'Write 3 tricky error sentences of your own.', 'Challenge a partner to fix them.'],
-      materials: ['Error correction worksheet'],
-      tips: ['Peer-generated errors are powerful diagnostic tools.'],
+      steps: ['Roll die, move token to a square.', 'Decide: "How much" or "How many"?', 'Answer in complete sentence with appropriate quantifier.', 'Group members ask follow-up questions.'],
+      materials: ['Board game per pair/group', 'Dice', 'Tokens/counters'],
+      tips: ['Print one per group.', 'Encourage follow-up questions.'],
     },
     'A Service Review': {
-      steps: ['Choose a real service you have used.', 'Write a 100-120 word review using determiners and quantifiers.', 'Share for peer feedback and revise.', 'Present to class; vote for best review.'],
-      materials: ['Review template', 'Peer feedback checklist'],
-      tips: ['Show real Google Maps reviews as models.'],
+      steps: ['Step 1: Share service experience stories in pairs (5-10 min).', 'Step 2: Pre-task recap of useful expressions (5-10 min).', 'Step 3: Analyze real reviews using model worksheets (10-15 min).', 'Steps 4-7: Write review, peer review, revise, whole-class reflection.'],
+      materials: ['Service review template', 'Peer feedback checklist', 'Real review examples', 'Model worksheets'],
+      tips: ['Potential summative assessment.', 'Two model worksheets: narrative and online review form.'],
     },
-    'Product Unboxing Video': {
-      steps: ['Choose a product; watch example unboxing videos for inspiration.', 'Plan content using the description worksheet.', 'Record or perform a live 2-minute unboxing using target language.', 'Present to class and receive creative awards.'],
-      materials: ['Phone for recording', 'Product', 'Description worksheet'],
-      tips: ['Show a trending unboxing video first.', 'Multi-class project.'],
+    'A Product Unboxing Video': {
+      steps: ['Watch a trending unboxing video; discuss products.', 'Brainstorm unboxing vocabulary; optional description worksheet.', 'Groups practice with mystery product.', 'Individual unboxing video recording. Closing discussion.'],
+      materials: ['Unboxing video examples', 'Description worksheet', 'Mystery products', 'Mobile phones'],
+      tips: ['Potential summative assessment.', 'Provide mystery products for group practice.'],
     },
-    'Community Service Catalog': {
-      steps: ['Discuss and list local services; create a survey.', 'Interview neighbors or classmates about services.', 'Organize findings in a catalog with descriptions using determiners/quantifiers.', 'Present catalog to class with photos.'],
-      materials: ['Survey templates', 'Catalog design materials', 'Mobile phones'],
-      tips: ['Multi-session project.', 'Great for real-world application.'],
+    'A Catalog of Services in My Community': {
+      steps: ['Warm-up discussion about local services.', 'Select 2-3 services; develop research question; conduct field research.', 'Create survey, collect data, compile catalog.', 'Present and reflect on findings.'],
+      materials: ['Survey templates', 'Catalog design materials', 'Question handout'],
+      tips: ['Multi-session project.', 'Potential summative assessment. Real-world application.'],
+    },
+    'Cultural Service Storytelling Circle': {
+      steps: ['Form a circle.', 'Share a brief story about a cultural service experienced during the unit.', 'Express feelings and learnings about accessibility/quality.', 'Use determiners and quantifiers.'],
+      materials: ['Optional talking object'],
+      tips: ['Create a supportive atmosphere.', 'Connect stories to unit themes.'],
+    },
+    'Service Review Awards Ceremony': {
+      steps: ['Present service reviews or unboxing videos.', 'Receive creative awards (Most Helpful, Most Creative, Best Quantifiers).', 'Celebrate and give positive feedback.'],
+      materials: ['Award certificates/badges', 'Optional background music'],
+      tips: ['Prepare fun award categories in advance.', 'Make it celebratory.'],
+    },
+    'Reflection Wall': {
+      steps: ['Post 3 items on the wall: (1) new thing learned, (2) challenge overcome, (3) service to explore more.', 'Read classmates\' posts and add comments.'],
+      materials: ['Poster paper/bulletin board', 'Sticky notes', 'Optional Padlet'],
+      tips: ['Prepare wall space before the activity.', 'Can be physical or digital.'],
     },
   },
 }
@@ -2894,6 +3360,47 @@ export default function EnglishCoursePresentation() {
                   </details>
                 </div>
               )}
+
+              {/* Resource Links */}
+              {(() => {
+                const act = expandedActivity.activity as any
+                if (!act.links || act.links.length === 0) return null
+                return (
+                  <div className="mt-4">
+                    <h4 className="text-sm font-semibold text-gray-700 mb-2 flex items-center gap-1.5">
+                      <Icon icon="lucide:link" className="w-4 h-4" />
+                      Resources & Links
+                    </h4>
+                    <div className="flex flex-wrap gap-2">
+                      {act.links.map((link: ResourceLink, i: number) => (
+                        <a
+                          key={i}
+                          href={link.url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium transition-colors ${
+                            link.type === 'video' ? 'bg-red-50 text-red-700 hover:bg-red-100' :
+                            link.type === 'audio' ? 'bg-purple-50 text-purple-700 hover:bg-purple-100' :
+                            link.type === 'worksheet' ? 'bg-blue-50 text-blue-700 hover:bg-blue-100' :
+                            link.type === 'images' ? 'bg-green-50 text-green-700 hover:bg-green-100' :
+                            'bg-gray-50 text-gray-700 hover:bg-gray-100'
+                          }`}
+                        >
+                          <Icon icon={
+                            link.type === 'video' ? 'lucide:play-circle' :
+                            link.type === 'audio' ? 'lucide:headphones' :
+                            link.type === 'worksheet' ? 'lucide:file-text' :
+                            link.type === 'images' ? 'lucide:image' :
+                            'lucide:external-link'
+                          } className="w-3.5 h-3.5" />
+                          {link.label}
+                          <Icon icon="lucide:external-link" className="w-3 h-3 opacity-50" />
+                        </a>
+                      ))}
+                    </div>
+                  </div>
+                )
+              })()}
 
               {isRegularActivity(expandedActivity.activity) && expandedActivity.activity.example && (
                 <div className="rounded-lg border border-blue-200 bg-blue-50 p-4">
