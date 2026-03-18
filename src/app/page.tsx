@@ -106,14 +106,14 @@ function isRegularActivity(activity: WarmUp | Activity): activity is Activity {
 
 const BACKGROUND_MUSIC_SRC = '/audio/cooked-the-grey-room-golden-palms.mp3'
 
-const stageImages = {
-  warmUps: "1577896851231-70ef18881754", // Teacher pointing at board
-  concreteExperience: "1522202176988-66273c2fd55f", // Group collaborating
-  reflection: "1434030216411-0b793f4b4173", // Notebook/reflection
-  abstract: "1503676260728-1c00da094a0b", // Lightbulb
-  practice: "1531482615713-2afd69097998", // Presenting
-  closing: "1543269865-c59e2e46caeb", // High five
-  livingLearning: "1523240795612-9a054b0db644", // Exploration
+const stageImages: Record<string, string> = {
+  warmUps: '1551731409-43eb3e517a1a',
+  concreteExperience: '1598863505577-74750d3b4475',
+  reflection: '1516321318423-f06f85e504b3',
+  abstract: '1552664199-fd31f74ef1e8',
+  practice: '1542744173-8e7e53415bb0',
+  closing: '1543269865-c59e2e46caeb',
+  livingLearning: '1523240795612-9a054b0db644',
 }
 
 const activityStageMeta = [
@@ -3323,9 +3323,8 @@ export default function EnglishCoursePresentation() {
             <div className="p-6 sm:p-8 space-y-8">
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-100 pb-6">
                 <div className="space-y-1">
-                  <h4 className="text-sm font-semibold uppercase tracking-widest text-slate-400">Activity Overview</h4>
                   <DialogDescription className="text-slate-600 text-lg">
-                    Comprehensive guide and professional learning objectives.
+                    Expanded activity view.
                   </DialogDescription>
                 </div>
                 <Button
@@ -3351,7 +3350,7 @@ export default function EnglishCoursePresentation() {
                     <div className="bg-slate-50 rounded-2xl p-6 border border-slate-100 shadow-sm">
                       <h5 className="text-sm font-bold uppercase tracking-wider text-slate-800 mb-4 flex items-center gap-2">
                         <div className="w-1.5 h-6 bg-indigo-500 rounded-full" />
-                        Professional Learning Task
+                        Instructions
                       </h5>
                       <p className="text-slate-700 leading-relaxed text-lg font-medium">
                         {expandedActivity.activity.studentTask}
@@ -3428,7 +3427,7 @@ export default function EnglishCoursePresentation() {
                           <div className="bg-slate-50 px-6 py-4 border-b border-slate-100 flex items-center justify-between">
                             <h5 className="font-bold text-slate-800 flex items-center gap-2">
                               <Icon icon="lucide:list-checks" className="h-5 w-5 text-indigo-500" />
-                              Methodological Steps
+                              Steps
                             </h5>
                           </div>
                           <div className="p-6">
@@ -3449,7 +3448,7 @@ export default function EnglishCoursePresentation() {
                       <div className="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm">
                         <div className="bg-slate-50 px-6 py-4 border-b border-slate-100 flex items-center gap-2">
                           <Icon icon="lucide:package" className="h-5 w-5 text-indigo-500" />
-                          <h5 className="font-bold text-slate-800">Professional Toolkit</h5>
+                          <h5 className="font-bold text-slate-800">Materials</h5>
                         </div>
                         <div className="p-6">
                           <ul className="space-y-3">
@@ -3466,7 +3465,7 @@ export default function EnglishCoursePresentation() {
                       <div className="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm">
                         <div className="bg-slate-50 px-6 py-4 border-b border-slate-100 flex items-center gap-2">
                           <Icon icon="lucide:lightbulb" className="h-5 w-5 text-amber-500" />
-                          <h5 className="font-bold text-slate-800">Advanced Insights</h5>
+                          <h5 className="font-bold text-slate-800">Tips</h5>
                         </div>
                         <div className="p-6">
                           <ul className="space-y-3">
@@ -3489,7 +3488,7 @@ export default function EnglishCoursePresentation() {
                         <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:scale-110 transition-transform">
                           <Icon icon="lucide:quote" className="w-16 h-16 text-indigo-600" />
                         </div>
-                        <h5 className="text-sm font-bold uppercase tracking-wider text-indigo-700 mb-3">Model Example</h5>
+                        <h5 className="text-sm font-bold uppercase tracking-wider text-indigo-700 mb-3">Example</h5>
                         <p className="italic text-slate-800 text-lg leading-relaxed relative z-10">
                           "{expandedActivity.activity.example}"
                         </p>
@@ -3502,7 +3501,7 @@ export default function EnglishCoursePresentation() {
                         <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:rotate-12 transition-transform">
                           <Icon icon="lucide:award" className="w-16 h-16 text-amber-600" />
                         </div>
-                        <h5 className="text-sm font-bold uppercase tracking-wider text-amber-700 mb-3">Professional Advisory</h5>
+                        <h5 className="text-sm font-bold uppercase tracking-wider text-amber-700 mb-3">Teacher's Notes</h5>
                         <p className="text-slate-800 leading-relaxed font-medium relative z-10">
                           {expandedActivity.activity.teacherNote}
                         </p>
@@ -3518,7 +3517,7 @@ export default function EnglishCoursePresentation() {
                       <div className="pt-6 border-t border-slate-100">
                         <h4 className="text-sm font-bold uppercase tracking-widest text-slate-400 mb-4 flex items-center gap-2">
                           <Icon icon="lucide:link-2" className="w-4 h-4" />
-                          Curated Professional Resources
+                          Resources
                         </h4>
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                           {act.links.map((link: ResourceLink, i: number) => (
