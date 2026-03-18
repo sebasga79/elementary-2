@@ -87,6 +87,7 @@ type Activity = {
 }
 
 type ExpandedActivity = {
+  stage: keyof typeof stageImages
   section: string
   unitKey: string
   activityId: string
@@ -104,6 +105,16 @@ function isRegularActivity(activity: WarmUp | Activity): activity is Activity {
 }
 
 const BACKGROUND_MUSIC_SRC = '/audio/cooked-the-grey-room-golden-palms.mp3'
+
+const stageImages = {
+  warmUps: "1577896851231-70ef18881754", // Teacher pointing at board
+  concreteExperience: "1522202176988-66273c2fd55f", // Group collaborating
+  reflection: "1434030216411-0b793f4b4173", // Notebook/reflection
+  abstract: "1503676260728-1c00da094a0b", // Lightbulb
+  practice: "1531482615713-2afd69097998", // Presenting
+  closing: "1543269865-c59e2e46caeb", // High five
+  livingLearning: "1523240795612-9a054b0db644", // Exploration
+}
 
 const activityStageMeta = [
   { key: 'warmUps' as const, label: 'Warm-Up', shortLabel: 'Warm-Up', icon: icons.sparkles, color: 'bg-rose-500' },
@@ -1661,9 +1672,9 @@ export default function EnglishCoursePresentation() {
     }
   }
 
-  const openExpandedActivity = (section: string, targetUnitKey: string, activityId: string, activity: WarmUp | Activity) => {
+  const openExpandedActivity = (stage: keyof typeof stageImages, section: string, targetUnitKey: string, activityId: string, activity: WarmUp | Activity) => {
     resetAudioPlayer()
-    setExpandedActivity({ section, unitKey: targetUnitKey, activityId, activity })
+    setExpandedActivity({ stage, section, unitKey: targetUnitKey, activityId, activity })
   }
 
   const handleAnswer = (unitKey: string, questionIndex: number, answerIndex: number, correct: number) => {
@@ -2250,11 +2261,11 @@ export default function EnglishCoursePresentation() {
                             transition={{ delay: idx * 0.08 }}
                             whileHover={{ y: -4, scale: 1.01 }}
                             whileTap={{ scale: 0.99 }}
-                            onClick={() => openExpandedActivity('Warm-Up Activities', unitKey, activityId, activity)}
+                            onClick={() => openExpandedActivity('warmUps', 'Warm-Up Activities', unitKey, activityId, activity)}
                             onKeyDown={(e) => {
                               if (e.key === 'Enter' || e.key === ' ') {
                                 e.preventDefault()
-                                openExpandedActivity('Warm-Up Activities', unitKey, activityId, activity)
+                                openExpandedActivity('warmUps', 'Warm-Up Activities', unitKey, activityId, activity)
                               }
                             }}
                             className={`cursor-pointer p-4 rounded-xl border hover:shadow-lg transition-all ${isCompleted
@@ -2262,6 +2273,15 @@ export default function EnglishCoursePresentation() {
                               : 'bg-rose-50 border-rose-100 hover:border-rose-200'
                               }`}
                           >
+                            {/* Image Header */}
+                            <div className="-mt-4 -mx-4 mb-4 relative h-36 border-b group overflow-hidden bg-slate-100 rounded-t-xl">
+                              <Image 
+                                src={`https://images.unsplash.com/photo-${stageImages.warmUps}?auto=format&fit=crop&q=80&w=600&h=300`} 
+                                alt={activity.title} 
+                                fill 
+                                className="object-cover transition-transform duration-500 group-hover:scale-105" 
+                              />
+                            </div>
                             <div className="flex items-center justify-between mb-2">
                               <div className="flex items-center gap-2 min-w-0">
                                 <span className="inline-flex h-6 min-w-6 items-center justify-center rounded-full border border-rose-300 bg-rose-200 px-1 text-xs font-bold text-rose-800">
@@ -2350,16 +2370,25 @@ export default function EnglishCoursePresentation() {
                             transition={{ delay: idx * 0.08 }}
                             whileHover={{ y: -4, scale: 1.01 }}
                             whileTap={{ scale: 0.99 }}
-                            onClick={() => openExpandedActivity('Concrete Experience', unitKey, activityId, activity)}
+                            onClick={() => openExpandedActivity('concreteExperience', 'Concrete Experience', unitKey, activityId, activity)}
                             onKeyDown={(e) => {
                               if (e.key === 'Enter' || e.key === ' ') {
                                 e.preventDefault()
-                                openExpandedActivity('Concrete Experience', unitKey, activityId, activity)
+                                openExpandedActivity('concreteExperience', 'Concrete Experience', unitKey, activityId, activity)
                               }
                             }}
                             className={`cursor-pointer p-4 rounded-xl border hover:border-emerald-200 hover:shadow-lg transition-all ${isCompleted ? 'bg-emerald-50 border-emerald-300' : 'bg-emerald-50 border-emerald-100'
                               }`}
                           >
+                            {/* Image Header */}
+                            <div className="-mt-4 -mx-4 mb-4 relative h-36 border-b group overflow-hidden bg-slate-100 rounded-t-xl">
+                              <Image 
+                                src={`https://images.unsplash.com/photo-${stageImages.concreteExperience}?auto=format&fit=crop&q=80&w=600&h=300`} 
+                                alt={activity.title} 
+                                fill 
+                                className="object-cover transition-transform duration-500 group-hover:scale-105" 
+                              />
+                            </div>
                             <div className="flex items-start gap-3">
                               <Icon icon={activityIcon} className="w-5 h-5 text-emerald-500 mt-1 flex-shrink-0" />
                               <div className="flex-1">
@@ -2459,16 +2488,25 @@ export default function EnglishCoursePresentation() {
                             transition={{ delay: idx * 0.1 }}
                             whileHover={{ y: -3, scale: 1.01 }}
                             whileTap={{ scale: 0.99 }}
-                            onClick={() => openExpandedActivity('Reflective Observation', unitKey, activityId, activity)}
+                            onClick={() => openExpandedActivity('reflection', 'Reflective Observation', unitKey, activityId, activity)}
                             onKeyDown={(e) => {
                               if (e.key === 'Enter' || e.key === ' ') {
                                 e.preventDefault()
-                                openExpandedActivity('Reflective Observation', unitKey, activityId, activity)
+                                openExpandedActivity('reflection', 'Reflective Observation', unitKey, activityId, activity)
                               }
                             }}
                             className={`cursor-pointer p-4 rounded-xl border hover:border-amber-200 hover:shadow-lg transition-all ${isCompleted ? 'bg-emerald-50 border-emerald-300' : 'bg-amber-50 border-amber-100'
                               }`}
                           >
+                            {/* Image Header */}
+                            <div className="-mt-4 -mx-4 mb-4 relative h-36 border-b group overflow-hidden bg-slate-100 rounded-t-xl">
+                              <Image 
+                                src={`https://images.unsplash.com/photo-${stageImages.reflection}?auto=format&fit=crop&q=80&w=600&h=300`} 
+                                alt={activity.title} 
+                                fill 
+                                className="object-cover transition-transform duration-500 group-hover:scale-105" 
+                              />
+                            </div>
                             <div className="flex items-start justify-between gap-3">
                               <div className="flex-1">
                                 <div className="flex items-center gap-2 mb-2">
@@ -2571,11 +2609,11 @@ export default function EnglishCoursePresentation() {
                             key={activityId}
                             role="button"
                             tabIndex={0}
-                            onClick={() => openExpandedActivity('Abstract Conceptualization', unitKey, activityId, activity)}
+                            onClick={() => openExpandedActivity('abstract', 'Abstract Conceptualization', unitKey, activityId, activity)}
                             onKeyDown={(e) => {
                               if (e.key === 'Enter' || e.key === ' ') {
                                 e.preventDefault()
-                                openExpandedActivity('Abstract Conceptualization', unitKey, activityId, activity)
+                                openExpandedActivity('abstract', 'Abstract Conceptualization', unitKey, activityId, activity)
                               }
                             }}
                             whileHover={{ y: -3, scale: 1.01 }}
@@ -2583,6 +2621,15 @@ export default function EnglishCoursePresentation() {
                             className={`cursor-pointer p-4 rounded-xl border relative hover:border-blue-200 hover:shadow-lg transition-all ${isCompleted ? 'bg-emerald-50 border-emerald-300' : 'bg-blue-50 border-blue-100'
                               }`}
                           >
+                            {/* Image Header */}
+                            <div className="-mt-4 -mx-4 mb-4 relative h-36 border-b group overflow-hidden bg-slate-100 rounded-t-xl">
+                              <Image 
+                                src={`https://images.unsplash.com/photo-${stageImages.abstract}?auto=format&fit=crop&q=80&w=600&h=300`} 
+                                alt={activity.title} 
+                                fill 
+                                className="object-cover transition-transform duration-500 group-hover:scale-105" 
+                              />
+                            </div>
                             <div
                               role="button"
                               tabIndex={0}
@@ -2682,16 +2729,25 @@ export default function EnglishCoursePresentation() {
                             tabIndex={0}
                             whileHover={{ y: -3, scale: 1.01 }}
                             whileTap={{ scale: 0.99 }}
-                            onClick={() => openExpandedActivity('Active Experimentation', unitKey, activityId, activity)}
+                            onClick={() => openExpandedActivity('practice', 'Active Experimentation', unitKey, activityId, activity)}
                             onKeyDown={(e) => {
                               if (e.key === 'Enter' || e.key === ' ') {
                                 e.preventDefault()
-                                openExpandedActivity('Active Experimentation', unitKey, activityId, activity)
+                                openExpandedActivity('practice', 'Active Experimentation', unitKey, activityId, activity)
                               }
                             }}
                             className={`cursor-pointer p-5 rounded-xl bg-gradient-to-br from-violet-50 to-purple-50 border relative hover:border-violet-200 hover:shadow-lg transition-all ${isCompleted ? 'border-emerald-300' : 'border-violet-100'
                               }`}
                           >
+                            {/* Image Header */}
+                            <div className="-mt-4 -mx-4 mb-4 relative h-36 border-b group overflow-hidden bg-slate-100 rounded-t-xl">
+                              <Image 
+                                src={`https://images.unsplash.com/photo-${stageImages.practice}?auto=format&fit=crop&q=80&w=600&h=300`} 
+                                alt={activity.title} 
+                                fill 
+                                className="object-cover transition-transform duration-500 group-hover:scale-105" 
+                              />
+                            </div>
                             <div
                               role="button"
                               tabIndex={0}
@@ -3237,184 +3293,282 @@ export default function EnglishCoursePresentation() {
         }}
       >
         {expandedActivity && (
-          <DialogContent className="w-[min(960px,95vw)] max-h-[88vh] overflow-y-auto p-0 sm:max-w-4xl">
-            <DialogHeader className="border-b border-slate-200 bg-gradient-to-r from-slate-50 to-white p-6">
-              <div className="flex flex-wrap items-center gap-2">
-                <Badge variant="secondary" className="bg-slate-200 text-slate-700">
-                  {expandedActivity.section}
-                </Badge>
-                <Badge variant="secondary" className="bg-slate-200 text-slate-700">
-                  <Icon icon={icons.clock} className="w-3 h-3 mr-1" />
-                  {expandedActivity.activity.time}
-                </Badge>
+          <DialogContent className="w-[min(960px,95vw)] max-h-[92vh] overflow-y-auto p-0 sm:max-w-4xl border-none shadow-2xl bg-white rounded-2xl">
+            {/* Hero Image Section */}
+            <div className="relative h-64 sm:h-80 w-full overflow-hidden">
+              <Image 
+                src={`https://images.unsplash.com/photo-${stageImages[expandedActivity.stage]}?auto=format&fit=crop&q=80&w=1200&h=600`}
+                alt={expandedActivity.activity.title}
+                fill
+                className="object-cover"
+                priority
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent" />
+              <div className="absolute bottom-6 left-6 right-6 flex flex-col gap-2">
+                <div className="flex flex-wrap items-center gap-2">
+                  <Badge className="bg-white/20 hover:bg-white/30 text-white border-white/40 backdrop-blur-md px-3 py-1 text-xs font-semibold uppercase tracking-wider">
+                    {expandedActivity.section}
+                  </Badge>
+                  <Badge className="bg-white/20 hover:bg-white/30 text-white border-white/40 backdrop-blur-md px-3 py-1 text-xs font-semibold">
+                    <Icon icon={icons.clock} className="w-3 h-3 mr-1" />
+                    {expandedActivity.activity.time}
+                  </Badge>
+                </div>
+                <DialogTitle className="text-3xl sm:text-4xl font-bold text-white tracking-tight drop-shadow-md">
+                  {expandedActivity.activity.title}
+                </DialogTitle>
               </div>
-              <DialogTitle className="text-2xl text-slate-900">{expandedActivity.activity.title}</DialogTitle>
-              <DialogDescription className="text-slate-600">
-                Expanded activity view.
-              </DialogDescription>
-            </DialogHeader>
+            </div>
 
-            <div className="space-y-4 p-6">
-              <div className="flex flex-wrap gap-2">
+            <div className="p-6 sm:p-8 space-y-8">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-100 pb-6">
+                <div className="space-y-1">
+                  <h4 className="text-sm font-semibold uppercase tracking-widest text-slate-400">Activity Overview</h4>
+                  <DialogDescription className="text-slate-600 text-lg">
+                    Comprehensive guide and professional learning objectives.
+                  </DialogDescription>
+                </div>
                 <Button
                   type="button"
-                  size="sm"
+                  size="lg"
                   variant={completedActivities[expandedActivity.activityId] ? 'default' : 'outline'}
-                  className={completedActivities[expandedActivity.activityId] ? 'bg-emerald-600 hover:bg-emerald-600' : ''}
+                  className={`h-12 px-6 rounded-full transition-all shadow-sm ${
+                    completedActivities[expandedActivity.activityId] 
+                      ? 'bg-emerald-600 hover:bg-emerald-700 text-white' 
+                      : 'border-slate-200 hover:bg-slate-50'
+                  }`}
                   onClick={() => toggleActivityCompletion(expandedActivity.activityId)}
                 >
-                  <Icon icon={completedActivities[expandedActivity.activityId] ? icons.checkCircle : icons.task} className="mr-1 h-4 w-4" />
-                  {completedActivities[expandedActivity.activityId] ? 'Completed' : 'Mark as Completed'}
+                  <Icon icon={completedActivities[expandedActivity.activityId] ? icons.checkCircle : icons.task} className="mr-2 h-5 w-5" />
+                  {completedActivities[expandedActivity.activityId] ? 'Activity Completed' : 'Mark as Completed'}
                 </Button>
               </div>
 
-              {isRegularActivity(expandedActivity.activity) ? (
-                <div className="rounded-lg border border-slate-200 bg-slate-50 p-4">
-                  <h5 className="mb-2 font-semibold text-slate-800">Your Task</h5>
-                  <p className="text-slate-700">{expandedActivity.activity.studentTask}</p>
-                </div>
-              ) : null}
-
-              {!isRegularActivity(expandedActivity.activity) && expandedActivity.activity.audioSrc && (
-                <div className="rounded-lg border border-slate-200 bg-white p-4">
-                  <h5 className="mb-2 font-semibold text-slate-800">Music Player</h5>
-                  <audio
-                    ref={audioRef}
-                    preload="none"
-                    src={expandedActivity.activity.audioSrc}
-                    onEnded={() => setIsAudioPlaying(false)}
-                  >
-                    Your browser does not support the audio element.
-                  </audio>
-                  <div className="mt-3 flex flex-wrap items-center gap-2">
-                    <Button type="button" size="sm" className="gap-1" onClick={handlePlayAudio}>
-                      <Icon icon={icons.play} className="h-4 w-4" />
-                      Play
-                    </Button>
-                    <Button type="button" size="sm" variant="secondary" className="gap-1" onClick={handlePauseAudio}>
-                      <Icon icon={icons.pause} className="h-4 w-4" />
-                      Pause
-                    </Button>
-                    <Button type="button" size="sm" variant="outline" className="gap-1" onClick={handleStopAudio}>
-                      <Icon icon={icons.stop} className="h-4 w-4" />
-                      Stop
-                    </Button>
-                    <div className="ml-auto flex flex-wrap items-center gap-1">
-                      <span className="text-xs font-medium text-slate-600">Speed</span>
-                      {[0.75, 1, 1.25, 1.5].map((speed) => (
-                        <Button
-                          key={speed}
-                          type="button"
-                          size="sm"
-                          variant={audioSpeed === speed ? 'default' : 'outline'}
-                          className="h-8 px-2 text-xs"
-                          onClick={() => handleSetAudioSpeed(speed)}
-                        >
-                          {speed}x
-                        </Button>
-                      ))}
+              <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+                <div className="lg:col-span-12 space-y-6">
+                  {/* Primary Task Section */}
+                  {isRegularActivity(expandedActivity.activity) ? (
+                    <div className="bg-slate-50 rounded-2xl p-6 border border-slate-100 shadow-sm">
+                      <h5 className="text-sm font-bold uppercase tracking-wider text-slate-800 mb-4 flex items-center gap-2">
+                        <div className="w-1.5 h-6 bg-indigo-500 rounded-full" />
+                        Professional Learning Task
+                      </h5>
+                      <p className="text-slate-700 leading-relaxed text-lg font-medium">
+                        {expandedActivity.activity.studentTask}
+                      </p>
                     </div>
-                  </div>
-                  <p className="mt-2 text-xs text-slate-500">
-                    {isAudioPlaying ? 'Audio is playing.' : 'Audio paused.'} Control playback and speed here.
-                  </p>
-                </div>
-              )}
+                  ) : null}
 
-              {expandedActivityPack && (
-                <div className="space-y-3">
-                  <details open className="rounded-lg border border-slate-200 bg-white p-4">
-                    <summary className="cursor-pointer list-none font-semibold text-slate-800 inline-flex items-center gap-2">
-                      <Icon icon={icons.accordion} className="h-4 w-4 text-slate-500" />
-                      Step-by-Step Instructions
-                    </summary>
-                    <ol className="mt-3 list-decimal space-y-2 pl-5 text-slate-700">
-                      {expandedActivityPack.steps.map((step, idx) => (
-                        <li key={`${expandedActivity.activityId}-dialog-step-${idx}`}>{step}</li>
-                      ))}
-                    </ol>
-                  </details>
-
-                  <details className="rounded-lg border border-slate-200 bg-white p-4">
-                    <summary className="cursor-pointer list-none font-semibold text-slate-800 inline-flex items-center gap-2">
-                      <Icon icon={icons.task} className="h-4 w-4 text-slate-500" />
-                      Materials Checklist
-                    </summary>
-                    <ul className="mt-3 list-disc space-y-1 pl-5 text-slate-700">
-                      {expandedActivityPack.materials.map((material, idx) => (
-                        <li key={`${expandedActivity.activityId}-dialog-material-${idx}`}>{material}</li>
-                      ))}
-                    </ul>
-                  </details>
-
-                  <details className="rounded-lg border border-slate-200 bg-white p-4">
-                    <summary className="cursor-pointer list-none font-semibold text-slate-800 inline-flex items-center gap-2">
-                      <Icon icon={icons.teacher} className="h-4 w-4 text-slate-500" />
-                      Teaching Tips
-                    </summary>
-                    <ul className="mt-3 list-disc space-y-1 pl-5 text-slate-700">
-                      {expandedActivityPack.tips.map((tip, idx) => (
-                        <li key={`${expandedActivity.activityId}-dialog-tip-${idx}`}>{tip}</li>
-                      ))}
-                    </ul>
-                  </details>
-                </div>
-              )}
-
-              {/* Resource Links */}
-              {(() => {
-                const act = expandedActivity.activity as any
-                if (!act.links || act.links.length === 0) return null
-                return (
-                  <div className="mt-4">
-                    <h4 className="text-sm font-semibold text-gray-700 mb-2 flex items-center gap-1.5">
-                      <Icon icon="lucide:link" className="w-4 h-4" />
-                      Resources & Links
-                    </h4>
-                    <div className="flex flex-wrap gap-2">
-                      {act.links.map((link: ResourceLink, i: number) => (
-                        <a
-                          key={i}
-                          href={link.url}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium transition-colors ${
-                            link.type === 'video' ? 'bg-red-50 text-red-700 hover:bg-red-100' :
-                            link.type === 'audio' ? 'bg-purple-50 text-purple-700 hover:bg-purple-100' :
-                            link.type === 'worksheet' ? 'bg-blue-50 text-blue-700 hover:bg-blue-100' :
-                            link.type === 'images' ? 'bg-green-50 text-green-700 hover:bg-green-100' :
-                            'bg-gray-50 text-gray-700 hover:bg-gray-100'
-                          }`}
-                        >
-                          <Icon icon={
-                            link.type === 'video' ? 'lucide:play-circle' :
-                            link.type === 'audio' ? 'lucide:headphones' :
-                            link.type === 'worksheet' ? 'lucide:file-text' :
-                            link.type === 'images' ? 'lucide:image' :
-                            'lucide:external-link'
-                          } className="w-3.5 h-3.5" />
-                          {link.label}
-                          <Icon icon="lucide:external-link" className="w-3 h-3 opacity-50" />
-                        </a>
-                      ))}
+                  {/* Audio Player Section (if applicable) */}
+                  {!isRegularActivity(expandedActivity.activity) && expandedActivity.activity.audioSrc && (
+                    <div className="bg-white rounded-2xl p-6 border border-slate-200 shadow-md">
+                      <h5 className="text-sm font-bold uppercase tracking-wider text-slate-800 mb-4 flex items-center gap-2">
+                        <Icon icon="lucide:music" className="w-5 h-5 text-indigo-500" />
+                        Audio Resource
+                      </h5>
+                      <audio
+                        ref={audioRef}
+                        preload="none"
+                        src={expandedActivity.activity.audioSrc}
+                        onEnded={() => setIsAudioPlaying(false)}
+                        className="hidden"
+                      />
+                      <div className="flex flex-col gap-4">
+                        <div className="flex flex-wrap items-center gap-3">
+                          <Button 
+                            type="button" 
+                            size="lg" 
+                            className="rounded-full w-14 h-14 p-0 bg-indigo-600 hover:bg-indigo-700 shadow-lg" 
+                            onClick={isAudioPlaying ? handlePauseAudio : handlePlayAudio}
+                          >
+                            <Icon icon={isAudioPlaying ? icons.pause : icons.play} className="h-6 w-6 text-white" />
+                          </Button>
+                          <div className="flex-1">
+                            <div className="h-2 w-full bg-slate-100 rounded-full overflow-hidden">
+                              <div className={`h-full bg-indigo-500 ${isAudioPlaying ? 'animate-shimmer w-full transition-all duration-1000' : 'w-0'}`} />
+                            </div>
+                            <p className="mt-2 text-xs font-medium text-slate-500">
+                              {isAudioPlaying ? 'Now Playing: Audio Material' : 'Player Ready'}
+                            </p>
+                          </div>
+                        </div>
+                        <div className="flex flex-wrap items-center justify-between gap-4 pt-2 border-t border-slate-50">
+                          <div className="flex gap-2">
+                            <Button type="button" size="sm" variant="ghost" className="h-8 px-3" onClick={handleStopAudio}>
+                              <Icon icon={icons.stop} className="h-3.5 w-3.5 mr-1.5" /> Stop
+                            </Button>
+                          </div>
+                          <div className="flex items-center gap-1.5">
+                            <span className="text-[10px] uppercase font-bold text-slate-400">Playback Speed</span>
+                            {[0.75, 1, 1.25, 1.5].map((speed) => (
+                              <button
+                                key={speed}
+                                type="button"
+                                className={`text-xs font-bold px-2.5 py-1 rounded-md transition-all ${
+                                  audioSpeed === speed 
+                                    ? 'bg-indigo-100 text-indigo-700' 
+                                    : 'text-slate-400 hover:text-slate-600'
+                                }`}
+                                onClick={() => handleSetAudioSpeed(speed)}
+                              >
+                                {speed}x
+                              </button>
+                            ))}
+                          </div>
+                        </div>
+                      </div>
                     </div>
+                  )}
+
+                  {/* Implementation Pack Sections */}
+                  {expandedActivityPack && (
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div className="col-span-1 md:col-span-2 space-y-4">
+                        <div className="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm hover:shadow-md transition-shadow">
+                          <div className="bg-slate-50 px-6 py-4 border-b border-slate-100 flex items-center justify-between">
+                            <h5 className="font-bold text-slate-800 flex items-center gap-2">
+                              <Icon icon="lucide:list-checks" className="h-5 w-5 text-indigo-500" />
+                              Methodological Steps
+                            </h5>
+                          </div>
+                          <div className="p-6">
+                            <ol className="space-y-4">
+                              {expandedActivityPack.steps.map((step, idx) => (
+                                <li key={`${expandedActivity.activityId}-dialog-step-${idx}`} className="flex gap-4">
+                                  <span className="flex-shrink-0 w-6 h-6 rounded-full bg-indigo-50 text-indigo-600 text-[10px] font-bold flex items-center justify-center border border-indigo-100 mt-0.5">
+                                    {idx + 1}
+                                  </span>
+                                  <span className="text-slate-700 leading-relaxed font-medium">{step}</span>
+                                </li>
+                              ))}
+                            </ol>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm">
+                        <div className="bg-slate-50 px-6 py-4 border-b border-slate-100 flex items-center gap-2">
+                          <Icon icon="lucide:package" className="h-5 w-5 text-indigo-500" />
+                          <h5 className="font-bold text-slate-800">Professional Toolkit</h5>
+                        </div>
+                        <div className="p-6">
+                          <ul className="space-y-3">
+                            {expandedActivityPack.materials.map((material, idx) => (
+                              <li key={`${expandedActivity.activityId}-dialog-material-${idx}`} className="flex items-start gap-3 text-sm text-slate-600">
+                                <Icon icon="lucide:check" className="w-4 h-4 text-emerald-500 mt-0.5" />
+                                {material}
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      </div>
+
+                      <div className="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm">
+                        <div className="bg-slate-50 px-6 py-4 border-b border-slate-100 flex items-center gap-2">
+                          <Icon icon="lucide:lightbulb" className="h-5 w-5 text-amber-500" />
+                          <h5 className="font-bold text-slate-800">Advanced Insights</h5>
+                        </div>
+                        <div className="p-6">
+                          <ul className="space-y-3">
+                            {expandedActivityPack.tips.map((tip, idx) => (
+                              <li key={`${expandedActivity.activityId}-dialog-tip-${idx}`} className="flex items-start gap-3 text-sm text-slate-600">
+                                <div className="w-1.5 h-1.5 rounded-full bg-amber-400 mt-1.5" />
+                                {tip}
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    {/* Examples Section */}
+                    {isRegularActivity(expandedActivity.activity) && expandedActivity.activity.example && (
+                      <div className="bg-indigo-50/50 rounded-2xl p-6 border border-indigo-100 backdrop-blur-sm relative overflow-hidden group">
+                        <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:scale-110 transition-transform">
+                          <Icon icon="lucide:quote" className="w-16 h-16 text-indigo-600" />
+                        </div>
+                        <h5 className="text-sm font-bold uppercase tracking-wider text-indigo-700 mb-3">Model Example</h5>
+                        <p className="italic text-slate-800 text-lg leading-relaxed relative z-10">
+                          "{expandedActivity.activity.example}"
+                        </p>
+                      </div>
+                    )}
+
+                    {/* Teacher Notes Section */}
+                    {showTeacherNotes && (
+                      <div className="bg-amber-50 rounded-2xl p-6 border border-amber-100 relative overflow-hidden group">
+                        <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:rotate-12 transition-transform">
+                          <Icon icon="lucide:award" className="w-16 h-16 text-amber-600" />
+                        </div>
+                        <h5 className="text-sm font-bold uppercase tracking-wider text-amber-700 mb-3">Professional Advisory</h5>
+                        <p className="text-slate-800 leading-relaxed font-medium relative z-10">
+                          {expandedActivity.activity.teacherNote}
+                        </p>
+                      </div>
+                    )}
                   </div>
-                )
-              })()}
 
-              {isRegularActivity(expandedActivity.activity) && expandedActivity.activity.example && (
-                <div className="rounded-lg border border-blue-200 bg-blue-50 p-4">
-                  <h5 className="mb-2 font-semibold text-blue-800">Example</h5>
-                  <p className="italic text-slate-700">"{expandedActivity.activity.example}"</p>
+                  {/* Resource Links Section */}
+                  {(() => {
+                    const act = expandedActivity.activity as any
+                    if (!act.links || act.links.length === 0) return null
+                    return (
+                      <div className="pt-6 border-t border-slate-100">
+                        <h4 className="text-sm font-bold uppercase tracking-widest text-slate-400 mb-4 flex items-center gap-2">
+                          <Icon icon="lucide:link-2" className="w-4 h-4" />
+                          Curated Professional Resources
+                        </h4>
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                          {act.links.map((link: ResourceLink, i: number) => (
+                            <a
+                              key={i}
+                              href={link.url}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className={`group flex items-center gap-3 p-4 rounded-xl border transition-all hover:shadow-md ${
+                                link.type === 'video' ? 'bg-rose-50 border-rose-100 hover:border-rose-200' :
+                                link.type === 'audio' ? 'bg-purple-50 border-purple-100 hover:border-purple-200' :
+                                link.type === 'worksheet' ? 'bg-blue-50 border-blue-100 hover:border-blue-200' :
+                                link.type === 'images' ? 'bg-emerald-50 border-emerald-100 hover:border-emerald-200' :
+                                'bg-slate-50 border-slate-100 hover:border-slate-200'
+                              }`}
+                            >
+                              <div className={`w-10 h-10 rounded-full flex items-center justify-center shadow-sm group-hover:scale-110 transition-transform ${
+                                link.type === 'video' ? 'bg-rose-500 text-white' :
+                                link.type === 'audio' ? 'bg-purple-500 text-white' :
+                                link.type === 'worksheet' ? 'bg-blue-500 text-white' :
+                                link.type === 'images' ? 'bg-emerald-500 text-white' :
+                                'bg-slate-500 text-white'
+                              }`}>
+                                <Icon icon={
+                                  link.type === 'video' ? 'lucide:play-circle' :
+                                  link.type === 'audio' ? 'lucide:headphones' :
+                                  link.type === 'worksheet' ? 'lucide:file-text' :
+                                  link.type === 'images' ? 'lucide:image' :
+                                  'lucide:external-link'
+                                } className="w-5 h-5" />
+                              </div>
+                              <div className="flex-1 min-w-0">
+                                <p className={`text-sm font-bold truncate ${
+                                  link.type === 'video' ? 'text-rose-900' :
+                                  link.type === 'audio' ? 'text-purple-900' :
+                                  link.type === 'worksheet' ? 'text-blue-900' :
+                                  link.type === 'images' ? 'text-emerald-900' :
+                                  'text-slate-900'
+                                }`}>{link.label}</p>
+                                <p className="text-[10px] font-medium opacity-60 uppercase tracking-tighter">Click to launch resource</p>
+                              </div>
+                              <Icon icon="lucide:arrow-up-right" className="w-4 h-4 opacity-30 group-hover:opacity-100 transition-opacity" />
+                            </a>
+                          ))}
+                        </div>
+                      </div>
+                    )
+                  })()}
                 </div>
-              )}
-
-              {showTeacherNotes && (
-                <div className="rounded-lg border border-amber-200 bg-amber-50 p-4">
-                  <h5 className="mb-2 font-semibold text-amber-800">Teacher Note</h5>
-                  <p className="text-amber-900">{expandedActivity.activity.teacherNote}</p>
-                </div>
-              )}
+              </div>
             </div>
           </DialogContent>
         )}
