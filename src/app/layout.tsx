@@ -14,8 +14,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Universidad EAFIT",
-  description: "English Course - Elementary 2 | Universidad EAFIT",
+  title: "Elementary 2 Class Guide | Universidad EAFIT",
+  description: "English Course - Elementary 2 class delivery guide.",
   keywords: ["Universidad EAFIT", "Idiomas EAFIT", "English Course", "Elementary 2"],
   authors: [{ name: "Universidad EAFIT" }],
   icons: {
@@ -25,14 +25,14 @@ export const metadata: Metadata = {
   },
   openGraph: {
     title: "Universidad EAFIT",
-    description: "English Course - Elementary 2",
+    description: "English Course - Elementary 2 class guide",
     siteName: "Universidad EAFIT",
     type: "website",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Universidad EAFIT",
-    description: "English Course - Elementary 2",
+    title: "Elementary 2 Class Guide | Universidad EAFIT",
+    description: "English Course - Elementary 2 class guide",
   },
 };
 

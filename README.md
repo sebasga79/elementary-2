@@ -70,7 +70,7 @@ bun run build
 bun start
 ```
 
-Open [http://localhost:3000](http://localhost:3000) to see your application running.
+Open [http://localhost:3500](http://localhost:3500) to see your application running.
 
 ## 🤖 Powered by Z.ai
 

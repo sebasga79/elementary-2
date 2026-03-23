@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useMemo, useRef } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Icon } from '@iconify/react'
 import Image from 'next/image'
@@ -1554,6 +1554,159 @@ const activityInstructionPacks: { [unitKey: string]: { [activityTitle: string]: 
   },
 }
 
+type SlideDeckStageKey = (typeof activityStageMeta)[number]['key']
+
+type SlideDeckSlide =
+  | { id: 'cover'; type: 'cover' }
+  | { id: 'closing'; type: 'closing' }
+  | { id: string; type: 'unit'; unitIndex: number }
+  | { id: string; type: 'stage'; unitIndex: number; stageKey: SlideDeckStageKey }
+
+type DeckDetailPanel = {
+  title: string
+  description?: string
+  text?: string
+  items?: string[]
+  links?: ResourceLink[]
+}
+
+const slideDeckStageDescriptions: Record<SlideDeckStageKey, string> = {
+  warmUps: 'Open the lesson with quick activation, visual cues, and low-stakes interaction that helps the group enter the topic together.',
+  concreteExperience: 'Expose learners to rich input, cultural material, or authentic tasks before naming rules explicitly.',
+  reflection: 'Slow the class down to compare, notice patterns, and connect experience with meaning.',
+  abstract: 'Make the language visible. Students identify forms, organize examples, and build explicit understanding.',
+  practice: 'Push the class toward production, decision making, and communicative performance with the target language.',
+  closing: 'Land the session with reflection, synthesis, or celebration so outcomes feel visible and memorable.',
+  livingLearning: 'Extend the unit beyond the classroom with observation, fieldwork, and real-life language use.',
+}
+
+const slideDeckResourceLabels: Record<ResourceLink['type'], string> = {
+  video: 'Video',
+  worksheet: 'Worksheet',
+  reference: 'Reference',
+  audio: 'Audio',
+  images: 'Images',
+}
+
+const slideDeckResourceIcons: Record<ResourceLink['type'], string> = {
+  video: icons.play,
+  worksheet: icons.task,
+  reference: icons.bookOpen,
+  audio: icons.headphones,
+  images: icons.camera,
+}
+
+const slideDeckGetUnitKey = (unitIndex: number) => `unit${unitIndex + 1}` as keyof typeof activitiesData
+
+const slideDeckToStudentFacingText = (value: string) => {
+  let result = value.replace(/\s+/g, ' ').trim()
+
+  const leadingRewrites: Array<[RegExp, string]> = [
+    [/^Your teacher introduces(?: the unit)?/i, 'Explore'],
+    [/^Your teacher shows /i, 'Look at '],
+    [/^Your teacher replays /i, 'Watch or listen again to '],
+    [/^Your teacher suggests /i, 'Consider '],
+    [/^The teacher writes /i, 'Look at '],
+    [/^The teacher shows /i, 'Look at '],
+    [/^The teacher calls out /i, 'Listen as '],
+    [/^The teacher reads or shows /i, 'Listen and respond to '],
+    [/^The teacher reads /i, 'Listen as '],
+    [/^The teacher asks /i, 'Respond to '],
+    [/^The teacher demonstrates /i, 'Watch a quick model and then '],
+  ]
+
+  for (const [pattern, replacement] of leadingRewrites) {
+    result = result.replace(pattern, replacement)
+  }
+
+  result = result
+    .replace(/\bYour teacher will\b/gi, 'You will')
+    .replace(/\bYour teacher\b/gi, '')
+    .replace(/\bThe teacher\b/gi, '')
+    .replace(/\bask students to\b/gi, '')
+    .replace(/\bAsk students to\b/gi, '')
+    .replace(/\binvite students to\b/gi, '')
+    .replace(/\bInvite students to\b/gi, '')
+    .replace(/\bput students in pairs\b/gi, 'Work in pairs')
+    .replace(/\bPut students in pairs\b/gi, 'Work in pairs')
+    .replace(/\bput ss in pairs\b/gi, 'Work in pairs')
+    .replace(/\bSs\b/g, 'Students')
+    .replace(/\bss\b/g, 'students')
+    .replace(/\s{2,}/g, ' ')
+    .trim()
+
+  return result.charAt(0).toUpperCase() + result.slice(1)
+}
+
+const slideDeckGetActivityText = (activity: WarmUp | Activity) =>
+  slideDeckToStudentFacingText(isRegularActivity(activity) ? activity.studentTask : activity.instructions)
+
+const slideDeckGetActivityPromptLabel = (activity: WarmUp | Activity) =>
+  isRegularActivity(activity) ? 'What you do' : 'Warm-up task'
+
+const slideDeckGetInstructionPack = (
+  unitKey: keyof typeof activitiesData,
+  activity: WarmUp | Activity
+): ActivityInstructionPack => {
+  const pack = activityInstructionPacks[unitKey]?.[activity.title]
+  if (pack) return pack
+
+  return {
+    steps: [slideDeckGetActivityText(activity)],
+    materials: [activity.materials || 'See linked materials or teacher notes.'],
+    tips: [activity.teacherNote],
+  }
+}
+
+const slideDeckTrim = (value: string, max = 180) =>
+  value.length <= max ? value : `${value.slice(0, max).trimEnd()}...`
+
+const slideDeckPreviewItems = <T,>(items: T[] | undefined, limit: number) => ({
+  items: (items || []).slice(0, limit),
+  extra: Math.max((items || []).length - limit, 0),
+})
+
+const slideDeckSlides: SlideDeckSlide[] = [
+  { id: 'cover', type: 'cover' },
+  ...units.flatMap((unit, unitIndex) => [
+    { id: `unit-${unit.id}`, type: 'unit' as const, unitIndex },
+    ...activityStageMeta.map((stage) => ({
+      id: `unit-${unit.id}-${stage.key}`,
+      type: 'stage' as const,
+      unitIndex,
+      stageKey: stage.key,
+    })),
+  ]),
+  { id: 'closing', type: 'closing' },
+]
+
+const slideDeckUnitStats = units.map((_, unitIndex) => {
+  const unitKey = slideDeckGetUnitKey(unitIndex)
+  const stageCounts = activityStageMeta.map((stage) => {
+    const stageActivities = activitiesData[unitKey][stage.key] as Array<WarmUp | Activity>
+    return {
+      key: stage.key,
+      count: stageActivities.length,
+      resources: stageActivities.reduce((total, activity) => total + (activity.links?.length || 0), 0),
+    }
+  })
+
+  return {
+    totalActivities: stageCounts.reduce((total, stage) => total + stage.count, 0),
+    totalResources: stageCounts.reduce((total, stage) => total + stage.resources, 0),
+    signatureTasks: activitiesData[unitKey].practice.slice(0, 2).map((activity) => activity.title),
+    stageCounts,
+  }
+})
+
+const slideDeckCourseStats = slideDeckUnitStats.reduce(
+  (summary, unitStat) => ({
+    totalActivities: summary.totalActivities + unitStat.totalActivities,
+    totalResources: summary.totalResources + unitStat.totalResources,
+  }),
+  { totalActivities: 0, totalResources: 0 }
+)
+
 export default function EnglishCoursePresentation() {
   const [currentUnit, setCurrentUnit] = useState(0)
   const [showTeacherNotes, setShowTeacherNotes] = useState(true)
@@ -1591,6 +1744,862 @@ export default function EnglishCoursePresentation() {
   const audioRef = useRef<HTMLAudioElement | null>(null)
   const [isAudioPlaying, setIsAudioPlaying] = useState(false)
   const [audioSpeed, setAudioSpeed] = useState(1)
+  const [deckCurrentSlide, setDeckCurrentSlide] = useState(0)
+  const [deckSelectedActivityBySlide, setDeckSelectedActivityBySlide] = useState<Record<string, number>>({})
+  const [deckDetailPanel, setDeckDetailPanel] = useState<DeckDetailPanel | null>(null)
+
+  useEffect(() => {
+    const handleDeckKeydown = (event: KeyboardEvent) => {
+      if (event.target instanceof HTMLElement) {
+        const tagName = event.target.tagName.toLowerCase()
+        if (['input', 'textarea', 'select', 'button', 'a'].includes(tagName)) {
+          return
+        }
+      }
+
+      if (['ArrowRight', 'ArrowDown', 'PageDown', ' '].includes(event.key)) {
+        event.preventDefault()
+        setDeckCurrentSlide((prev) => Math.min(prev + 1, slideDeckSlides.length - 1))
+      }
+
+      if (['ArrowLeft', 'ArrowUp', 'PageUp'].includes(event.key)) {
+        event.preventDefault()
+        setDeckCurrentSlide((prev) => Math.max(prev - 1, 0))
+      }
+
+      if (event.key === 'Home') {
+        event.preventDefault()
+        setDeckCurrentSlide(0)
+      }
+
+      if (event.key === 'End') {
+        event.preventDefault()
+        setDeckCurrentSlide(slideDeckSlides.length - 1)
+      }
+    }
+
+    window.addEventListener('keydown', handleDeckKeydown)
+    return () => window.removeEventListener('keydown', handleDeckKeydown)
+  }, [])
+
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+  }, [deckCurrentSlide])
+
+  const deckGoToSlide = (targetIndex: number) => {
+    setDeckCurrentSlide(Math.max(0, Math.min(targetIndex, slideDeckSlides.length - 1)))
+  }
+
+  const deckOpenDetailPanel = (panel: DeckDetailPanel) => {
+    setDeckDetailPanel(panel)
+  }
+
+  const deckGoToUnit = (unitIndex: number) => {
+    const targetIndex = slideDeckSlides.findIndex(
+      (slide) => slide.type === 'unit' && slide.unitIndex === unitIndex
+    )
+    if (targetIndex >= 0) {
+      deckGoToSlide(targetIndex)
+    }
+  }
+
+  const deckCurrentSlideData = slideDeckSlides[deckCurrentSlide]
+  const deckChromeUnitIndex =
+    deckCurrentSlideData.type === 'cover'
+      ? 0
+      : deckCurrentSlideData.type === 'closing'
+        ? units.length - 1
+        : deckCurrentSlideData.unitIndex
+  const deckChromeUnit = units[deckChromeUnitIndex]
+  const deckProgressPercent = Math.round(((deckCurrentSlide + 1) / slideDeckSlides.length) * 100)
+
+  const deckRenderSlideContent = () => {
+    if (deckCurrentSlideData.type === 'cover') {
+      return (
+        <div className="grid h-full min-h-0 gap-5 xl:grid-cols-[0.82fr_1.18fr]">
+          {/* Left: hero intro */}
+          <div className="flex min-h-0 flex-col gap-5">
+            <div>
+              <span className="label-micro text-slate-400">Idiomas EAFIT · Level A2</span>
+              <h1 className="mt-2 text-[clamp(1.75rem,4vw,3.25rem)] font-black leading-[1.1] tracking-tight text-slate-950">
+                Elementary&nbsp;2
+              </h1>
+              <p className="mt-3 max-w-lg text-[15px] leading-relaxed text-slate-500">
+                Navega por unidad, etapa y actividad. Haz clic en cualquier tarjeta para ver el detalle completo.
+              </p>
+            </div>
+
+            <div className="grid gap-3 sm:grid-cols-3">
+              {[
+                { label: 'Units', value: units.length, sub: 'Bloques' },
+                { label: 'Activities', value: slideDeckCourseStats.totalActivities, sub: 'Disponibles' },
+                { label: 'Resources', value: slideDeckCourseStats.totalResources, sub: 'Materiales' },
+              ].map((stat) => (
+                <div key={stat.label} className="deck-card-inner">
+                  <p className="label-micro">{stat.label}</p>
+                  <p className="mt-1.5 text-2xl font-black tracking-tight text-slate-900">{stat.value}</p>
+                  <p className="mt-0.5 text-xs text-slate-400">{stat.sub}</p>
+                </div>
+              ))}
+            </div>
+
+            <div className="flex flex-1 flex-col overflow-hidden rounded-xl border border-slate-200/60 bg-slate-50/80 p-4">
+              <p className="label-micro text-slate-400">Uso sugerido</p>
+              <div className="mt-3 grid flex-1 gap-2 md:grid-cols-3">
+                {[
+                  { title: 'Recorrido', desc: 'Unidad → etapa → actividad → detalle.', action: () => deckOpenDetailPanel({ title: 'Recorrido rápido', items: ['Entra por la unidad que vas a enseñar.', 'Selecciona la etapa de la sesión.', 'Haz clic en una tarjeta para ampliar la actividad cuando necesites más detalle.'] }) },
+                  { title: 'Detalle', desc: 'Consigna, nota docente, secuencia y recursos.', action: () => deckOpenDetailPanel({ title: 'Qué verás por actividad', items: ['Consigna dirigida al estudiante.', 'Nota docente para orientar el delivery.', 'Secuencia breve, materiales y recursos.'] }) },
+                  { title: 'Empezar', desc: 'Abre Unit 1 y navega desde allí.', action: () => deckGoToUnit(0) },
+                ].map((item) => (
+                  <button
+                    key={item.title}
+                    type="button"
+                    onClick={item.action}
+                    className="flex h-full flex-col overflow-hidden rounded-lg border border-transparent bg-white p-3.5 text-left shadow-sm transition-all hover:-translate-y-0.5 hover:border-slate-200 hover:shadow-md"
+                  >
+                    <p className="text-[13px] font-bold text-slate-800">{item.title}</p>
+                    <p className="mt-1.5 text-xs leading-5 text-slate-500">{item.desc}</p>
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {/* Right: unit cards */}
+          <div className="grid h-full min-h-0 grid-rows-3 gap-3">
+            {units.map((slideDeckUnit, unitIndex) => (
+              <motion.button
+                key={slideDeckUnit.id}
+                type="button"
+                whileHover={{ y: -3, scale: 1.005 }}
+                whileTap={{ scale: 0.995 }}
+                onClick={() => deckGoToUnit(unitIndex)}
+                className={`relative flex h-full flex-col overflow-hidden rounded-2xl bg-gradient-to-br ${slideDeckUnit.color} p-5 text-left text-white`}
+                style={{ boxShadow: '0 8px 32px rgba(15,23,42,0.12), inset 0 1px 0 rgba(255,255,255,0.15)' }}
+              >
+                <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_70%_50%_at_100%_0%,rgba(255,255,255,0.18),transparent)]" />
+                <div className="relative flex items-start justify-between gap-4">
+                  <div className="min-w-0">
+                    <p className="label-micro text-white/60">{slideDeckUnit.level}</p>
+                    <h2 className="mt-1.5 text-lg font-extrabold leading-tight md:text-xl">{slideDeckTrim(slideDeckUnit.title, 72)}</h2>
+                    <p className="mt-1 text-[13px] leading-5 text-white/75">{slideDeckTrim(slideDeckUnit.subtitle, 100)}</p>
+                  </div>
+                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-white/12 backdrop-blur-sm">
+                    <Icon icon={slideDeckUnit.icon} className="h-5 w-5 text-white/90" />
+                  </div>
+                </div>
+
+                <div className="relative mt-auto flex items-end justify-between gap-3 pt-3">
+                  <div className="flex gap-2">
+                    <span className="rounded-lg bg-white/12 px-2.5 py-1 text-[10px] font-bold text-white/85 backdrop-blur-sm">
+                      {slideDeckUnitStats[unitIndex].totalActivities} activities
+                    </span>
+                    <span className="rounded-lg bg-white/12 px-2.5 py-1 text-[10px] font-bold text-white/85 backdrop-blur-sm">
+                      {slideDeckUnitStats[unitIndex].totalResources} resources
+                    </span>
+                  </div>
+                  <Icon icon={icons.chevronRight} className="h-4 w-4 text-white/50" />
+                </div>
+              </motion.button>
+            ))}
+          </div>
+        </div>
+      )
+    }
+
+    if (deckCurrentSlideData.type === 'unit') {
+      const slideDeckUnit = units[deckCurrentSlideData.unitIndex]
+      const slideDeckUnitKey = slideDeckGetUnitKey(deckCurrentSlideData.unitIndex)
+      const slideDeckStat = slideDeckUnitStats[deckCurrentSlideData.unitIndex]
+
+      return (
+        <div className="grid h-full min-h-0 gap-4 xl:grid-cols-[0.9fr_1.1fr]">
+          {/* ── Left: Unit hero ── */}
+          <div className={`flex h-full flex-col rounded-[2.2rem] bg-gradient-to-br ${slideDeckUnit.color} p-7 text-white shadow-[0_28px_100px_rgba(15,23,42,0.16)]`}>
+            <Badge className="border-white/20 bg-white/15 text-white">{slideDeckUnit.level}</Badge>
+            <h2 className="mt-4 text-3xl font-black leading-tight md:text-4xl break-words">{slideDeckUnit.title}</h2>
+            <p className="mt-3 max-w-xl text-base leading-7 text-white/82 break-words line-clamp-3">{slideDeckUnit.subtitle}</p>
+
+            <div className="mt-5 grid gap-3 sm:grid-cols-3">
+              <div className="rounded-2xl bg-white/12 p-3.5 backdrop-blur">
+                <p className="text-xs uppercase tracking-[0.2em] text-white/70">Duration</p>
+                <p className="mt-2 text-xl font-bold">{slideDeckUnit.duration}</p>
+              </div>
+              <div className="rounded-2xl bg-white/12 p-3.5 backdrop-blur">
+                <p className="text-xs uppercase tracking-[0.2em] text-white/70">Activities</p>
+                <p className="mt-2 text-xl font-bold">{slideDeckStat.totalActivities}</p>
+              </div>
+              <div className="rounded-2xl bg-white/12 p-3.5 backdrop-blur">
+                <p className="text-xs uppercase tracking-[0.2em] text-white/70">Resources</p>
+                <p className="mt-2 text-xl font-bold">{slideDeckStat.totalResources}</p>
+              </div>
+            </div>
+
+            <div className="mt-6 rounded-[1.8rem] border border-white/15 bg-white/10 p-5 backdrop-blur">
+              <p className="text-xs font-semibold uppercase tracking-[0.24em] text-white/70">Signature tasks</p>
+              <div className="mt-4 space-y-2.5">
+                {slideDeckStat.signatureTasks.map((task, index) => (
+                  <div key={task} className="flex items-start gap-3 rounded-2xl bg-black/10 px-4 py-2.5">
+                    <span className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-white/20 text-sm font-bold">
+                      {index + 1}
+                    </span>
+                    <span className="text-sm leading-5 text-white/92 min-w-0 break-words line-clamp-2">{slideDeckTrim(task, 118)}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {/* ── Right: Detail cards 2×2 ── */}
+          <div className="grid min-h-0 auto-rows-fr gap-3 md:grid-cols-2">
+            <button
+              type="button"
+              onClick={() =>
+                deckOpenDetailPanel({
+                  title: `${slideDeckUnit.title} · Objectives`,
+                  items: slideDeckUnit.objectives,
+                })
+              }
+              className="h-full overflow-hidden rounded-[2rem] border border-white/70 bg-white/80 p-6 text-left shadow-[0_18px_70px_rgba(15,23,42,0.08)] backdrop-blur transition-all hover:-translate-y-0.5 hover:border-slate-300 hover:shadow-lg"
+            >
+              <p className="text-xs font-semibold uppercase tracking-[0.24em] text-slate-400">Objectives</p>
+              <ul className="mt-4 space-y-2.5">
+                {slideDeckUnit.objectives.slice(0, 3).map((objective) => (
+                  <li key={objective} className="flex items-start gap-3 text-sm leading-5 text-slate-700">
+                    <Icon icon={icons.checkCircle} className="mt-0.5 h-4 w-4 shrink-0 text-emerald-500" />
+                    <span className="min-w-0 line-clamp-2">{slideDeckTrim(objective, 104)}</span>
+                  </li>
+                ))}
+              </ul>
+            </button>
+
+            <button
+              type="button"
+              onClick={() =>
+                deckOpenDetailPanel({
+                  title: `${slideDeckUnit.title} · Key language`,
+                  items: slideDeckUnit.keyLanguage.map(
+                    (item) => `${item.expression} — ${item.example} (${item.use})`
+                  ),
+                })
+              }
+              className="h-full overflow-hidden rounded-[2rem] border border-white/70 bg-white/80 p-6 text-left shadow-[0_18px_70px_rgba(15,23,42,0.08)] backdrop-blur transition-all hover:-translate-y-0.5 hover:border-slate-300 hover:shadow-lg"
+            >
+              <p className="text-xs font-semibold uppercase tracking-[0.24em] text-slate-400">Key language</p>
+              <div className="mt-4 space-y-2.5">
+                {slideDeckUnit.keyLanguage.slice(0, 2).map((item) => (
+                  <div key={item.expression} className="rounded-2xl border border-slate-200/80 bg-slate-50/90 p-3.5 overflow-hidden">
+                    <p className="text-sm font-semibold text-slate-900 line-clamp-1">{item.expression}</p>
+                    <p className="mt-1 text-sm leading-5 text-slate-600 line-clamp-1">{slideDeckTrim(item.example, 88)}</p>
+                    <p className="mt-2 text-xs uppercase tracking-[0.18em] text-slate-400 truncate">{item.use}</p>
+                  </div>
+                ))}
+              </div>
+            </button>
+
+            <button
+              type="button"
+              onClick={() =>
+                deckOpenDetailPanel({
+                  title: `${slideDeckUnit.title} · Vocabulary`,
+                  text: `Core: ${slideDeckUnit.vocabulary.core.join(', ')}\n\nExpressions: ${slideDeckUnit.vocabulary.expressions.join(', ')}\n\nConnectors: ${slideDeckUnit.vocabulary.connectors.join(', ')}`,
+                })
+              }
+              className="h-full overflow-hidden rounded-[2rem] border border-white/70 bg-white/80 p-6 text-left shadow-[0_18px_70px_rgba(15,23,42,0.08)] backdrop-blur transition-all hover:-translate-y-0.5 hover:border-slate-300 hover:shadow-lg md:col-span-2"
+            >
+              <div className="grid gap-6 lg:grid-cols-[1.1fr_0.9fr]">
+                <div>
+                  <p className="text-xs font-semibold uppercase tracking-[0.24em] text-slate-400">Vocabulary field</p>
+                  <div className="mt-4 grid gap-4 md:grid-cols-3">
+                    <div>
+                      <p className="text-sm font-semibold text-slate-900">Core</p>
+                      <p className="mt-2 text-sm leading-6 text-slate-600">
+                        {slideDeckUnit.vocabulary.core.slice(0, 3).join(', ')}
+                      </p>
+                    </div>
+                    <div>
+                      <p className="text-sm font-semibold text-slate-900">Expressions</p>
+                      <p className="mt-2 text-sm leading-6 text-slate-600">
+                        {slideDeckUnit.vocabulary.expressions.slice(0, 3).join(', ')}
+                      </p>
+                    </div>
+                    <div>
+                      <p className="text-sm font-semibold text-slate-900">Connectors</p>
+                      <p className="mt-2 text-sm leading-6 text-slate-600">
+                        {slideDeckUnit.vocabulary.connectors.slice(0, 3).join(', ')}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                <div>
+                  <p className="text-xs font-semibold uppercase tracking-[0.24em] text-slate-400">Stage map</p>
+                  <div className="mt-4 space-y-3">
+                    {activityStageMeta.map((stageMeta) => {
+                      const stageCount = slideDeckStat.stageCounts.find((stage) => stage.key === stageMeta.key)
+                      return (
+                        <div key={stageMeta.key} className="flex items-center justify-between gap-2 rounded-2xl border border-slate-200/80 bg-slate-50/90 px-4 py-3">
+                          <div className="flex items-center gap-3 min-w-0">
+                            <span className={`h-3 w-3 shrink-0 rounded-full ${stageMeta.color}`} />
+                            <span className="text-sm font-medium text-slate-700 truncate">{stageMeta.label}</span>
+                          </div>
+                          <span className="text-sm font-semibold text-slate-900 shrink-0">{stageCount?.count || 0}</span>
+                        </div>
+                      )
+                    })}
+                  </div>
+                </div>
+              </div>
+            </button>
+          </div>
+        </div>
+      )
+    }
+
+    if (deckCurrentSlideData.type === 'stage') {
+      const deckStageMeta = activityStageMeta.find((stage) => stage.key === deckCurrentSlideData.stageKey)
+      if (!deckStageMeta) return null
+
+      const slideDeckUnit = units[deckCurrentSlideData.unitIndex]
+      const slideDeckUnitKey = slideDeckGetUnitKey(deckCurrentSlideData.unitIndex)
+      const deckStageActivities = activitiesData[slideDeckUnitKey][deckCurrentSlideData.stageKey] as Array<WarmUp | Activity>
+      const deckStageResources = deckStageActivities.reduce((total, activity) => total + (activity.links?.length || 0), 0)
+      const deckSelectedIndex = Math.min(
+        deckSelectedActivityBySlide[deckCurrentSlideData.id] ?? 0,
+        Math.max(deckStageActivities.length - 1, 0)
+      )
+      const deckSelectedActivity = deckStageActivities[deckSelectedIndex]
+      const deckSelectedPack = slideDeckGetInstructionPack(slideDeckUnitKey, deckSelectedActivity)
+      const deckSelectedIcon = isRegularActivity(deckSelectedActivity)
+        ? deckSelectedActivity.icon || deckStageMeta.icon
+        : deckStageMeta.icon
+      const deckStudentSteps = deckSelectedPack.steps.map((step) => slideDeckToStudentFacingText(step))
+      const deckStepsPreview = slideDeckPreviewItems(deckStudentSteps, 2)
+      const deckMaterialsPreview = slideDeckPreviewItems(deckSelectedPack.materials, 2)
+      const deckResourcesPreview = slideDeckPreviewItems(deckSelectedActivity.links, 4)
+      const deckSelectedExample = isRegularActivity(deckSelectedActivity) ? deckSelectedActivity.example : undefined
+      const deckShouldStretchStageList = deckStageActivities.length <= 4
+
+      return (
+        <div className="grid h-full min-h-0 gap-4 xl:grid-cols-[0.72fr_1.28fr]">
+          {/* ── Left: Stage hero + activity list ── */}
+          <div className="flex min-h-0 flex-col overflow-hidden rounded-[2rem] border border-white/65 bg-white/82 shadow-[0_18px_70px_rgba(15,23,42,0.08)] backdrop-blur">
+            {/* Stage banner */}
+            <div className="relative h-40 overflow-hidden border-b border-white/70">
+              <Image
+                src={`https://images.unsplash.com/photo-${stageImages[deckCurrentSlideData.stageKey]}?auto=format&fit=crop&q=80&w=1400&h=800`}
+                alt={deckStageMeta.label}
+                fill
+                className="object-cover"
+                priority={deckCurrentSlide < 3}
+              />
+              <div className={`absolute inset-0 bg-gradient-to-br ${slideDeckUnit.color} opacity-75`} />
+              <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(255,255,255,0.34),transparent_32%)]" />
+              <div className="absolute inset-0 flex flex-col justify-end p-5 text-white">
+                <div className="flex flex-wrap items-center gap-2">
+                  <Badge className="border-white/20 bg-white/15 text-[10px] uppercase tracking-[0.18em] text-white">{slideDeckUnit.level}</Badge>
+                  <Badge className="border-white/20 bg-black/10 text-[10px] uppercase tracking-[0.18em] text-white">{deckStageMeta.shortLabel}</Badge>
+                </div>
+                <div className="mt-3 flex items-start gap-3">
+                  <div className="rounded-2xl bg-white/15 p-2.5 backdrop-blur">
+                    <Icon icon={deckStageMeta.icon} className="h-5 w-5 text-white" />
+                  </div>
+                  <div className="min-w-0">
+                    <h2 className="text-[1.6rem] font-black leading-tight md:text-[1.8rem] break-words">{deckStageMeta.label}</h2>
+                    <p className="mt-1 max-w-xl text-xs leading-5 text-white/85 line-clamp-2">
+                      {slideDeckTrim(slideDeckStageDescriptions[deckCurrentSlideData.stageKey], 104)}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Stats row */}
+            <div className="grid grid-cols-3 gap-2.5 p-4 pb-3">
+              <div className="rounded-2xl border border-slate-200/80 bg-slate-50/90 px-3.5 py-2.5">
+                <p className="text-[10px] uppercase tracking-[0.22em] text-slate-400">Activities</p>
+                <p className="mt-1 text-xl font-black text-slate-950">{deckStageActivities.length}</p>
+              </div>
+              <div className="rounded-2xl border border-slate-200/80 bg-slate-50/90 px-3.5 py-2.5">
+                <p className="text-[10px] uppercase tracking-[0.22em] text-slate-400">Resources</p>
+                <p className="mt-1 text-xl font-black text-slate-950">{deckStageResources}</p>
+              </div>
+              <div className="rounded-2xl border border-slate-200/80 bg-slate-50/90 px-3.5 py-2.5">
+                <p className="text-[10px] uppercase tracking-[0.22em] text-slate-400">Unit</p>
+                <p className="mt-1 text-base font-bold text-slate-950">Unit {slideDeckUnit.id}</p>
+              </div>
+            </div>
+
+            {/* Activity list */}
+            <div className={`flex-1 min-h-0 overflow-y-auto px-4 pb-4 space-y-2 ${deckShouldStretchStageList ? '' : ''}`}>
+              {deckStageActivities.map((activity, index) => {
+                const isSelected = index === deckSelectedIndex
+                return (
+                  <button
+                    key={`${deckCurrentSlideData.id}-${activity.title}-${index}`}
+                    type="button"
+                    onClick={() =>
+                      setDeckSelectedActivityBySlide((prev) => ({
+                        ...prev,
+                        [deckCurrentSlideData.id]: index,
+                      }))
+                    }
+                    className={`w-full overflow-hidden rounded-[1.25rem] border px-4 py-3 text-left transition-all ${
+                      isSelected
+                        ? 'border-transparent bg-slate-950 text-white shadow-[0_8px_28px_rgba(15,23,42,0.16)]'
+                        : 'border-slate-200/80 bg-white/90 text-slate-700 hover:-translate-y-0.5 hover:border-slate-300 hover:shadow-sm'
+                    }`}
+                  >
+                    <div className="flex items-center gap-3">
+                      <span
+                        className={`inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-xs font-bold ${
+                          isSelected ? 'bg-white/15 text-white' : 'bg-slate-100 text-slate-700'
+                        }`}
+                      >
+                        {index + 1}
+                      </span>
+                      <div className="min-w-0 flex-1">
+                        <p className={`text-sm font-semibold leading-tight ${isSelected ? 'text-white' : 'text-slate-900'} line-clamp-1`}>
+                          {activity.title}
+                        </p>
+                        <div className="mt-0.5 flex items-center gap-2">
+                          <span className={`text-[11px] ${isSelected ? 'text-white/65' : 'text-slate-500'}`}>
+                            {activity.time}
+                          </span>
+                          {(activity.links?.length || 0) > 0 && (
+                            <span className={`text-[11px] ${isSelected ? 'text-white/50' : 'text-slate-400'}`}>
+                              · {activity.links?.length} links
+                            </span>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                    {isSelected && (
+                      <p className="mt-2 pl-10 text-xs leading-5 text-white/75 line-clamp-2">
+                        {slideDeckTrim(slideDeckGetActivityText(activity), 82)}
+                      </p>
+                    )}
+                  </button>
+                )
+              })}
+            </div>
+          </div>
+
+          {/* ── Right: Activity detail panel ── */}
+          <div className="flex min-h-0 flex-col overflow-hidden rounded-[2rem] border border-white/70 bg-white/88 p-6 shadow-[0_18px_70px_rgba(15,23,42,0.08)] backdrop-blur">
+            {/* Activity header */}
+            <div className="flex flex-wrap items-start justify-between gap-3 border-b border-slate-200/80 pb-4">
+              <div className="min-w-0 flex-1">
+                <p className="text-[10px] font-semibold uppercase tracking-[0.24em] text-slate-400">
+                  Activity {deckSelectedIndex + 1} of {deckStageActivities.length}
+                </p>
+                <h3 className="mt-2 break-words text-xl font-black leading-tight text-slate-950 xl:text-2xl">
+                  {deckSelectedActivity.title}
+                </h3>
+                <p className="mt-1 text-xs leading-5 text-slate-500 truncate">
+                  {slideDeckUnit.title} · {deckStageMeta.label}
+                </p>
+              </div>
+              <div className="flex shrink-0 flex-wrap items-center gap-2">
+                <Badge variant="secondary" className="bg-slate-900 text-white">
+                  {deckSelectedActivity.time}
+                </Badge>
+                {(deckSelectedActivity.links?.length || 0) > 0 && (
+                  <Badge variant="secondary" className="bg-slate-100 text-slate-700">
+                    {deckSelectedActivity.links?.length} resources
+                  </Badge>
+                )}
+              </div>
+            </div>
+
+            {/* 2×2 content grid */}
+            <div className="mt-4 grid min-h-0 flex-1 grid-rows-[1.05fr_0.95fr] gap-4">
+              <div className="grid min-h-0 gap-4 lg:grid-cols-[1.18fr_0.82fr]">
+                {/* Learner-facing prompt */}
+                <button
+                  type="button"
+                  onClick={() =>
+                    deckOpenDetailPanel({
+                      title: `${deckSelectedActivity.title} · Student instructions`,
+                      text: slideDeckGetActivityText(deckSelectedActivity),
+                      items: deckSelectedExample ? [`Language model: ${deckSelectedExample}`] : undefined,
+                    })
+                  }
+                  className="flex h-full min-h-0 flex-col overflow-hidden rounded-[1.5rem] border border-slate-200/80 bg-slate-50/90 p-5 text-left shadow-sm transition-all hover:-translate-y-0.5 hover:border-slate-300 hover:shadow-md"
+                >
+                  <div className="flex items-center gap-3">
+                    <div className="shrink-0 rounded-2xl bg-slate-900 p-2 text-white">
+                      <Icon icon={deckSelectedIcon} className="h-4 w-4" />
+                    </div>
+                    <div className="min-w-0">
+                      <p className="text-sm font-semibold text-slate-900 truncate">{slideDeckGetActivityPromptLabel(deckSelectedActivity)}</p>
+                      <p className="text-[10px] uppercase tracking-[0.2em] text-slate-400">Learner-facing prompt</p>
+                    </div>
+                  </div>
+                  <p className="mt-4 flex-1 text-sm leading-7 text-slate-700 break-words line-clamp-5">
+                    {slideDeckTrim(slideDeckGetActivityText(deckSelectedActivity), 250)}
+                  </p>
+                  {deckSelectedExample && (
+                    <span className="mt-3 inline-flex shrink-0 rounded-full border border-indigo-200/80 bg-indigo-50/85 px-3 py-1.5 text-[11px] font-semibold text-indigo-500">
+                      Language model available
+                    </span>
+                  )}
+                </button>
+
+                {/* Teacher note */}
+                <button
+                  type="button"
+                  onClick={() =>
+                    deckOpenDetailPanel({
+                      title: `${deckSelectedActivity.title} · Teacher note`,
+                      text: deckSelectedActivity.teacherNote,
+                      items: deckSelectedPack.tips,
+                    })
+                  }
+                  className="flex h-full min-h-0 flex-col overflow-hidden rounded-[1.5rem] border border-amber-200/70 bg-amber-50/90 p-5 text-left shadow-sm transition-all hover:-translate-y-0.5 hover:border-amber-300 hover:shadow-md"
+                >
+                  <div className="flex items-center gap-3">
+                    <div className="shrink-0 rounded-2xl bg-amber-500 p-2 text-white">
+                      <Icon icon={icons.teacher} className="h-4 w-4" />
+                    </div>
+                    <div className="min-w-0">
+                      <p className="text-sm font-semibold text-slate-900">Teacher note</p>
+                      <p className="text-[10px] uppercase tracking-[0.2em] text-slate-400">Delivery cue</p>
+                    </div>
+                  </div>
+                  <p className="mt-4 flex-1 text-sm leading-7 text-slate-700 break-words line-clamp-5">
+                    {slideDeckTrim(deckSelectedActivity.teacherNote, 180)}
+                  </p>
+                </button>
+              </div>
+
+              <div className="grid min-h-0 gap-4 xl:grid-cols-[1.08fr_0.92fr]">
+                {/* Run flow */}
+                <button
+                  type="button"
+                  onClick={() =>
+                    deckOpenDetailPanel({
+                      title: `${deckSelectedActivity.title} · Run flow`,
+                      items: deckStudentSteps,
+                    })
+                  }
+                  className="flex h-full min-h-0 flex-col overflow-hidden rounded-[1.5rem] border border-slate-200/80 bg-white p-5 text-left shadow-sm transition-all hover:-translate-y-0.5 hover:border-slate-300 hover:shadow-md"
+                >
+                  <div className="flex items-center justify-between gap-2">
+                    <p className="text-[10px] font-semibold uppercase tracking-[0.24em] text-slate-400">Run flow</p>
+                    {deckStepsPreview.extra > 0 && (
+                      <span className="text-[10px] font-semibold uppercase tracking-[0.18em] text-slate-400">
+                        +{deckStepsPreview.extra} more
+                      </span>
+                    )}
+                  </div>
+                  <ol className="mt-4 space-y-3">
+                    {deckStepsPreview.items.map((step, index) => (
+                      <li key={`${deckSelectedActivity.title}-step-${index}`} className="flex gap-3 rounded-2xl border border-slate-100 bg-slate-50/85 px-4 py-3 text-xs leading-6 text-slate-700">
+                        <span className="inline-flex h-5 w-5 flex-shrink-0 items-center justify-center rounded-full bg-slate-900 text-[10px] font-bold text-white">
+                          {index + 1}
+                        </span>
+                        <span className="min-w-0 break-words line-clamp-2">{slideDeckTrim(step, 96)}</span>
+                      </li>
+                    ))}
+                  </ol>
+                </button>
+
+                {/* Class support */}
+                <button
+                  type="button"
+                  onClick={() =>
+                    deckOpenDetailPanel({
+                      title: `${deckSelectedActivity.title} · Materials and resources`,
+                      items: deckSelectedPack.materials.map((material) => `Material: ${material}`),
+                      links: deckSelectedActivity.links,
+                    })
+                  }
+                  className="flex h-full min-h-0 flex-col overflow-hidden rounded-[1.5rem] border border-slate-200/80 bg-white p-5 text-left shadow-sm transition-all hover:-translate-y-0.5 hover:border-slate-300 hover:shadow-md"
+                >
+                  <div className="flex items-center justify-between gap-2">
+                    <p className="text-[10px] font-semibold uppercase tracking-[0.24em] text-slate-400">Class support</p>
+                    {(deckMaterialsPreview.extra > 0 || deckResourcesPreview.extra > 0) && (
+                      <span className="text-[10px] font-semibold uppercase tracking-[0.18em] text-slate-400">
+                        +{deckMaterialsPreview.extra + deckResourcesPreview.extra}
+                      </span>
+                    )}
+                  </div>
+                  <div className="mt-4 grid gap-3 sm:grid-cols-2">
+                    <div className="rounded-2xl border border-slate-200/80 bg-slate-50/90 px-3.5 py-3">
+                      <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-slate-400">Materials</p>
+                      <p className="mt-1 text-lg font-black text-slate-950">{deckSelectedPack.materials.length}</p>
+                    </div>
+                    <div className="rounded-2xl border border-slate-200/80 bg-slate-50/90 px-3.5 py-3">
+                      <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-slate-400">Resources</p>
+                      <p className="mt-1 text-lg font-black text-slate-950">{deckSelectedActivity.links?.length || 0}</p>
+                    </div>
+                  </div>
+
+                  <p className="mt-4 text-sm leading-6 text-slate-600 break-words line-clamp-3">
+                    {deckMaterialsPreview.items.length > 0
+                      ? slideDeckTrim(deckMaterialsPreview.items.join(' · '), 132)
+                      : 'Abre la tarjeta para ver los apoyos de clase.'}
+                  </p>
+
+                  <p className="mt-auto pt-3 text-xs leading-5 text-slate-500 line-clamp-1">
+                    {deckResourcesPreview.items.length > 0
+                      ? `Incluye ${deckResourcesPreview.items.length} recurso(s) en vista rápida.`
+                      : 'No requiere recursos externos.'}
+                  </p>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )
+    }
+
+    return (
+      <div className="grid h-full gap-5 xl:grid-cols-[0.96fr_1.04fr]">
+        <div className={`rounded-[2.2rem] bg-gradient-to-br ${deckChromeUnit.color} p-8 text-white shadow-[0_28px_100px_rgba(15,23,42,0.16)]`}>
+          <Badge className="border-white/20 bg-white/15 text-white">Course snapshot</Badge>
+          <h2 className="mt-5 text-4xl font-black leading-tight md:text-5xl">
+            Resumen rápido del curso.
+          </h2>
+          <p className="mt-4 max-w-xl text-lg leading-8 text-white/82">
+            Entra por cualquiera de las unidades y usa las tarjetas para abrir el detalle completo sólo cuando lo necesites.
+          </p>
+
+          <div className="mt-8 grid gap-3 sm:grid-cols-3">
+            <div className="rounded-[1.8rem] bg-white/12 p-4 backdrop-blur">
+              <p className="text-xs uppercase tracking-[0.2em] text-white/70">Units</p>
+              <p className="mt-2 text-3xl font-black">{units.length}</p>
+            </div>
+            <div className="rounded-[1.8rem] bg-white/12 p-4 backdrop-blur">
+              <p className="text-xs uppercase tracking-[0.2em] text-white/70">Activities</p>
+              <p className="mt-2 text-3xl font-black">{slideDeckCourseStats.totalActivities}</p>
+            </div>
+            <div className="rounded-[1.8rem] bg-white/12 p-4 backdrop-blur">
+              <p className="text-xs uppercase tracking-[0.2em] text-white/70">Resources</p>
+              <p className="mt-2 text-3xl font-black">{slideDeckCourseStats.totalResources}</p>
+            </div>
+          </div>
+        </div>
+
+        <div className="grid gap-4 overflow-y-auto slide-scroll">
+          {units.map((slideDeckUnit, unitIndex) => (
+            <div
+              key={`closing-${slideDeckUnit.id}`}
+              className="rounded-[2rem] border border-white/70 bg-white/82 p-6 shadow-[0_18px_70px_rgba(15,23,42,0.08)] backdrop-blur"
+            >
+              <div className="flex items-start justify-between gap-4">
+                <div className="min-w-0">
+                  <p className="text-xs font-semibold uppercase tracking-[0.24em] text-slate-400">{slideDeckUnit.level}</p>
+                  <h3 className="mt-2 text-2xl font-black text-slate-950 break-words">{slideDeckUnit.title}</h3>
+                  <p className="mt-2 text-sm leading-6 text-slate-600 break-words line-clamp-2">{slideDeckUnit.subtitle}</p>
+                </div>
+                <div className={`shrink-0 rounded-2xl bg-gradient-to-br ${slideDeckUnit.color} p-2.5`}>
+                  <Icon icon={slideDeckUnit.icon} className="h-6 w-6 text-white" />
+                </div>
+              </div>
+
+              <div className="mt-5 grid gap-3 md:grid-cols-2">
+                {slideDeckUnitStats[unitIndex].signatureTasks.map((task) => (
+                  <div key={task} className="rounded-2xl border border-slate-200/80 bg-slate-50/85 px-4 py-3 overflow-hidden">
+                    <p className="text-sm font-semibold text-slate-900 break-words line-clamp-3">{task}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    )
+  }
+
+  return (
+    <div className="relative box-border h-screen overflow-hidden px-3 pb-[3.5rem] pt-[4.25rem] md:px-5 md:pb-[3.75rem] md:pt-[4.5rem]">
+      <div className="presentation-grid pointer-events-none absolute inset-0 opacity-30" />
+      <div className="pointer-events-none absolute inset-x-0 top-0 h-[36rem] bg-[radial-gradient(ellipse_70%_50%_at_10%_0%,rgba(225,29,72,0.06),transparent),radial-gradient(ellipse_50%_40%_at_90%_0%,rgba(2,132,199,0.06),transparent)]" />
+
+      <header className="print-hidden fixed inset-x-0 top-0 z-50 px-3 pt-2 md:px-5">
+        <div className="deck-chrome mx-auto max-w-[1800px] rounded-2xl px-4 py-2">
+          <div className="flex items-center justify-between gap-4">
+            <div className="flex items-center gap-3">
+              <div className="flex items-center gap-2.5 rounded-xl bg-slate-950 px-3 py-1.5 text-white">
+                <div className="relative h-5 w-[80px]">
+                  <Image
+                    src="/logos/idiomas-eafit-black.svg"
+                    alt="Logo Idiomas EAFIT"
+                    fill
+                    className="object-contain invert"
+                    priority
+                  />
+                </div>
+                <span className="h-3.5 w-px bg-white/20" aria-hidden="true" />
+                <div className="relative h-5 w-[80px]">
+                  <Image
+                    src="/logos/universidad-eafit-black.svg"
+                    alt="Logo Universidad EAFIT"
+                    fill
+                    className="object-contain invert"
+                    priority
+                  />
+                </div>
+              </div>
+
+              <div className="hidden md:block">
+                <p className="label-micro">Class Guide</p>
+                <p className="text-[13px] font-semibold tracking-tight text-slate-800">Elementary 2</p>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-1.5">
+              {units.map((slideDeckUnit, unitIndex) => {
+                const deckIsActiveUnit =
+                  deckCurrentSlideData.type !== 'cover' &&
+                  deckCurrentSlideData.type !== 'closing' &&
+                  deckCurrentSlideData.unitIndex === unitIndex
+
+                return (
+                  <button
+                    key={`deck-unit-${slideDeckUnit.id}`}
+                    type="button"
+                    onClick={() => deckGoToUnit(unitIndex)}
+                    className={`rounded-lg px-3 py-1.5 text-[11px] font-bold tracking-wide transition-all ${
+                      deckIsActiveUnit
+                        ? `bg-gradient-to-r ${slideDeckUnit.color} text-white shadow-sm`
+                        : 'text-slate-400 hover:bg-slate-100 hover:text-slate-700'
+                    }`}
+                  >
+                    U{slideDeckUnit.id}
+                  </button>
+                )
+              })}
+              <span className="mx-1 h-4 w-px bg-slate-200" aria-hidden="true" />
+              <button
+                type="button"
+                onClick={() => window.print()}
+                className="rounded-lg p-1.5 text-slate-400 transition-colors hover:bg-slate-100 hover:text-slate-600"
+              >
+                <Icon icon={icons.printer} className="h-4 w-4" />
+              </button>
+            </div>
+          </div>
+
+          <div className="mt-2 flex items-center gap-3">
+            <div className="progress-track flex-1">
+              <motion.div
+                className={`progress-fill bg-gradient-to-r ${deckChromeUnit.color}`}
+                animate={{ width: `${deckProgressPercent}%` }}
+                transition={{ duration: 0.4, ease: [0.4, 0, 0.2, 1] }}
+              />
+            </div>
+            <span className="text-[10px] font-bold tabular-nums tracking-wider text-slate-400">
+              {deckCurrentSlide + 1}<span className="text-slate-300">/</span>{slideDeckSlides.length}
+            </span>
+          </div>
+        </div>
+      </header>
+
+      <main className="mx-auto h-full max-w-[1800px]">
+        <AnimatePresence mode="wait">
+          <motion.section
+            key={deckCurrentSlideData.id}
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -8 }}
+            transition={{ duration: 0.32, ease: [0.4, 0, 0.2, 1] }}
+            className="slide-frame deck-glass-strong relative h-full overflow-hidden rounded-2xl p-4 md:p-5"
+          >
+            <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_60%_40%_at_100%_0%,rgba(255,255,255,0.6),transparent)]" />
+            <div className="relative z-10 h-full">
+              {deckRenderSlideContent()}
+            </div>
+          </motion.section>
+        </AnimatePresence>
+      </main>
+
+      <footer className="print-hidden fixed inset-x-0 bottom-0 z-50 px-3 pb-2 md:px-5">
+        <div className="deck-chrome mx-auto flex max-w-[1800px] items-center justify-between rounded-xl px-3 py-1.5">
+          <button
+            type="button"
+            onClick={() => deckGoToSlide(deckCurrentSlide - 1)}
+            disabled={deckCurrentSlide === 0}
+            className="nav-btn nav-btn-outline"
+          >
+            <Icon icon={icons.chevronLeft} className="h-3.5 w-3.5" />
+            <span className="hidden sm:inline">Previous</span>
+          </button>
+
+          <p className="hidden text-center text-[10px] font-semibold uppercase tracking-[0.18em] text-slate-400 sm:block">
+            Clic en tarjeta para ampliar
+          </p>
+
+          <button
+            type="button"
+            onClick={() => deckGoToSlide(deckCurrentSlide + 1)}
+            disabled={deckCurrentSlide === slideDeckSlides.length - 1}
+            className={`nav-btn nav-btn-primary bg-gradient-to-r ${deckChromeUnit.color}`}
+          >
+            <span className="hidden sm:inline">Next</span>
+            <Icon icon={icons.chevronRight} className="h-3.5 w-3.5" />
+          </button>
+        </div>
+      </footer>
+
+      <Dialog open={!!deckDetailPanel} onOpenChange={(open) => !open && setDeckDetailPanel(null)}>
+        <DialogContent className="max-h-[86vh] sm:max-w-4xl overflow-hidden">
+          <DialogHeader>
+            <DialogTitle className="break-words">{deckDetailPanel?.title}</DialogTitle>
+            {deckDetailPanel?.description && (
+              <DialogDescription>{deckDetailPanel.description}</DialogDescription>
+            )}
+          </DialogHeader>
+          <div className="space-y-4 overflow-auto pr-1">
+            {deckDetailPanel?.text && (
+              <p className="whitespace-pre-wrap text-sm leading-7 text-slate-700">
+                {deckDetailPanel.text}
+              </p>
+            )}
+
+            {deckDetailPanel?.items && deckDetailPanel.items.length > 0 && (
+              <ul className="space-y-3">
+                {deckDetailPanel.items.map((item, index) => (
+                  <li key={`${deckDetailPanel.title}-${index}`} className="flex gap-3 text-sm leading-7 text-slate-700">
+                    <span className="inline-flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full bg-slate-900 text-[10px] font-bold text-white">
+                      {index + 1}
+                    </span>
+                    <span className="min-w-0 break-words">{item}</span>
+                  </li>
+                ))}
+              </ul>
+            )}
+
+            {deckDetailPanel?.links && deckDetailPanel.links.length > 0 && (
+              <div className="grid gap-3 sm:grid-cols-2">
+                {deckDetailPanel.links.map((link) => (
+                  <a
+                    key={`${deckDetailPanel.title}-${link.label}`}
+                    href={link.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-start gap-3 rounded-2xl border border-slate-200 bg-slate-50/85 p-4 transition-all hover:border-slate-300 hover:bg-white hover:shadow-sm"
+                  >
+                    <div className="rounded-2xl bg-slate-900 p-2 text-white">
+                      <Icon icon={slideDeckResourceIcons[link.type]} className="h-4 w-4" />
+                    </div>
+                    <div className="min-w-0 overflow-hidden">
+                      <p className="text-sm font-semibold text-slate-900 break-words line-clamp-2">{link.label}</p>
+                      <p className="mt-1 text-xs uppercase tracking-[0.18em] text-slate-400 truncate">
+                        {slideDeckResourceLabels[link.type]}
+                      </p>
+                    </div>
+                  </a>
+                ))}
+              </div>
+            )}
+          </div>
+        </DialogContent>
+      </Dialog>
+    </div>
+  )
 
   const handlePlayAudio = async () => {
     const audio = audioRef.current
@@ -1793,7 +2802,7 @@ export default function EnglishCoursePresentation() {
   const grammarDetectiveResult = grammarDetectiveState[unitKey]
   const quickPractice = quickPracticeExercises[unitKey as keyof typeof quickPracticeExercises]
 
-  const activityProgress = useMemo(() => {
+  const activityProgress = (() => {
     const sections = activityStageMeta.map((stage) => {
       const stageActivities = activities[stage.key]
       const completed = stageActivities.reduce((count, activity, idx) => {
@@ -1811,7 +2820,7 @@ export default function EnglishCoursePresentation() {
     const total = sections.reduce((sum, stage) => sum + stage.total, 0)
     const completed = sections.reduce((sum, stage) => sum + stage.completed, 0)
     return { sections, total, completed, percent: total === 0 ? 0 : Math.round((completed / total) * 100) }
-  }, [activities, completedActivities, unitKey])
+  })()
 
   const renderInstructionPanel = (targetUnitKey: string, activity: WarmUp | Activity, activityId: string) => {
     if (!expandedInlinePanels[activityId]) return null
@@ -1892,7 +2901,7 @@ export default function EnglishCoursePresentation() {
                   />
                 </div>
               </div>
-              <p className="text-xs sm:text-sm text-slate-500">English Course • Elementary 2 • Level A2</p>
+              <p className="text-xs sm:text-sm text-slate-500 hidden sm:block">English Course • Elementary 2 • Level A2</p>
             </div>
             <div className="flex items-center gap-2 flex-wrap">
               {favorites.length > 0 && (
@@ -1981,8 +2990,8 @@ export default function EnglishCoursePresentation() {
                 <Badge className="bg-white/20 text-white border-white/30 mb-3">
                   {unit.level}
                 </Badge>
-                <h2 className="text-2xl md:text-4xl font-bold mb-2">{unit.title}</h2>
-                <p className="text-lg text-white/90 mb-4">{unit.subtitle}</p>
+                <h2 className="text-2xl md:text-4xl font-bold mb-2 break-words">{unit.title}</h2>
+                <p className="text-base md:text-lg text-white/90 mb-4 break-words">{unit.subtitle}</p>
                 <div className="flex flex-wrap items-center gap-4 text-sm text-white/80">
                   <span className="flex items-center gap-1">
                     <Icon icon={icons.clock} className="w-4 h-4" /> {unit.duration}
@@ -2020,10 +3029,10 @@ export default function EnglishCoursePresentation() {
                       className={`rounded-xl border p-3 ${stage.completed === stage.total ? 'border-emerald-300 bg-emerald-50' : 'border-slate-200 bg-slate-50'
                         }`}
                     >
-                      <div className="mb-2 flex items-center gap-2">
-                        <span className={`h-2.5 w-2.5 rounded-full ${stage.color}`} />
-                        <Icon icon={stage.icon} className="h-4 w-4 text-slate-600" />
-                        <span className="text-xs font-semibold text-slate-700">{stage.shortLabel}</span>
+                      <div className="mb-2 flex items-center gap-2 min-w-0">
+                        <span className={`h-2.5 w-2.5 shrink-0 rounded-full ${stage.color}`} />
+                        <Icon icon={stage.icon} className="h-4 w-4 shrink-0 text-slate-600" />
+                        <span className="text-xs font-semibold text-slate-700 truncate">{stage.shortLabel}</span>
                       </div>
                       <p className="text-sm font-bold text-slate-800">
                         {stage.completed}/{stage.total}
@@ -2036,7 +3045,7 @@ export default function EnglishCoursePresentation() {
 
             {/* Section Tabs */}
             <Tabs value={activeSection} onValueChange={(v) => setActiveSection(v as typeof activeSection)} className="mb-6">
-              <TabsList className="print-hidden flex flex-wrap justify-center w-full h-auto p-1 mb-4 gap-1">
+              <TabsList className="print-hidden flex flex-wrap justify-center w-full h-auto p-1 mb-4 gap-1 overflow-hidden">
                 <TabsTrigger value="overview" className={`flex-1 relative flex items-center justify-center gap-2 px-3 py-2 text-sm transition-all hover:bg-slate-100 data-[state=active]:bg-slate-800 data-[state=active]:text-white data-[state=active]:shadow-md`}>
                   <Icon icon={icons.bookOpen} className="w-5 h-5 flex-shrink-0" />
                   <span className="whitespace-nowrap">Overview</span>
@@ -2115,14 +3124,14 @@ export default function EnglishCoursePresentation() {
                           <div className={`relative h-40 perspective-1000`}>
                             <div className={`absolute inset-0 transition-transform duration-500 preserve-3d ${'group-hover:rotate-y-180'}`}>
                               {/* Front */}
-                              <div className={`absolute inset-0 backface-hidden p-4 rounded-xl ${unit.lightColor} border ${unit.borderColor} flex flex-col justify-center`}>
-                                <code className="text-sm font-bold text-slate-800 text-center">{item.expression}</code>
+                              <div className={`absolute inset-0 backface-hidden p-4 rounded-xl ${unit.lightColor} border ${unit.borderColor} flex flex-col justify-center overflow-hidden`}>
+                                <code className="text-sm font-bold text-slate-800 text-center break-words line-clamp-3">{item.expression}</code>
                                 <p className="text-xs text-slate-500 text-center mt-2">Tap to see example</p>
                               </div>
                               {/* Back */}
-                              <div className={`absolute inset-0 backface-hidden rotate-y-180 p-4 rounded-xl bg-gradient-to-br ${unit.color} text-white flex flex-col justify-center`}>
-                                <p className="text-sm font-medium italic text-center">"{item.example}"</p>
-                                <p className="text-xs text-white/80 text-center mt-2">{item.use}</p>
+                              <div className={`absolute inset-0 backface-hidden rotate-y-180 p-4 rounded-xl bg-gradient-to-br ${unit.color} text-white flex flex-col justify-center overflow-hidden`}>
+                                <p className="text-[13px] font-medium italic text-center break-words line-clamp-4">"{item.example}"</p>
+                                <p className="text-xs text-white/80 text-center mt-2 line-clamp-2">{item.use}</p>
                               </div>
                             </div>
                           </div>
@@ -2282,14 +3291,14 @@ export default function EnglishCoursePresentation() {
                                 className="object-cover transition-transform duration-500 group-hover:scale-105" 
                               />
                             </div>
-                            <div className="flex items-center justify-between mb-2">
+                            <div className="flex items-center justify-between gap-2 mb-2">
                               <div className="flex items-center gap-2 min-w-0">
-                                <span className="inline-flex h-6 min-w-6 items-center justify-center rounded-full border border-rose-300 bg-rose-200 px-1 text-xs font-bold text-rose-800">
+                                <span className="inline-flex h-6 min-w-6 shrink-0 items-center justify-center rounded-full border border-rose-300 bg-rose-200 px-1 text-xs font-bold text-rose-800">
                                   {idx + 1}
                                 </span>
-                                <h4 className="font-semibold text-rose-800">{activity.title}</h4>
+                                <h4 className="font-semibold text-rose-800 break-words line-clamp-2">{activity.title}</h4>
                               </div>
-                              <Badge variant="secondary" className="bg-rose-100 text-rose-700 text-xs">
+                              <Badge variant="secondary" className="bg-rose-100 text-rose-700 text-xs shrink-0 whitespace-nowrap">
                                 <Icon icon={icons.clock} className="w-3 h-3 mr-1" /> {activity.time}
                               </Badge>
                             </div>
@@ -2321,13 +3330,13 @@ export default function EnglishCoursePresentation() {
                                 {expandedInlinePanels[activityId] ? 'Hide Steps' : 'Show Steps'}
                               </Button>
                             </div>
-                            <p className="text-sm text-slate-700 mb-2">
+                            <p className="text-sm text-slate-700 mb-2 break-words line-clamp-4">
                               {isChecklistMode ? 'Use checklist mode to focus on execution order and completion.' : activity.instructions}
                             </p>
-                            <p className="text-xs text-slate-500 mb-3"><strong>Materials:</strong> {activity.materials}</p>
+                            <p className="text-xs text-slate-500 mb-3 break-words line-clamp-2"><strong>Materials:</strong> {activity.materials}</p>
                             {showTeacherNotes && (
-                              <div className="mt-2 p-2 bg-amber-50 rounded-lg border border-amber-200">
-                                <p className="text-xs text-amber-800">
+                              <div className="mt-2 p-2 bg-amber-50 rounded-lg border border-amber-200 overflow-hidden">
+                                <p className="text-xs text-amber-800 break-words line-clamp-4">
                                   <strong className="inline-flex items-center gap-1">
                                     <Icon icon={icons.teacher} className="w-4 h-4" />
                                     Teacher:
@@ -2393,11 +3402,11 @@ export default function EnglishCoursePresentation() {
                               <Icon icon={activityIcon} className="w-5 h-5 text-emerald-500 mt-1 flex-shrink-0" />
                               <div className="flex-1">
                                 <div className="flex items-center gap-2 mb-2">
-                                  <span className="inline-flex h-6 min-w-6 items-center justify-center rounded-full border border-emerald-300 bg-emerald-200 px-1 text-xs font-bold text-emerald-800">
+                                  <span className="inline-flex h-6 min-w-6 shrink-0 items-center justify-center rounded-full border border-emerald-300 bg-emerald-200 px-1 text-xs font-bold text-emerald-800">
                                     {idx + 1}
                                   </span>
-                                  <h4 className="font-semibold text-emerald-800">{activity.title}</h4>
-                                  <Badge variant="secondary" className="bg-emerald-100 text-emerald-700 text-xs ml-auto">
+                                  <h4 className="font-semibold text-emerald-800 min-w-0 break-words line-clamp-2">{activity.title}</h4>
+                                  <Badge variant="secondary" className="bg-emerald-100 text-emerald-700 text-xs ml-auto shrink-0 whitespace-nowrap">
                                     {activity.time}
                                   </Badge>
                                   <div
@@ -2447,9 +3456,9 @@ export default function EnglishCoursePresentation() {
                                     {expandedInlinePanels[activityId] ? 'Hide Steps' : 'Show Steps'}
                                   </Button>
                                 </div>
-                                <p className="text-sm text-slate-700 mb-2">{isChecklistMode ? 'Checklist focus: complete this activity and mark it done.' : activity.studentTask}</p>
+                                <p className="text-sm text-slate-700 mb-2 break-words line-clamp-4">{isChecklistMode ? 'Checklist focus: complete this activity and mark it done.' : activity.studentTask}</p>
                                 {activity.example && (
-                                  <p className="text-xs text-slate-600 italic bg-white p-2 rounded border border-emerald-100">
+                                  <p className="text-xs text-slate-600 italic bg-white p-2 rounded border border-emerald-100 break-words line-clamp-3">
                                     "{activity.example}"
                                   </p>
                                 )}
@@ -2510,11 +3519,11 @@ export default function EnglishCoursePresentation() {
                             <div className="flex items-start justify-between gap-3">
                               <div className="flex-1">
                                 <div className="flex items-center gap-2 mb-2">
-                                  <span className="inline-flex h-6 min-w-6 items-center justify-center rounded-full border border-amber-300 bg-amber-200 px-1 text-xs font-bold text-amber-800">
+                                  <span className="inline-flex h-6 min-w-6 shrink-0 items-center justify-center rounded-full border border-amber-300 bg-amber-200 px-1 text-xs font-bold text-amber-800">
                                     {idx + 1}
                                   </span>
-                                  <h4 className="font-semibold text-amber-800">{activity.title}</h4>
-                                  <Badge variant="secondary" className="bg-amber-100 text-amber-700 text-xs">
+                                  <h4 className="font-semibold text-amber-800 min-w-0 break-words line-clamp-2">{activity.title}</h4>
+                                  <Badge variant="secondary" className="bg-amber-100 text-amber-700 text-xs shrink-0 whitespace-nowrap">
                                     {activity.time}
                                   </Badge>
                                 </div>
@@ -2546,13 +3555,13 @@ export default function EnglishCoursePresentation() {
                                     {expandedInlinePanels[activityId] ? 'Hide Steps' : 'Show Steps'}
                                   </Button>
                                 </div>
-                                <p className="text-slate-700 mb-2">{isChecklistMode ? 'Reflection checkpoint: review outputs and document insights.' : activity.studentTask}</p>
+                                <p className="text-slate-700 mb-2 break-words line-clamp-4">{isChecklistMode ? 'Reflection checkpoint: review outputs and document insights.' : activity.studentTask}</p>
                                 {activity.example && (
-                                  <p className="text-sm text-slate-600 italic bg-white p-2 rounded">Example: {activity.example}</p>
+                                  <p className="text-sm text-slate-600 italic bg-white p-2 rounded break-words line-clamp-3">Example: {activity.example}</p>
                                 )}
                                 {showTeacherNotes && (
-                                  <div className="mt-2 p-2 bg-orange-50 rounded-lg border border-orange-200">
-                                    <p className="text-xs text-orange-800">
+                                  <div className="mt-2 p-2 bg-orange-50 rounded-lg border border-orange-200 overflow-hidden">
+                                    <p className="text-xs text-orange-800 break-words line-clamp-4">
                                       <strong className="inline-flex items-center gap-1">
                                         <Icon icon={icons.teacher} className="w-4 h-4" />
                                         Teacher:
@@ -2650,10 +3659,10 @@ export default function EnglishCoursePresentation() {
                             </div>
                             <Badge className="bg-blue-100 text-blue-700 mb-2">{activity.time}</Badge>
                             <div className="mb-2 flex items-center gap-2 pr-6">
-                              <span className="inline-flex h-6 min-w-6 items-center justify-center rounded-full border border-blue-300 bg-blue-200 px-1 text-xs font-bold text-blue-800">
+                              <span className="inline-flex h-6 min-w-6 shrink-0 items-center justify-center rounded-full border border-blue-300 bg-blue-200 px-1 text-xs font-bold text-blue-800">
                                 {idx + 1}
                               </span>
-                              <h4 className="font-semibold text-blue-800">{activity.title}</h4>
+                              <h4 className="font-semibold text-blue-800 min-w-0 break-words line-clamp-2">{activity.title}</h4>
                             </div>
                             <div className="mb-2 flex flex-wrap gap-2">
                               <Button
@@ -2683,13 +3692,13 @@ export default function EnglishCoursePresentation() {
                                 {expandedInlinePanels[activityId] ? 'Hide Steps' : 'Show Steps'}
                               </Button>
                             </div>
-                            <p className="text-sm text-slate-700 mb-2">{isChecklistMode ? 'Concept check: classify patterns and verify rules.' : activity.studentTask}</p>
+                            <p className="text-sm text-slate-700 mb-2 break-words line-clamp-4">{isChecklistMode ? 'Concept check: classify patterns and verify rules.' : activity.studentTask}</p>
                             {activity.example && (
-                              <p className="text-xs text-slate-600 italic bg-white p-2 rounded">{activity.example}</p>
+                              <p className="text-xs text-slate-600 italic bg-white p-2 rounded break-words line-clamp-3">{activity.example}</p>
                             )}
                             {showTeacherNotes && (
-                              <div className="mt-2 p-2 bg-indigo-50 rounded-lg border border-indigo-200">
-                                <p className="text-xs text-indigo-800">
+                              <div className="mt-2 p-2 bg-indigo-50 rounded-lg border border-indigo-200 overflow-hidden">
+                                <p className="text-xs text-indigo-800 break-words line-clamp-4">
                                   <strong className="inline-flex items-center gap-1">
                                     <Icon icon={icons.teacher} className="w-4 h-4" />
                                     Teacher:
@@ -2769,10 +3778,10 @@ export default function EnglishCoursePresentation() {
                             <Icon icon={activityIcon} className="w-8 h-8 text-violet-500 mb-3" />
                             <Badge className="bg-violet-100 text-violet-700 mb-2">{activity.time}</Badge>
                             <div className="mb-2 flex items-center gap-2 pr-6">
-                              <span className="inline-flex h-6 min-w-6 items-center justify-center rounded-full border border-violet-300 bg-violet-200 px-1 text-xs font-bold text-violet-800">
+                              <span className="inline-flex h-6 min-w-6 shrink-0 items-center justify-center rounded-full border border-violet-300 bg-violet-200 px-1 text-xs font-bold text-violet-800">
                                 {idx + 1}
                               </span>
-                              <h4 className="font-semibold text-violet-800">{activity.title}</h4>
+                              <h4 className="font-semibold text-violet-800 min-w-0 break-words line-clamp-2">{activity.title}</h4>
                             </div>
                             <div className="mb-2 flex flex-wrap gap-2">
                               <Button
@@ -2802,13 +3811,13 @@ export default function EnglishCoursePresentation() {
                                 {expandedInlinePanels[activityId] ? 'Hide Steps' : 'Show Steps'}
                               </Button>
                             </div>
-                            <p className="text-sm text-slate-700 mb-2">{isChecklistMode ? 'Application checkpoint: use target forms in extended communication.' : activity.studentTask}</p>
+                            <p className="text-sm text-slate-700 mb-2 break-words line-clamp-4">{isChecklistMode ? 'Application checkpoint: use target forms in extended communication.' : activity.studentTask}</p>
                             {activity.example && (
-                              <p className="text-xs text-violet-700 italic bg-white p-2 rounded">{activity.example}</p>
+                              <p className="text-xs text-violet-700 italic bg-white p-2 rounded break-words line-clamp-3">{activity.example}</p>
                             )}
                             {showTeacherNotes && (
-                              <div className="mt-2 p-2 bg-fuchsia-50 rounded-lg border border-fuchsia-200">
-                                <p className="text-xs text-fuchsia-800">
+                              <div className="mt-2 p-2 bg-fuchsia-50 rounded-lg border border-fuchsia-200 overflow-hidden">
+                                <p className="text-xs text-fuchsia-800 break-words line-clamp-4">
                                   <strong className="inline-flex items-center gap-1">
                                     <Icon icon={icons.teacher} className="w-4 h-4" />
                                     Teacher:
@@ -2887,10 +3896,10 @@ export default function EnglishCoursePresentation() {
                             <Icon icon={activityIcon} className="w-8 h-8 text-emerald-500 mb-3" />
                             <Badge className="bg-emerald-100 text-emerald-700 mb-2">{activity.time}</Badge>
                             <div className="mb-2 flex items-center gap-2 pr-6">
-                              <span className="inline-flex h-6 min-w-6 items-center justify-center rounded-full border border-emerald-300 bg-emerald-200 px-1 text-xs font-bold text-emerald-800">
+                              <span className="inline-flex h-6 min-w-6 shrink-0 items-center justify-center rounded-full border border-emerald-300 bg-emerald-200 px-1 text-xs font-bold text-emerald-800">
                                 {idx + 1}
                               </span>
-                              <h4 className="font-semibold text-emerald-800">{activity.title}</h4>
+                              <h4 className="font-semibold text-emerald-800 min-w-0 break-words line-clamp-2">{activity.title}</h4>
                             </div>
                             <div className="mb-2 flex flex-wrap gap-2">
                               <Button
@@ -2920,13 +3929,13 @@ export default function EnglishCoursePresentation() {
                                 {expandedInlinePanels[activityId] ? 'Hide Steps' : 'Show Steps'}
                               </Button>
                             </div>
-                            <p className="text-sm text-slate-700 mb-2">{isChecklistMode ? 'Closing checkpoint: verify outcomes and clean up workspace.' : activity.studentTask}</p>
+                            <p className="text-sm text-slate-700 mb-2 break-words line-clamp-4">{isChecklistMode ? 'Closing checkpoint: verify outcomes and clean up workspace.' : activity.studentTask}</p>
                             {activity.example && (
-                              <p className="text-xs text-emerald-700 italic bg-white p-2 rounded">{activity.example}</p>
+                              <p className="text-xs text-emerald-700 italic bg-white p-2 rounded break-words line-clamp-3">{activity.example}</p>
                             )}
                             {showTeacherNotes && (
-                              <div className="mt-2 p-2 bg-emerald-50 rounded-lg border border-emerald-200">
-                                <p className="text-xs text-emerald-800">
+                              <div className="mt-2 p-2 bg-emerald-50 rounded-lg border border-emerald-200 overflow-hidden">
+                                <p className="text-xs text-emerald-800 break-words line-clamp-4">
                                   <strong className="inline-flex items-center gap-1">
                                     <Icon icon={icons.teacher} className="w-4 h-4" />
                                     Teacher:
@@ -3005,10 +4014,10 @@ export default function EnglishCoursePresentation() {
                             <Icon icon={activityIcon} className="w-8 h-8 text-orange-500 mb-3" />
                             <Badge className="bg-orange-100 text-orange-700 mb-2">{activity.time}</Badge>
                             <div className="mb-2 flex items-center gap-2 pr-6">
-                              <span className="inline-flex h-6 min-w-6 items-center justify-center rounded-full border border-orange-300 bg-orange-200 px-1 text-xs font-bold text-orange-800">
+                              <span className="inline-flex h-6 min-w-6 shrink-0 items-center justify-center rounded-full border border-orange-300 bg-orange-200 px-1 text-xs font-bold text-orange-800">
                                 {idx + 1}
                               </span>
-                              <h4 className="font-semibold text-orange-800">{activity.title}</h4>
+                              <h4 className="font-semibold text-orange-800 min-w-0 break-words line-clamp-2">{activity.title}</h4>
                             </div>
                             <div className="mb-2 flex flex-wrap gap-2">
                               <Button
@@ -3038,13 +4047,13 @@ export default function EnglishCoursePresentation() {
                                 {expandedInlinePanels[activityId] ? 'Hide Steps' : 'Show Steps'}
                               </Button>
                             </div>
-                            <p className="text-sm text-slate-700 mb-2">{isChecklistMode ? 'Living the Learning checkpoint: apply target forms in real-world contexts.' : activity.studentTask}</p>
+                            <p className="text-sm text-slate-700 mb-2 break-words line-clamp-4">{isChecklistMode ? 'Living the Learning checkpoint: apply target forms in real-world contexts.' : activity.studentTask}</p>
                             {activity.example && (
-                              <p className="text-xs text-orange-700 italic bg-white p-2 rounded">{activity.example}</p>
+                              <p className="text-xs text-orange-700 italic bg-white p-2 rounded break-words line-clamp-3">{activity.example}</p>
                             )}
                             {showTeacherNotes && (
-                              <div className="mt-2 p-2 bg-orange-50 rounded-lg border border-orange-200">
-                                <p className="text-xs text-orange-800">
+                              <div className="mt-2 p-2 bg-orange-50 rounded-lg border border-orange-200 overflow-hidden">
+                                <p className="text-xs text-orange-800 break-words line-clamp-4">
                                   <strong className="inline-flex items-center gap-1">
                                     <Icon icon={icons.teacher} className="w-4 h-4" />
                                     Teacher:
@@ -3141,7 +4150,7 @@ export default function EnglishCoursePresentation() {
                         className={`p-8 rounded-2xl bg-gradient-to-br ${unit.color} text-white mb-6`}
                       >
                         <p className="text-lg font-medium mb-2">Situation:</p>
-                        <p className="text-2xl font-bold">{gamePrompts.prompts[promptResult.currentPrompt].situation}</p>
+                        <p className="text-xl font-bold break-words">{gamePrompts.prompts[promptResult.currentPrompt].situation}</p>
                       </motion.div>
 
                       <AnimatePresence mode="wait">
@@ -3152,7 +4161,7 @@ export default function EnglishCoursePresentation() {
                             className="p-6 bg-emerald-50 rounded-xl border-2 border-emerald-200 mb-6"
                           >
                             <p className="text-lg font-semibold text-emerald-800">Answer:</p>
-                            <p className="text-2xl font-bold text-emerald-600 mt-2">
+                            <p className="text-xl font-bold text-emerald-600 mt-2 break-words">
                               {gamePrompts.prompts[promptResult.currentPrompt].answer}
                             </p>
                           </motion.div>
@@ -3210,7 +4219,7 @@ export default function EnglishCoursePresentation() {
                         const isCorrect = selected === exercise.answer
                         return (
                           <div key={`${unitKey}-quick-practice-${idx}`} className="rounded-xl border border-slate-200 bg-slate-50 p-4">
-                            <p className="font-medium text-slate-800">
+                            <p className="font-medium text-slate-800 break-words">
                               {idx + 1}. {exercise.sentence}
                             </p>
                             <div className="mt-3 flex flex-wrap items-center gap-3">
@@ -3260,7 +4269,7 @@ export default function EnglishCoursePresentation() {
                       const isAnswered = sentenceBuilderResult.answered.includes(idx)
                       return (
                         <div key={`${unitKey}-builder-${idx}`} className="rounded-xl border border-slate-200 bg-slate-50 p-4">
-                          <p className="font-medium text-slate-800 mb-3">{idx + 1}. {item.prompt}</p>
+                          <p className="font-medium text-slate-800 mb-3 break-words">{idx + 1}. {item.prompt}</p>
                           <div className="grid gap-2">
                             {item.options.map((option, optionIdx) => {
                               const isCorrect = optionIdx === item.correct
@@ -3313,8 +4322,8 @@ export default function EnglishCoursePresentation() {
                       const isAnswered = grammarDetectiveResult.answered.includes(idx)
                       return (
                         <div key={`${unitKey}-detective-${idx}`} className="rounded-xl border border-slate-200 bg-slate-50 p-4">
-                          <p className="text-sm text-slate-500 mb-1">Case sentence: <span className="font-medium text-slate-700">{item.sentence}</span></p>
-                          <p className="font-medium text-slate-800 mb-3">{item.question}</p>
+                          <p className="text-sm text-slate-500 mb-1 break-words">Case sentence: <span className="font-medium text-slate-700">{item.sentence}</span></p>
+                          <p className="font-medium text-slate-800 mb-3 break-words">{item.question}</p>
                           <div className="grid gap-2">
                             {item.options.map((option, optionIdx) => {
                               const isCorrect = optionIdx === item.correct
@@ -3398,7 +4407,7 @@ export default function EnglishCoursePresentation() {
                               <span className="w-7 h-7 rounded-full bg-slate-200 flex items-center justify-center text-sm flex-shrink-0">
                                 {qIdx + 1}
                               </span>
-                              <span>{q.question}</span>
+                              <span className="break-words min-w-0">{q.question}</span>
                             </h4>
                             <div className="grid gap-2 pl-10">
                               {q.options.map((option, oIdx) => {
@@ -3438,7 +4447,7 @@ export default function EnglishCoursePresentation() {
                                 animate={{ opacity: 1, height: 'auto' }}
                                 className="mt-4 ml-10 p-3 bg-blue-50 rounded-lg border border-blue-200"
                               >
-                                <p className="text-sm text-blue-800">
+                                <p className="text-sm text-blue-800 break-words">
                                   <strong className="inline-flex items-center gap-1">
                                     <Icon icon={icons.teacher} className="w-4 h-4" />
                                     Explanation:
@@ -3582,7 +4591,7 @@ export default function EnglishCoursePresentation() {
                     {expandedActivity.activity.time}
                   </Badge>
                 </div>
-                <DialogTitle className="text-3xl sm:text-4xl font-bold text-white tracking-tight drop-shadow-md">
+                <DialogTitle className="text-2xl sm:text-3xl font-bold text-white tracking-tight drop-shadow-md break-words">
                   {expandedActivity.activity.title}
                 </DialogTitle>
               </div>
@@ -3617,10 +4626,10 @@ export default function EnglishCoursePresentation() {
                   {isRegularActivity(expandedActivity.activity) ? (
                     <div className="bg-slate-50 rounded-2xl p-6 border border-slate-100 shadow-sm">
                       <h5 className="text-sm font-bold uppercase tracking-wider text-slate-800 mb-4 flex items-center gap-2">
-                        <div className="w-1.5 h-6 bg-indigo-500 rounded-full" />
+                        <div className="w-1.5 h-6 bg-indigo-500 rounded-full shrink-0" />
                         Activity Overview
                       </h5>
-                      <p className="text-slate-700 leading-relaxed text-lg font-medium">
+                      <p className="text-slate-700 leading-relaxed text-lg font-medium break-words">
                         {expandedActivity.activity.studentTask}
                       </p>
                     </div>
@@ -3705,7 +4714,7 @@ export default function EnglishCoursePresentation() {
                                   <span className="flex-shrink-0 w-6 h-6 rounded-full bg-indigo-50 text-indigo-600 text-[10px] font-bold flex items-center justify-center border border-indigo-100 mt-0.5">
                                     {idx + 1}
                                   </span>
-                                  <span className="text-slate-700 leading-relaxed font-medium">{step}</span>
+                                  <span className="text-slate-700 leading-relaxed font-medium break-words min-w-0">{step}</span>
                                 </li>
                               ))}
                             </ol>
@@ -3757,7 +4766,7 @@ export default function EnglishCoursePresentation() {
                           <Icon icon="lucide:quote" className="w-16 h-16 text-indigo-600" />
                         </div>
                         <h5 className="text-sm font-bold uppercase tracking-wider text-indigo-700 mb-3">Example</h5>
-                        <p className="italic text-slate-800 text-lg leading-relaxed relative z-10">
+                        <p className="italic text-slate-800 text-lg leading-relaxed relative z-10 break-words">
                           "{expandedActivity.activity.example}"
                         </p>
                       </div>
@@ -3770,7 +4779,7 @@ export default function EnglishCoursePresentation() {
                           <Icon icon="lucide:award" className="w-16 h-16 text-amber-600" />
                         </div>
                         <h5 className="text-sm font-bold uppercase tracking-wider text-amber-700 mb-3">Teacher's Notes</h5>
-                        <p className="text-slate-800 leading-relaxed font-medium relative z-10">
+                        <p className="text-slate-800 leading-relaxed font-medium relative z-10 break-words">
                           {expandedActivity.activity.teacherNote}
                         </p>
                       </div>
@@ -3858,14 +4867,14 @@ export default function EnglishCoursePresentation() {
                                       'lucide:external-link'
                                     } className="w-5 h-5" />
                                   </div>
-                                  <div className="flex-1 min-w-0">
+                                  <div className="flex-1 min-w-0 overflow-hidden">
                                     <p className={`text-sm font-bold truncate ${
                                       link.type === 'video' ? 'text-rose-900' :
                                       link.type === 'audio' ? 'text-purple-900' :
                                       link.type === 'worksheet' ? 'text-blue-900' :
                                       'text-slate-900'
                                     }`}>{link.label}</p>
-                                    <p className="text-[10px] font-medium opacity-60 uppercase tracking-tighter">Click to launch resource</p>
+                                    <p className="text-[10px] font-medium opacity-60 uppercase tracking-tighter truncate">Click to launch resource</p>
                                   </div>
                                   <Icon icon="lucide:arrow-up-right" className="w-4 h-4 opacity-30 group-hover:opacity-100 transition-opacity" />
                                 </a>
